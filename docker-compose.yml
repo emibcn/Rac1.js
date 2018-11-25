@@ -1,0 +1,20 @@
+version: "3"
+
+services:
+
+  rac1:
+    container_name: rac1
+    image: node:8-slim
+    user: "node"
+    working_dir: /home/node/app
+    environment:
+      - NODE_ENV=development
+    volumes:
+      - ./app:/home/node/app
+      - ./docs:/home/node/docs
+    expose:
+      - "3000"
+    ports:
+      - "127.0.0.1:3000:3000"
+    command: "yarn start"
+
