@@ -62,6 +62,16 @@ class App extends Component {
         action: this.playNext,
       },
     ];
+
+    // Disable key handler on mobile devices
+    var isMobile = window.matchMedia("only screen and (max-width: 760px)");
+
+    if (isMobile.matches) {
+      this.keyHandlerFocus = () => {};
+    }
+    else {
+      this.keyHandlerFocus = () => this._keyHandler.focus();
+    }
   }
 
   componentDidMount() {
@@ -178,10 +188,6 @@ class App extends Component {
         </header>
       </div>
     );
-  }
-
-  keyHandlerFocus() {
-    this._keyHandler.focus();
   }
 
   handleListUpdate(newList) {
