@@ -9,7 +9,7 @@
     }
   ],
   "homepage": "https://emibcn.github.io/Rac1.js/",
-  "start_url": ".",
+  "start_url": "Rac1.js/",
   "display": "standalone",
   "theme_color": "#000000",
   "background_color": "#282c34"
