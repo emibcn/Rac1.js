@@ -2,6 +2,7 @@
   "name": "rac1",
   "version": "0.1.0",
   "private": true,
+  "homepage" : "http://emibcn.github.io/Rac1.js/",
   "dependencies": {
     "react": "^16.6.3",
     "react-audio-player": "^0.11.0",
@@ -11,7 +12,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build && rm -Rf ../docs/* && mv build/* ../docs/",
+    "build": "react-scripts build && rm -Rf ../docs/* && mv build/* ../docs/ && rmdir build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

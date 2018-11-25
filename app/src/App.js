@@ -7,8 +7,8 @@ import './App.css';
 class App extends Component {
   render() {
     return (
-      <Router basename={`${process.env.PUBLIC_URL}`}>
-        <Route path='/' component={Rac1Player} />
+      <Router basename={ process.env.PUBLIC_URL }>
+        <Route path={ process.env.PUBLIC_URL } component={Rac1Player} />
       </Router>
     );
   };
