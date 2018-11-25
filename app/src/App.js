@@ -1,20 +1,9 @@
 import React, { Component } from 'react';
-import { BrowserRouter as Router, Route } from 'react-router-dom';
 import ReactAudioPlayer from 'react-audio-player';
 import Rac1 from './rac1';
 import './App.css';
 
 class App extends Component {
-  render() {
-    return (
-      <Router basename={ process.env.PUBLIC_URL }>
-        <Route path={ process.env.PUBLIC_URL } component={Rac1Player} />
-      </Router>
-    );
-  };
-};
-
-class Rac1Player extends Component {
   constructor(props) {
     super();
     this.state = {
