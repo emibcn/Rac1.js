@@ -1,9 +1,20 @@
 import React, { Component } from 'react';
+import { BrowserRouter as Router, Route } from 'react-router-dom';
 import ReactAudioPlayer from 'react-audio-player';
 import Rac1 from './rac1';
 import './App.css';
 
 class App extends Component {
+  render() {
+    return (
+      <Router basename={`${process.env.PUBLIC_URL}`}>
+        <Route path='/' component={Rac1Player} />
+      </Router>
+    );
+  };
+};
+
+class Rac1Player extends Component {
   constructor(props) {
     super();
     this.state = {
@@ -82,9 +93,7 @@ class App extends Component {
     const autoplay = current > 0;
 
     return (
-      <div
-        className="App"
-      >
+      <div className="App">
         <header className="App-header">
           { podcasts !== undefined && podcasts.length > 0 ?
               (
@@ -128,18 +137,18 @@ class App extends Component {
                   </span>
                 </button>
               )
-            }) }
+            })}
           </div>
-					<ReactAudioPlayer
+          <ReactAudioPlayer
             ref={(element) => { this._player = element; }}
             style={{ width: '100%' }}
             src={ podcasts !== undefined && podcasts.length > current && 'path' in podcasts[current] ? podcasts[current].path : '' }
-						autoPlay={ autoplay }
-						controls
+            autoPlay={ autoplay }
+            controls
             preload={ (autoplay ? "auto" : "metadata") }
             onEnded={ this.playNext.bind(this) }
             volume={ volume }
-					/>
+          />
           <div
             style={{
               color: "#777",
@@ -167,12 +176,12 @@ class App extends Component {
                               onClick={ this.handleClickPodcast.bind(this, index) }
                               style={{ textDecoration: "none" }}
                             >
-                              { podcast.audio.hour }h: { podcast.audio.title } 
+                              { podcast.audio.hour }h: { podcast.audio.title }
                             </a>
                           )
                       }
                     </li>
-                  ) }
+                  )}
                 </ul>
               ) : null
             }
@@ -321,12 +330,12 @@ class App extends Component {
         stopPropagation = false;
         break;
     }
+
     if(stopPropagation) {
       e.stopPropagation();
       e.preventDefault();
     }
   }
-
 }
 
 export default App;
