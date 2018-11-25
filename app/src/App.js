@@ -64,9 +64,7 @@ class App extends Component {
     ];
 
     // Disable key handler on mobile devices
-    var isMobile = window.matchMedia("only screen and (max-width: 760px)");
-
-    if (isMobile.matches) {
+    if (/Mobi|Android/i.test(navigator.userAgent)) {
       this.keyHandlerFocus = () => {};
     }
     else {
