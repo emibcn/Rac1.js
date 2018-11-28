@@ -1,4 +1,4 @@
-
+// Raises exception on response error
 function handleFetchErrors(response) {
   if (!response.ok) {
     throw Error(response.statusText);
@@ -6,10 +6,12 @@ function handleFetchErrors(response) {
   return response;
 }
 
+// Catches the fetch error, original or 'self-raised'
 function catchFetchErrors(error) {
   console.error(error);
 }
 
+// Cached/compiled regexps for parsing HTML
 const dataAttrsFind  = /.*"(audioteca-item|pagination-link)" (data-[^=]*)="([^"]*)"[ \t>]/g;
 const dataAttrsClean = /^.*[ \t](data-[^=]*)="([^"]*)"[ \t>].*$/;
 
@@ -27,7 +29,7 @@ class Rac1 {
     // Cache for pageNumber => UUIDs
     this._pages_uuids = [];
 
-    // Begin work
+    // Download podcasts UUIDs and then, each podcast data
     this.getPodcastsUUIDs()
       .then(this.getPodcasts.bind(this, 0));
   }
@@ -47,49 +49,51 @@ class Rac1 {
       })
   }
 
+  // Creates a list with all known podcast or UUIDs
+  // and fires event onListUpdate with that
+  // () => null
   handleListUpdate() {
     let newList = [];
 
-    // Create a virtual list of all podcasts ordered correctly
-    for(let pageIndex in this.pages) {
-      var pageUuids = this._pages_uuids[ this.pages[pageIndex] ];
+    // Create a virtual list of all podcasts correctly ordered
+    this.pages.forEach( page => {
+
+      // Get UUIDs from the pages cache
+      var pageUuids = this._pages_uuids[ page ];
 
       if(pageUuids === undefined) {
         // Set temporal UUID for unresolved pages
         newList.push({uuid: '...'});
       }
       else {
-
-        for(let podcastIndex in pageUuids) {
-          const podcast = pageUuids[podcastIndex];
-
-          let found = false;
-          for(let done in newList) {
-            if(newList[done].uuid === podcast.uuid) {
-              found = true;
-            }
+        // Add this page's podcasts to the list
+        pageUuids.forEach( podcastPage => {
+          // Only add podcast not already added to the list
+          const found = newList.filter( podcast => podcast.uuid === podcastPage.uuid );
+          if(found.length === 0) {
+            newList.push( podcastPage );
           }
-          if(!found) {
-            newList.push(podcast);
-          }
-        }
-
+        });
       }
-    }
+    });
 
     this.onListUpdate(newList);
   }
 
+  // Saves the new podcast to the pages cache and fires onPodcastUpdate
+  // (pageNumber, podcastNew) => null
   handlePodcastUpdate(pageNumber, podcastNew) {
     podcastNew.page = pageNumber;
-    for( let index in this._pages_uuids[pageNumber] ) {
-      if(this._pages_uuids[pageNumber][index].uuid === podcastNew.uuid) {
+    this._pages_uuids[pageNumber].forEach((podcast,index) => {
+      if(podcast.uuid === podcastNew.uuid) {
         this._pages_uuids[pageNumber][index] = podcastNew;
       }
-    }
+    });
     this.onPodcastUpdate(podcastNew);
   }
 
+  // Gets all the podcasts UUIDs of a date
+  // (pageNumber) => Promise(Array(String(UUID)))
   getPodcastsUUIDs(pageNumber=0) {
     return this.getPage(pageNumber)
       .then(dataRaw => {
@@ -120,6 +124,8 @@ class Rac1 {
       });
   }
 
+  // Gets a page with HTML containning a list of podcasts from the server
+  // (pageNumber) => Promise(String)
   getPage(pageNumber) {
     const date = this.date.toLocaleDateString("es-ES");
     return fetch(
@@ -135,6 +141,8 @@ class Rac1 {
       .catch(catchFetchErrors)
   }
 
+  // Parses a page raw HTML to obtain audio UUIDs and the list of pages
+  // (dataRawHTML) => {uuidsPage: Array(String), pages: Array(Number)}
   parsePage(dataRaw) {
     const searchData = ['data-audio-id','data-audioteca-search-page'];
     const data = dataRaw
@@ -151,7 +159,8 @@ class Rac1 {
     };
   }
 
-  // (uuid) => Promise
+  // Downloads podcast JSON
+  // (uuid) => Promise(podcastJSON)
   getPodcastData(uuid) {
 
     // Return cached version if we've got it
@@ -165,8 +174,11 @@ class Rac1 {
       .then(handleFetchErrors)
       .then(data => data.json())
       .then(podcast => {
+        // Add some data to the podcast
         podcast.uuid = uuid;
         podcast.audio.hour = podcast.audio.time.split(':')[0];
+
+        // Save to cache
         this._podcastsData[uuid] = podcast;
         return podcast;
       })
