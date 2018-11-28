@@ -151,7 +151,16 @@ class Rac1 {
     };
   }
 
+  // (uuid) => Promise
   getPodcastData(uuid) {
+
+    // Return cached version if we've got it
+    if(uuid in this._podcastsData) {
+      // Return podcast as an immediatelly resolved Promise,
+      // as it is what's expected
+      return new Promise( (resolve) => resolve(this._podcastsData) );
+    }
+
     return fetch(`https://api.audioteca.rac1.cat/piece/audio?id=${uuid}`)
       .then(handleFetchErrors)
       .then(data => data.json())
