@@ -9,7 +9,7 @@ class App extends Component {
     this.state = {
       podcasts: [
       ],
-      current: 0,
+      currentUUID: '',
       date: new Date(), // Today
       volume: 1,
       controls: [],
@@ -86,7 +86,10 @@ class App extends Component {
   }
 
   render() {
-    const { podcasts, current, volume } = this.state;
+    const { podcasts, currentUUID, volume } = this.state;
+
+    // Find current podcast (selected by uuid instead of just position)
+    const current = this.findCurrentPodcast();
     const autoplay = current > 0;
 
     return (
@@ -214,22 +217,39 @@ class App extends Component {
     });
   }
 
+  findPodcastByUUID(uuid) {
+    let found = 0;
+    this.state.podcasts.forEach((podcast, index) => {
+      if(podcast.uuid === uuid) {
+        found = index
+      }
+    });
+
+    return found;
+  }
+
+  findCurrentPodcast() {
+    return this.findPodcastByUUID( this.state.currentUUID );
+  }
+
   playPodcast(index) {
     this.setState({
       ...this.state,
-      current: index,
+      currentUUID: this.state.podcasts[index].uuid,
     });
   }
 
   playPrev() {
-    if(this.state.current > 0) {
-      this.playPodcast(this.state.current - 1);
+    const current = this.findCurrentPodcast();
+    if(current > 0) {
+      this.playPodcast(current - 1);
     }
   }
 
   playNext() {
-    if(this.state.current < (this.state.podcasts.length - 1)) {
-      this.playPodcast(this.state.current + 1);
+    const current = this.findCurrentPodcast();
+    if(current < (this.state.podcasts.length - 1)) {
+      this.playPodcast(current + 1);
     }
   }
 
