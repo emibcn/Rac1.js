@@ -17,30 +17,47 @@ const dataAttrsClean = /^.*[ \t](data-[^=]*)="([^"]*)"[ \t>].*$/;
 
 class Rac1 {
 
+  // Cache for UUID => podcast
+  _podcastsData = {};
+
+  // Cache for pageNumber => UUIDs
+  _pages_uuids = [];
+
+  // Cache for reloads
+  _previous_uuids = [];
+
   constructor(props) {
     const noop = () => {};
     this.date = props.date;
     this.onListUpdate = props.onListUpdate || noop;
     this.onPodcastUpdate = props.onPodcastUpdate || noop;
 
-    // Cache for UUID => podcast
-    this._podcastsData = {};
+    this.updateList(0);
+  }
 
-    // Cache for pageNumber => UUIDs
-    this._pages_uuids = [];
+  setDate(date) {
+    this.date = date;
+    this._previous_uuids = [];
+  }
 
-    // Download podcasts UUIDs and then, each podcast data
-    this.getPodcastsUUIDs()
-      .then(this.getPodcasts.bind(this, 0));
+  // Download podcasts UUIDs and then, each podcast data
+  updateList(pageNumber=0) {
+    if(pageNumber === 0) {
+      this._pages_uuids = [];
+    }
+
+    // Get list of UUIDs
+    return this.getPodcastsUUIDs(pageNumber)
+      // Download podcast data if needed
+      .then(this.getPodcasts.bind(this, pageNumber))
+      // Trigger event for list updated
+      .then(this.handleListUpdate.bind(this, pageNumber));
   }
 
   getPodcasts(pageNumber, podcasts) {
-    // Trigger event for list updated
-    this.handleListUpdate();
-
     return podcasts
       .map(podcast => {
-        if(podcast.uuid !== '...') {
+        if(podcast.uuid !== '...' && !(podcast.uuid in this._podcastsData)) {
           this.getPodcastData(podcast.uuid)
             // Trigger event for each podcast when updated
             .then(this.handlePodcastUpdate.bind(this, pageNumber))
@@ -53,7 +70,8 @@ class Rac1 {
   // and fires event onListUpdate with that
   // () => null
   handleListUpdate() {
-    let newList = [];
+    let newList = [...this._previous_uuids];
+    let completed = true;
 
     // Create a virtual list of all podcasts correctly ordered
     this.pages.forEach( page => {
@@ -61,23 +79,35 @@ class Rac1 {
       // Get UUIDs from the pages cache
       var pageUuids = this._pages_uuids[ page ];
 
+      // Set temporal UUID for unresolved pages
       if(pageUuids === undefined) {
-        // Set temporal UUID for unresolved pages
         newList.push({uuid: '...'});
+        completed = false;
       }
       else {
         // Add this page's podcasts to the list
-        pageUuids.forEach( podcastPage => {
-          // Only add podcast not already added to the list
-          const found = newList.filter( podcast => podcast.uuid === podcastPage.uuid );
-          if(found.length === 0) {
-            newList.push( podcastPage );
-          }
-        });
+        pageUuids
+          // filter out already added podcasts
+          .filter( podcastPage => {
+            const found = newList.filter( podcast => podcast.uuid === podcastPage.uuid );
+            return found.length === 0;
+          })
+          .forEach( podcast => newList.push( podcast ) );
       }
     });
 
-    this.onListUpdate(newList);
+    // Get cached data if available
+    newList = newList.map(podcast => this._podcastsData[podcast.uuid] || podcast );
+
+    // Save complete list on finish
+    if(completed) {
+      this._previous_uuids = newList;
+    }
+
+    // Trigger update event
+    this.onListUpdate(newList, completed);
+
+    return newList;
   }
 
   // Saves the new podcast to the pages cache and fires onPodcastUpdate
@@ -120,8 +150,7 @@ class Rac1 {
 
             // Don't call again first page
             if(this.pages[page] !== 0) {
-              this.getPodcastsUUIDs(this.pages[page])
-                .then(this.getPodcasts.bind(this, this.pages[page]));
+              this.updateList( this.pages[page] );
             }
           }
         }
@@ -185,7 +214,7 @@ class Rac1 {
     if(uuid in this._podcastsData) {
       // Return podcast as an immediatelly resolved Promise,
       // as it is what's expected
-      return new Promise( (resolve) => resolve(this._podcastsData) );
+      return new Promise( resolve => resolve(this._podcastsData[uuid]) );
     }
 
     return fetch(`https://api.audioteca.rac1.cat/piece/audio?id=${uuid}`)
