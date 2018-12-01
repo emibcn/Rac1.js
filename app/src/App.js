@@ -6,15 +6,19 @@ import './App.css';
 class App extends Component {
   constructor(props) {
     super();
+
+    // Initial state
     this.state = {
       podcasts: [{uuid: '...'}],
       currentUUID: '',
       date: new Date(), // Today
       volume: 1,
       completed: false,
+      waitingUpdate: false,
       controls: [],
     };
 
+    // Controls definitions
     this.controls = [
       {
         icon: '⏮',
@@ -63,6 +67,30 @@ class App extends Component {
       },
     ];
 
+    // Debugging on development
+    if(process.env.NODE_ENV === "development") {
+
+      // Log state changes
+      this._setState = this.setState;
+      this.setState = (props) => {
+        console.log({
+          a0_prev: JSON.parse(JSON.stringify(this.state)),
+          a1_next: JSON.parse(JSON.stringify(props)),
+        });
+        this._setState(props);
+      }
+
+      // Add a button to remove the last podcast in the list
+      this.controls.push({
+          icon: 'RL',
+          text: 'Remove last',
+          action: () => this.setState({
+            ...this.state,
+            podcasts: [...this.state.podcasts.slice(0,-1)],
+          }),
+        });
+    }
+
     // Disable key handler on mobile devices
     if (/Mobi|Android/i.test(navigator.userAgent)) {
       this.keyHandlerFocus = () => {};
@@ -77,7 +105,6 @@ class App extends Component {
     this.rac1 = new Rac1({
       date: this.state.date,
       onListUpdate: this.handleListUpdate.bind(this),
-      onPodcastUpdate: this.handlePodcastUpdate.bind(this),
     });
     this.setState({
       ...this.state,
@@ -220,39 +247,33 @@ class App extends Component {
   }
 
   handleListUpdate(newList, completed) {
-    console.log({newList});
+    // Stop waiting if completed
+    const { waitingUpdate } = this.state;
+    const waitingUpdateNext = waitingUpdate && completed ? false : waitingUpdate;
+
     this.setState({
       ...this.state,
       podcasts: newList,
-      completed
+      completed,
+      waitingUpdate: waitingUpdateNext,
     });
-  }
 
-  handlePodcastUpdate(podcastNew) {
-    let newList = this.state.podcasts;
-
-    console.log({podcastNew});
-
-    for(let index in this.state.podcasts) {
-      const podcast = this.state.podcasts[index];
-      if(podcastNew.uuid === podcast.uuid) {
-        newList = [ ...newList ];
-        newList[index] = podcastNew;
-      }
+    // Play next podcast if stop waiting, but without retrying download
+    if(waitingUpdate === true && waitingUpdateNext === false) {
+      this.playNext(false);
     }
-    this.setState({
-      ...this.state,
-      podcasts: newList
-    });
   }
 
   handleClickReload() {
+    // If there is not already an incomplete update
     if(this.state.completed) {
       this.setState({
         ...this.state,
         completed: false,
       });
-      this.rac1.updateList()
+
+      // Trigger a list update
+      return this.rac1.updateList();
     }
   }
 
@@ -285,10 +306,27 @@ class App extends Component {
     }
   }
 
-  playNext() {
+  playNext(retry=true) {
     const current = this.findCurrentPodcast();
-    if(current < (this.state.podcasts.length - 1)) {
+
+    // If there is a next podcast and it has path, play it
+    if(current < (this.state.podcasts.length - 1) &&
+       'path' in this.state.podcasts[current]) {
       this.playPodcast(current + 1);
+    }
+    else {
+      // If we are called to retry, update list
+      if(retry) {
+        // If we are not already waiting for update,
+        // set  and trigger a list update
+        if(!this.state.waitingUpdate) {
+          this.handleClickReload();
+          this.setState({
+            ...this.state,
+            waitingUpdate: true,
+          });
+        }
+      }
     }
   }
 

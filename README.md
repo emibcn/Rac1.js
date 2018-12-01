@@ -11,7 +11,7 @@ which violates CORS specifications.
 
 Inspired by my command line Python app https://github.com/emibcn/Rac1.py .
 
-## Specifications
+## Features
 - `<audio>` HTML tag, via [react-audio-player](https://github.com/justinmc/react-audio-player)
 - KeyPress event handling, via a non-visible `<input>` element which focus itself everytime `onBlur` is detected. You can use some of the `mplayer` keybindings:
   - `LEFT`: seek backwards 10s
@@ -24,10 +24,14 @@ Inspired by my command line Python app https://github.com/emibcn/Rac1.py .
   - `SPACE`/`P`: (Un)Pause
   - `M`: (Un)Mute
   - `ENTER`: Jump to next podcast
-- Good UI controls for use with mobile devices
+  - `R`: Update the list of podcasts
+- Good UI controls for use with mobile devices (big buttons)
 - Asynchronuosly `fetch` podcast list and pages list HTML page, parse it with RegExp and download remaining pages
 - Asynchronuosly `fetch` podcasts JSON data
 - Always with a coherently time ordered list of available podcasts
+- Auto play next podcast
+- Hability to update podcasts list
+- Autoupdate podcasts list when trying to play next podcast after last one
 - Docker with DockerCompose to open a development instance, with all the [Create React App](https://github.com/facebook/create-react-app) goodies
 
 # TODO
@@ -35,7 +39,6 @@ Inspired by my command line Python app https://github.com/emibcn/Rac1.py .
 - Add a DatePicker to allow listening to other days podcasts, not just today
 - Add Browser Router to allow managing the selected date via PATH
 - Filters via `localStorage`, to easily jump unwanted podcasts
-- Redownload podcasts list once finished playing known podcasts (update list)
 - Better internal state handling for player status: `pause`, `volume`, ...
 - Consider using Redux
 
