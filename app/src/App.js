@@ -7,11 +7,11 @@ class App extends Component {
   constructor(props) {
     super();
     this.state = {
-      podcasts: [
-      ],
+      podcasts: [{uuid: '...'}],
       currentUUID: '',
       date: new Date(), // Today
       volume: 1,
+      completed: false,
       controls: [],
     };
 
@@ -86,11 +86,16 @@ class App extends Component {
   }
 
   render() {
-    const { podcasts, volume } = this.state;
+    const { podcasts, volume, completed } = this.state;
 
     // Find current podcast (selected by uuid instead of just position)
     const current = this.findCurrentPodcast();
     const autoplay = current > 0;
+    const currentPath =
+      podcasts !== undefined
+        && podcasts.length > current
+        && 'path' in podcasts[current]
+        ? podcasts[current].path : '';
 
     return (
       <div className="App">
@@ -142,7 +147,7 @@ class App extends Component {
           <ReactAudioPlayer
             ref={(element) => { this._player = element; }}
             style={{ width: '100%' }}
-            src={ podcasts !== undefined && podcasts.length > current && 'path' in podcasts[current] ? podcasts[current].path : '' }
+            src={ currentPath }
             autoPlay={ autoplay }
             controls
             preload={ (autoplay ? "auto" : "metadata") }
@@ -157,14 +162,37 @@ class App extends Component {
               borderRadius: "1em",
               margin: "1em",
               textAlign: "left",
+              position: "relative",
             }}>
+            { podcasts.length === 1 && podcasts[0].uuid === '...' ? null :
+              <button
+                onClick={ this.handleClickReload.bind(this) }
+                disabled={ !completed }
+                style={{
+                  borderRadius: ".5em",
+                  padding: ".25em",
+                  margin: "1.5em",
+                  position: "absolute",
+                  top: 0,
+                  right: 0,
+                }}
+              >
+                <div style={{ fontSize: 20, fontWeight: 'bold', marginBottom: '-.5em' }}>
+                  ↺
+                </div>
+                <span style={{ fontSize: 9, color: '#777' }}>
+                  Reload
+                </span>
+              </button>
+            }
             { podcasts !== undefined && podcasts.length > 0 ?
               (
                 <ul style={{ listStyleType: "none", marginLeft: 0, paddingLeft: 0 }}>
                   { podcasts.map((podcast, index) =>
                     <li key={ podcast.uuid } style={{ position: "relative", marginLeft: "1em" }}>
-                      { index !== current ? null :
+                      { index === current && 'path' in podcast ? (
                         <span style={{ position: "absolute", left: "-1em" }}>⯈</span>
+                      ) : null
                       }
                       { !('path' in podcast) ?
                           (
@@ -191,11 +219,12 @@ class App extends Component {
     );
   }
 
-  handleListUpdate(newList) {
+  handleListUpdate(newList, completed) {
     console.log({newList});
     this.setState({
       ...this.state,
-      podcasts: newList
+      podcasts: newList,
+      completed
     });
   }
 
@@ -215,6 +244,16 @@ class App extends Component {
       ...this.state,
       podcasts: newList
     });
+  }
+
+  handleClickReload() {
+    if(this.state.completed) {
+      this.setState({
+        ...this.state,
+        completed: false,
+      });
+      this.rac1.updateList()
+    }
   }
 
   findPodcastByUUID(uuid) {
@@ -338,6 +377,10 @@ class App extends Component {
       case 'm':
       case 'M':
         this.player().muted = !this.player().muted;
+        break;
+      case 'r':
+      case 'R':
+        this.handleClickReload();
         break;
       default:
         stopPropagation = false;
