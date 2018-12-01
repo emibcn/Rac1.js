@@ -86,7 +86,7 @@ class App extends Component {
   }
 
   render() {
-    const { podcasts, currentUUID, volume } = this.state;
+    const { podcasts, volume } = this.state;
 
     // Find current podcast (selected by uuid instead of just position)
     const current = this.findCurrentPodcast();

@@ -103,7 +103,17 @@ class Rac1 {
 
         // If it's the first page, call the rest
         if(pageNumber === 0) {
-          this.pages = pages.reverse();
+
+          // Save the list of pages, in reverse order
+          if(pages.length > 0) {
+             this.pages = pages.reverse();
+          }
+
+          // If there are no pages (only one page), create a one element array,
+          // with page zero in it's first element
+          else {
+            this.pages = [0];
+          }
 
           // Resolve first the last page, so we have first the first day's UUIDs
           for(let page in this.pages) {
@@ -127,10 +137,17 @@ class Rac1 {
   // Gets a page with HTML containning a list of podcasts from the server
   // (pageNumber) => Promise(String)
   getPage(pageNumber) {
-    const date = this.date.toLocaleDateString("es-ES");
+    // Format day and month to 2 digits 0 padded strings
+    const pad2 = (num) => num < 10 ? '0' + num.toFixed(0) : num.toFixed(0);
+    const date = '' +
+      pad2( this.date.getDate() ) + '/' +
+      pad2( 1 + this.date.getMonth() ) + '/' +
+      this.date.getFullYear();
+
     return fetch(
       "https://cors-anywhere.herokuapp.com/" // Anti CORS
-      + "https://www.rac1.cat/a-la-carta/cerca?"
+      //+ "https://www.rac1.cat/a-la-carta/cerca?"
+      + "https://api.audioteca.rac1.cat/a-la-carta/cerca?"
       + `text=&programId=&sectionId=HOUR&from=${date}&to=${date}&pageNumber=${pageNumber}&btn-search=`,
       {
         //mode: 'no-cors',
@@ -149,6 +166,7 @@ class Rac1 {
       .match(dataAttrsFind)
       .map(v => v.replace(dataAttrsClean, '$1=$2').split('='))
       .filter(v => searchData.includes(v[0]));
+
     return {
       uuidsPage: data
         .filter(v => v[0] === 'data-audio-id')
