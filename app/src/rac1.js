@@ -138,8 +138,8 @@ class Rac1 {
   // (pageNumber) => Promise(String)
   getPage(pageNumber) {
     // Format day and month to 2 digits 0 padded strings
-    const pad2 = (num) => num < 10 ? '0' + num.toFixed(0) : num.toFixed(0);
-    const date = '' +
+    const pad2 = num => ( num < 10 ? '0' : '' ) + num;
+    const date =
       pad2( this.date.getDate() ) + '/' +
       pad2( 1 + this.date.getMonth() ) + '/' +
       this.date.getFullYear();
@@ -148,7 +148,7 @@ class Rac1 {
       "https://cors-anywhere.herokuapp.com/" // Anti CORS
       //+ "https://www.rac1.cat/a-la-carta/cerca?"
       + "https://api.audioteca.rac1.cat/a-la-carta/cerca?"
-      + `text=&programId=&sectionId=HOUR&from=${date}&to=${date}&pageNumber=${pageNumber}&btn-search=`,
+      + `text=&programId=&sectionId=HOUR&from=${date}&to=${date}&pageNumber=${pageNumber}`,
       {
         //mode: 'no-cors',
         credentials: 'omit',
