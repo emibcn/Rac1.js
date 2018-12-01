@@ -30,9 +30,8 @@ class Rac1 {
     const noop = () => {};
     this.date = props.date;
     this.onListUpdate = props.onListUpdate || noop;
-    this.onPodcastUpdate = props.onPodcastUpdate || noop;
 
-    this.updateList(0);
+    this.updateList();
   }
 
   setDate(date) {
@@ -57,10 +56,12 @@ class Rac1 {
   getPodcasts(pageNumber, podcasts) {
     return podcasts
       .map(podcast => {
+        // If it's a podcast and is not in the cache
         if(podcast.uuid !== '...' && !(podcast.uuid in this._podcastsData)) {
+          // Download podcast data and then trigger
+          // event when updated
           this.getPodcastData(podcast.uuid)
-            // Trigger event for each podcast when updated
-            .then(this.handlePodcastUpdate.bind(this, pageNumber))
+            .then( this.handlePodcastUpdate.bind(this, pageNumber) )
         }
         return podcast;
       })
@@ -89,7 +90,8 @@ class Rac1 {
         pageUuids
           // filter out already added podcasts
           .filter( podcastPage => {
-            const found = newList.filter( podcast => podcast.uuid === podcastPage.uuid );
+            const found = newList.filter(
+              podcast => podcast.uuid === podcastPage.uuid );
             return found.length === 0;
           })
           .forEach( podcast => newList.push( podcast ) );
@@ -104,8 +106,11 @@ class Rac1 {
       this._previous_uuids = newList;
     }
 
+    // See if all podcasts have already been downloaded
+    const allCompleted = completed && newList.every(podcast => 'path' in podcast);
+
     // Trigger update event
-    this.onListUpdate(newList, completed);
+    this.onListUpdate(newList, allCompleted);
 
     return newList;
   }
@@ -119,7 +124,9 @@ class Rac1 {
         this._pages_uuids[pageNumber][index] = podcastNew;
       }
     });
-    this.onPodcastUpdate(podcastNew);
+
+    // Trigger update event
+    this.handleListUpdate(podcastNew);
   }
 
   // Gets all the podcasts UUIDs of a date
@@ -135,29 +142,18 @@ class Rac1 {
         if(pageNumber === 0) {
 
           // Save the list of pages, in reverse order
-          if(pages.length > 0) {
-             this.pages = pages.reverse();
-          }
-
           // If there are no pages (only one page), create a one element array,
           // with page zero in it's first element
-          else {
-            this.pages = [0];
-          }
+          this.pages = pages.length > 0 ? pages.reverse() : [0];
 
           // Resolve first the last page, so we have first the first day's UUIDs
-          for(let page in this.pages) {
-
-            // Don't call again first page
-            if(this.pages[page] !== 0) {
-              this.updateList( this.pages[page] );
-            }
-          }
+          // Don't call again first page
+          this.pages.forEach( page => (page !== 0) && this.updateList( page ) );
         }
 
         this._pages_uuids[pageNumber] = uuidsPage
           .reverse()
-          .map(uuid => {return {uuid, page: pageNumber} });
+          .map(uuid => { return {uuid, page: pageNumber} });
 
         return this._pages_uuids[pageNumber];
       });
@@ -165,7 +161,7 @@ class Rac1 {
 
   // Gets a page with HTML containning a list of podcasts from the server
   // (pageNumber) => Promise(String)
-  getPage(pageNumber) {
+  getPage(pageNumber=0) {
     // Format day and month to 2 digits 0 padded strings
     const pad2 = num => ( num < 10 ? '0' : '' ) + num;
     const date =
@@ -227,6 +223,7 @@ class Rac1 {
 
         // Save to cache
         this._podcastsData[uuid] = podcast;
+
         return podcast;
       })
       .catch(catchFetchErrors)
