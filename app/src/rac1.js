@@ -187,8 +187,8 @@ class Rac1 {
   // (dataRawHTML) => {uuidsPage: Array(String), pages: Array(Number)}
   parsePage(dataRaw) {
     const searchData = ['data-audio-id','data-audioteca-search-page'];
-    const data = dataRaw
-      .match(dataAttrsFind)
+    const data = (dataRaw
+      .match(dataAttrsFind)||[])
       .map(v => v.replace(dataAttrsClean, '$1=$2').split('='))
       .filter(v => searchData.includes(v[0]));
 

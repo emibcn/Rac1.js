@@ -1,5 +1,15 @@
 import React, { Component } from 'react';
 import ReactAudioPlayer from 'react-audio-player';
+
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import {
+  faEject,
+  faForward,
+  faFastForward,
+  faSyncAlt as faRefresh,
+} from '@fortawesome/free-solid-svg-icons'
+
+
 import Rac1 from './rac1';
 import './App.css';
 
@@ -21,47 +31,67 @@ class App extends Component {
     // Controls definitions
     this.controls = [
       {
-        icon: '⏮',
+        icon: <FontAwesomeIcon icon={faFastForward} flip="horizontal" />,
         text: 'Prev',
         action: this.playPrev,
       },
       {
-        icon: <span style={{ letterSpacing: -10, paddingRight: 11 }}>⯇⯇⯇</span>,
+        icon: (
+          <span>
+            <FontAwesomeIcon icon={faForward} flip="horizontal" />
+            <FontAwesomeIcon icon={faForward} flip="horizontal" />
+          </span>
+        ),
         text: '-10m',
         action: () => this.player().currentTime -= 600,
       },
       {
-        icon: <span style={{ letterSpacing: -10, paddingRight: 11 }}>⯇⯇</span>,
+        icon: (
+          <span>
+            <FontAwesomeIcon icon={faForward} flip="horizontal" style={{ position: 'relative', left: '.25em' }} />
+            <FontAwesomeIcon icon={faForward} flip="horizontal" style={{ position: 'relative', left: '-.25em' }} />
+          </span>
+        ),
         text: '-60s',
         action: () => this.player().currentTime -= 60,
       },
       {
-        icon: '⯇',
+        icon: <FontAwesomeIcon icon={faForward} flip="horizontal" />,
         text: '-10s',
         action: () => this.player().currentTime -= 10,
       },
       {
-        icon: '▮▶',
+        icon: <FontAwesomeIcon icon={faEject} rotation={90} />,
         text: 'Play/Pause',
         action: () => this.player().paused ? this.player().play() : this.player().pause(),
       },
       {
-        icon: '⯈',
+        icon: <FontAwesomeIcon icon={faForward} />,
         text: '+10s',
         action: () => this.player().currentTime += 10,
       },
       {
-        icon: <span style={{ letterSpacing: -10, paddingRight: 11 }}>⯈⯈</span>,
+        icon: (
+          <span>
+            <FontAwesomeIcon icon={faForward} style={{ position: 'relative', left: '.25em' }} />
+            <FontAwesomeIcon icon={faForward} style={{ position: 'relative', left: '-.25em' }} />
+          </span>
+        ),
         text: '+60s',
         action: () => this.player().currentTime += 60,
       },
       {
-        icon: <span style={{ letterSpacing: -10, paddingRight: 11 }}>⯈⯈⯈</span>,
+        icon: (
+          <span>
+            <FontAwesomeIcon icon={faForward} />
+            <FontAwesomeIcon icon={faForward} />
+          </span>
+        ),
         text: '+10m',
         action: () => this.player().currentTime += 600,
       },
       {
-        icon: '⏭',
+        icon: <FontAwesomeIcon icon={faFastForward} />,
         text: 'Next',
         action: this.playNext,
       },
@@ -161,10 +191,14 @@ class App extends Component {
                     margin: "1em",
                   }}
                 >
-                  <div style={{ fontSize: 30, fontWeight: 'bold', width: '2em' }}>
+                  <div style={{
+                    fontSize: 'calc(1em + 2.5vmin)',
+                    fontWeight: 'bold',
+                    minWidth: '1.5em',
+                  }} >
                     { control.icon instanceof Function ? control.icon() : control.icon }
                   </div>
-                  <span style={{ fontSize: 9, color: '#777' }}>
+                  <span style={{ fontSize: 'calc(8px + 1vmin)', color: '#777' }}>
                     { control.text instanceof Function ? control.text() : control.text }
                   </span>
                 </button>
@@ -204,10 +238,14 @@ class App extends Component {
                   right: 0,
                 }}
               >
-                <div style={{ fontSize: 20, fontWeight: 'bold', marginBottom: '-.5em' }}>
-                  ↺
+                <div style={{
+                  fontSize: 'calc(.5em + 2vmin)',
+                  fontWeight: 'bold',
+                  marginBottom: '-.25em'
+                }}>
+                  <FontAwesomeIcon icon={faRefresh} />
                 </div>
-                <span style={{ fontSize: 9, color: '#777' }}>
+                <span style={{ fontSize: 'calc(5px + 1vmin)', color: '#777' }}>
                   Reload
                 </span>
               </button>
