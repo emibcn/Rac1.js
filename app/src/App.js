@@ -4,6 +4,7 @@ import ReactAudioPlayer from 'react-audio-player';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   faEject,
+  faPlay,
   faForward,
   faFastForward,
   faSyncAlt as faRefresh,
@@ -256,7 +257,13 @@ class App extends Component {
                   { podcasts.map((podcast, index) =>
                     <li key={ podcast.uuid } style={{ position: "relative", marginLeft: "1em" }}>
                       { index === current && 'path' in podcast ? (
-                        <span style={{ position: "absolute", left: "-1em" }}>⯈</span>
+                        <FontAwesomeIcon
+                          icon={faPlay}
+                          style={{
+                            position: 'absolute',
+                            left: '-1.25em',
+                            top: 'calc(.2vmin + .2em)',
+                          }}/>
                       ) : null
                       }
                       { !('path' in podcast) ?
