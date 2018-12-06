@@ -16,7 +16,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build && rm -Rf ../docs/* && mv build/* ../docs/ && rmdir build && cp google*.html ../docs",
+    "build": "react-scripts build && rm -Rfv ../docs/* build/.*.swp && mv build/* ../docs/ && rmdir build && cp google*.html ../docs",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
