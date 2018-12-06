@@ -35,14 +35,19 @@ class Rac1 {
   }
 
   setDate(date) {
+    if(this.date !== date) {
+      this._previous_uuids = [];
+    }
     this.date = date;
-    this._previous_uuids = [];
+    this.updateList();
   }
 
   // Download podcasts UUIDs and then, each podcast data
   updateList(pageNumber=0) {
     if(pageNumber === 0) {
       this._pages_uuids = [];
+      this.pages = [0];
+      this.handleListUpdate();
     }
 
     // Get list of UUIDs
@@ -71,7 +76,7 @@ class Rac1 {
   // and fires event onListUpdate with that
   // () => null
   handleListUpdate() {
-    let newList = [...this._previous_uuids];
+    let newList = [...this._previous_uuids.filter(w => w.uuid !== '...')];
     let completed = true;
 
     // Create a virtual list of all podcasts correctly ordered
