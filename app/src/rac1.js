@@ -12,8 +12,8 @@ function catchFetchErrors(error) {
 }
 
 // Cached/compiled regexps for parsing HTML
-const dataAttrsFind  = /.*"(audioteca-item|pagination-link)" (data-[^=]*)="([^"]*)"[ \t>]/g;
-const dataAttrsClean = /^.*[ \t](data-[^=]*)="([^"]*)"[ \t>].*$/;
+const dataAttrsFind   = / class="(audioteca-item|pagination-link)" /;
+const dataAttrsClean  = /.* (data-[^=]*)="([^"]*)".*/;
 
 class Rac1 {
 
@@ -192,9 +192,11 @@ class Rac1 {
   // (dataRawHTML) => {uuidsPage: Array(String), pages: Array(Number)}
   parsePage(dataRaw) {
     const searchData = ['data-audio-id','data-audioteca-search-page'];
-    const data = (dataRaw
-      .match(dataAttrsFind)||[])
-      .map(v => v.replace(dataAttrsClean, '$1=$2').split('='))
+    const data = dataRaw
+      .split('\n')
+      .filter(line => dataAttrsFind.test(line))
+      .map(v => v.replace(dataAttrsClean, '$1=$2'))
+      .map(line => line.split('='))
       .filter(v => searchData.includes(v[0]));
 
     return {
