@@ -20,7 +20,7 @@ self.__precacheManifest = [
     "url": "/Rac1.js/static/css/1.41a48162.chunk.css"
   },
   {
-    "revision": "aa163069a55c29fcd449750d57604cc4",
+    "revision": "569c9c4551e8552e1ca8fd04f5f903dc",
     "url": "/Rac1.js/index.html"
   }
 ];
