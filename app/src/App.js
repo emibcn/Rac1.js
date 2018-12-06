@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import ReactAudioPlayer from 'react-audio-player';
+import DatePicker from 'react-date-picker'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
@@ -8,6 +9,7 @@ import {
   faForward,
   faFastForward,
   faSyncAlt as faRefresh,
+  faCalendarAlt as faCalendar,
 } from '@fortawesome/free-solid-svg-icons'
 
 
@@ -127,7 +129,17 @@ class App extends Component {
       this.keyHandlerFocus = () => {};
     }
     else {
-      this.keyHandlerFocus = () => this._keyHandler.focus();
+      this.keyHandlerFocus = (e) => {
+        let doFocus = true;
+
+        // Allow datepicker to get focus
+        if(e && e.relatedTarget &&
+          e.relatedTarget.className.match(/date-?picker/)) {
+          doFocus = false;
+        }
+
+        doFocus && setTimeout(() => this._keyHandler.focus(), 100);
+      };
     }
   }
 
@@ -144,7 +156,10 @@ class App extends Component {
   }
 
   render() {
-    const { podcasts, volume, completed } = this.state;
+    const { podcasts, volume, completed, date } = this.state;
+    const dateText = date instanceof Date ?
+      `${date.getDate()}/${1 + date.getMonth()}/${date.getFullYear()}`
+      : '...';
 
     // Find current podcast (selected by uuid instead of just position)
     const current = this.findCurrentPodcast();
@@ -158,14 +173,14 @@ class App extends Component {
     return (
       <div className="App">
         <header className="App-header">
+          <h3>
           { podcasts !== undefined && podcasts.length > 0 ?
-              (
-                <h3>{ 'audio' in podcasts[current] ?
-                    podcasts[current].audio.title :
-                    podcasts[current].uuid
-                }</h3>
-              ) : null
+                ( 'audio' in podcasts[current] ?
+                    `${dateText}: ${podcasts[current].appTabletTitle}` :
+                    dateText )
+              : dateText
           }
+          </h3>
           <input
             name="player-key-handler"
             style={{
@@ -251,11 +266,25 @@ class App extends Component {
                 </span>
               </button>
             }
+            <div style={{ textAlign: 'center', fontSize: 'large' }}>
+              <DatePicker
+                onChange={ this.handleDateChange.bind(this) }
+                onBlur={ this.handleDateBlur.bind(this) }
+                minDate={ new Date(2015, 5, 1) /* 1st date with HOUR podcasts */ }
+                maxDate={ new Date() }
+                required={ true }
+                value={ date }
+                clearIcon={ null }
+                calendarIcon={ <FontAwesomeIcon icon={faCalendar} /> }
+              />
+            </div>
             { podcasts !== undefined && podcasts.length > 0 ?
               (
                 <ul style={{ listStyleType: "none", marginLeft: 0, paddingLeft: 0 }}>
                   { podcasts.map((podcast, index) =>
-                    <li key={ podcast.uuid } style={{ position: "relative", marginLeft: "1em" }}>
+                    <li
+                      key={ podcast.uuid !== '...' ? podcast.uuid : `..._${index}` }
+                      style={{ position: "relative", marginLeft: "1em" }}>
                       { index === current && 'path' in podcast ? (
                         <FontAwesomeIcon
                           icon={faPlay}
@@ -276,7 +305,7 @@ class App extends Component {
                               onClick={ this.handleClickPodcast.bind(this, index) }
                               style={{ textDecoration: "none" }}
                             >
-                              { podcast.audio.hour }h: { podcast.audio.title }
+                              { podcast.audio.hour }h: { podcast.appTabletTitle }
                             </a>
                           )
                       }
@@ -306,6 +335,30 @@ class App extends Component {
     // Play next podcast if stop waiting, but without retrying download
     if(waitingUpdate === true && waitingUpdateNext === false) {
       this.playNext(false);
+    }
+  }
+
+  handleDateChange(date) {
+    if(date !== this.state.date) {
+      if(date !== null) {
+        this.rac1.setDate(date);
+      }
+      this.setState({
+        ...this.state,
+        date,
+      });
+    }
+  }
+
+  handleDateBlur(e) {
+    let focus = true;
+    if(e && e.relatedTarget &&
+      e.relatedTarget.className.match(/(calendar|date-?picker)/)) {
+      focus = false;
+    }
+
+    if(focus) {
+      this.keyHandlerFocus();
     }
   }
 
