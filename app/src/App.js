@@ -353,11 +353,29 @@ class Rac1Player extends Component {
   }
 }
 
+const loadGoogleTag = () => {
+  // Global site tag (gtag.js) - Google Analytics
+  global.dataLayer = global.dataLayer || [];
+  global.gtag = function(){ global.dataLayer.push(arguments) }
+
+  global.gtag('js', new Date());
+  global.gtag('config', 'UA-129704402-1');
+
+  // Defer gTag script loading
+  setTimeout(() => {
+    let scriptTag = document.createElement('script');
+    scriptTag.src = "https://www.googletagmanager.com/gtag/js?id=UA-129704402-1";
+    document.body.appendChild(scriptTag);
+  }, 1);
+};
+
 class App extends Component {
   render() {
     const date = new Date();
 
     const todayStr = `/${date.getFullYear()}/${1 + date.getMonth()}/${date.getDate()}/0/0`;
+
+    loadGoogleTag();
 
     return (
       <Router>
