@@ -1,4 +1,11 @@
 import React, { Component } from 'react';
+import {
+  BrowserRouter as Router,
+  Route,
+  Switch,
+  Redirect,
+} from "react-router-dom";
+
 import ReactAudioPlayer from 'react-audio-player';
 
 import Controls from './Controls';
@@ -9,15 +16,24 @@ import Podcast from './Podcast';
 import Rac1 from './rac1';
 import './App.css';
 
-class App extends Component {
-  constructor(props) {
+class Rac1Player extends Component {
+  constructor(props, history) {
     super();
 
+    this.history = props.history;
+
     // Initial state
+    const date = props.match.params;
     this.state = {
       podcasts: [{uuid: '...'}],
       currentUUID: '',
-      date: new Date(), // Today
+      date: new Date(
+        date.year,
+        date.month-1,
+        date.day,
+        date.hour,
+        date.minute,
+      ),
       volume: 1,
       completed: false,
       waitingUpdate: false,
@@ -25,7 +41,6 @@ class App extends Component {
 
     // Debugging on development
     if(process.env.NODE_ENV === "development") {
-
       // Log state changes
       this._setState = this.setState;
       this.setState = (props) => {
@@ -35,7 +50,6 @@ class App extends Component {
         });
         this._setState(props);
       }
-
     }
   }
 
@@ -116,9 +130,16 @@ class App extends Component {
     );
   }
 
+  historyPush(date) {
+    if(date === undefined) {
+      date = this.state.date;
+    }
+    this.history.push(`/${date.getFullYear()}/${1 + date.getMonth()}/${date.getDate()}/${date.getHours()}/${date.getMinutes()}`);
+  }
+
   handleListUpdate(newList, completed) {
     // Stop waiting if completed
-    const { waitingUpdate } = this.state;
+    const { waitingUpdate, currentUUID } = this.state;
     const waitingUpdateNext = waitingUpdate && completed ? false : waitingUpdate;
 
     this.setState({
@@ -128,6 +149,10 @@ class App extends Component {
       waitingUpdate: waitingUpdateNext,
     });
 
+    if(completed && currentUUID === '') {
+      this.selectPodcastByDate();
+    }
+
     // Play next podcast if stop waiting, but without retrying download
     if(waitingUpdate === true && waitingUpdateNext === false) {
       this.playNext(false);
@@ -136,13 +161,17 @@ class App extends Component {
 
   handleDateChange(date) {
     if(date !== this.state.date) {
-      if(date !== null) {
-        this.rac1.setDate(date);
-      }
       this.setState({
         ...this.state,
+        currentUUID: '',
         date,
       });
+      if(date !== null) {
+        this.historyPush(date);
+
+        // Call in background to prevent list update's state overwrite
+        setTimeout(() => this.rac1.setDate(date), 50);
+      }
     }
   }
 
@@ -166,6 +195,18 @@ class App extends Component {
     }
   }
 
+  selectPodcastByDate() {
+    const { date } = this.state;
+    const found = this.state.podcasts.filter(podcast => {
+      return podcast.audio.hour >= date.getHours() &&
+        podcast.audio.minute >= date.getMinutes()
+      });
+    if(found.length > 0) {
+      this.playPodcast(
+        this.findPodcastByUUID(found[0].uuid));
+    }
+  }
+
   findPodcastByUUID(uuid) {
     let found = 0;
     this.state.podcasts.forEach((podcast, index) => {
@@ -182,10 +223,15 @@ class App extends Component {
   }
 
   playPodcast(index) {
+    const { date } = this.state;
+    date.setHours(Number(this.state.podcasts[index].audio.hour));
+    date.setMinutes(Number(this.state.podcasts[index].audio.minute));
     this.setState({
       ...this.state,
       currentUUID: this.state.podcasts[index].uuid,
+      date,
     });
+    this.historyPush();
   }
 
   playPrev() {
@@ -227,6 +273,25 @@ class App extends Component {
     e.stopPropagation();
     e.preventDefault();
     this.playPodcast(index);
+  }
+}
+
+class App extends Component {
+  render() {
+    const date = new Date();
+
+    const todayStr = `/${date.getFullYear()}/${1 + date.getMonth()}/${date.getDate()}/0/0`;
+
+    return (
+      <Router>
+        <Switch>
+          <Route
+            path="/:year/:month/:day/:hour/:minute"
+            render={props => <Rac1Player { ...props } /> } />
+          <Redirect to={{ pathname: todayStr }} />
+        </Switch>
+      </Router>
+    )
   }
 }
 
