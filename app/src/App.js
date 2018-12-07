@@ -20,7 +20,6 @@ class Rac1Player extends Component {
   constructor(props, history) {
     super();
 
-    console.log(process);
     this.history = props.history;
 
     // Initial state
@@ -284,7 +283,7 @@ class App extends Component {
     const todayStr = `/${date.getFullYear()}/${1 + date.getMonth()}/${date.getDate()}/0/0`;
 
     return (
-      <Router>
+      <Router basename={process.env.PUBLIC_URL} >
         <Switch>
           <Route
             path="/:year/:month/:day/:hour/:minute"
