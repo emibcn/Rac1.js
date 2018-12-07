@@ -16,6 +16,7 @@ Inspired by [my command line Python app Rac1.py](https://github.com/emibcn/Rac1.
 - `<audio>` HTML tag, via [react-audio-player](https://github.com/justinmc/react-audio-player)
 - Nice [DatePicker](https://www.npmjs.com/package/react-date-picker) to allow listening to any day's podcasts
 - Use [Fontawesome free icons](https://fontawesome.com/)
+- [Docker](https://docs.docker.com/) with [DockerCompose](https://docs.docker.com/compose/) to start a development container, with all the [Create React App](https://github.com/facebook/create-react-app) goodies
 - KeyPress event handling, via a non-visible `<input>` element which focus itself everytime `onBlur` is detected. You can use some of the `mplayer` default key bindings:
   - `LEFT`: seek backwards 10s
   - `UP`: seek backwards 1m
@@ -35,16 +36,14 @@ Inspired by [my command line Python app Rac1.py](https://github.com/emibcn/Rac1.
 - Auto play next podcast when currently played finishes (as a normal playlist)
 - Ability to update podcasts list
 - Autoupdate podcasts list when trying to play next podcast after last one, and play the next one (if there is any) after the update finishes
-- [Docker](https://docs.docker.com/) with [DockerCompose](https://docs.docker.com/compose/) to open a development instance, with all the [Create React App](https://github.com/facebook/create-react-app) goodies
 
 # TODO
-- Split React component into different components. For example: `Player`, `PodcastList`, `Controls`
 - Add Browser Router to allow managing the selected date via PATH
+- Improve UX: layout, styles, info shown, responsible, controls, ¿bootstrap4?
+- Add info/help/about section
 - Filters via `localStorage`, to easily jump unwanted podcasts
 - Better internal state handling for player status: `pause`, `volume`, ...
 - Consider using Redux
-- Improve UX: layout, styles, info shown, responsible, controls, ¿bootstrap4?
-- Add info/help/about section
 - Add tests
 
 # Install
