@@ -68,7 +68,7 @@ class Playlist extends Component {
   }
 
   handleDateChange(date) {
-    date.setHours(2);
+    date.setHours(0);
     date.setMinutes(0);
     this.props.onDateChange(date);
   }

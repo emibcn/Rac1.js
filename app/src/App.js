@@ -17,23 +17,29 @@ import Rac1 from './rac1';
 import './App.css';
 
 class Rac1Player extends Component {
-  constructor(props, history) {
-    super();
 
-    this.history = props.history;
-
-    // Initial state
+  getDateFromParams(props) {
     const date = props.match.params;
-    this.state = {
-      podcasts: [{uuid: '...'}],
-      currentUUID: '',
-      date: new Date(
+    return new Date(
         date.year,
         date.month-1,
         date.day,
         date.hour,
         date.minute,
-      ),
+      )
+  }
+
+  constructor(props, history) {
+    super();
+
+    this.history = props.history;
+    this.initialTitle = document.title;
+
+    // Initial state
+    this.state = {
+      podcasts: [{uuid: '...'}],
+      currentUUID: '',
+      date: this.getDateFromParams(props),
       volume: 1,
       completed: false,
       waitingUpdate: false,
@@ -54,10 +60,20 @@ class Rac1Player extends Component {
   }
 
   componentWillMount() {
+
+    // Register history change event listener
+    this.unlisten = this.history.listen(this.handleHistoryChange.bind(this))
+
+    // Initiate backend library
     this.rac1 = new Rac1({
       date: this.state.date,
       onListUpdate: this.handleListUpdate.bind(this),
     });
+  }
+
+  componentWillUnmount() {
+    // Unregister history change event listener
+    this.unlisten();
   }
 
   render() {
@@ -130,16 +146,56 @@ class Rac1Player extends Component {
     );
   }
 
-  historyPush(date) {
-    if(date === undefined) {
-      date = this.state.date;
+  handleHistoryChange(location, action) {
+    const dateNew = this.getDateFromParams(this.props);
+    const { date } = this.state;
+
+    // Do nothing when change is made by us
+    if(action !== 'POP') {
+      return;
     }
-    this.history.push(`/${date.getFullYear()}/${1 + date.getMonth()}/${date.getDate()}/${date.getHours()}/${date.getMinutes()}`);
+
+    /*
+     * Determine action depending on what changed
+     */
+
+    // Date changed
+    if(date.getFullYear() !== dateNew.getFullYear() ||
+      date.getMonth() !== dateNew.getMonth() ||
+      date.getDate() !== dateNew.getDate() ) {
+      this.handleDateChange(dateNew);
+    }
+
+    // Podcast changed
+    else if( date.getHours() !== dateNew.getHours()  ||
+      date.getMinutes() !== dateNew.getMinutes() ) {
+      // Save new date to state
+      this.setState({
+        ...this.state,
+        currentUUID: '',
+        dateNew,
+      });
+      this.selectPodcastByDate(dateNew, false);
+    }
+  }
+
+  historyPush(date, replace=false) {
+    const newPath = `/${date.getFullYear()}/${1 + date.getMonth()}/${date.getDate()}/${date.getHours()}/${date.getMinutes()}`;
+
+    // Only PUSH or REPLACE if something have to change
+    if(this.history.location.pathname !== newPath) {
+      if(!replace) {
+        this.history.push(newPath);
+      }
+      else {
+        this.history.replace(newPath);
+      }
+    }
   }
 
   handleListUpdate(newList, completed) {
     // Stop waiting if completed
-    const { waitingUpdate, currentUUID } = this.state;
+    const { waitingUpdate, currentUUID, date } = this.state;
     const waitingUpdateNext = waitingUpdate && completed ? false : waitingUpdate;
 
     this.setState({
@@ -149,8 +205,9 @@ class Rac1Player extends Component {
       waitingUpdate: waitingUpdateNext,
     });
 
+    // If there is no podcast selected on update completed, select one
     if(completed && currentUUID === '') {
-      this.selectPodcastByDate();
+      this.selectPodcastByDate(date);
     }
 
     // Play next podcast if stop waiting, but without retrying download
@@ -161,12 +218,17 @@ class Rac1Player extends Component {
 
   handleDateChange(date) {
     if(date !== this.state.date) {
+
+      // Save new date to state
       this.setState({
         ...this.state,
         currentUUID: '',
         date,
       });
+
+      // If it's a valid date, trigger state change
       if(date !== null) {
+        // Push new date to URL and history
         this.historyPush(date);
 
         // Call in background to prevent list update's state overwrite
@@ -175,6 +237,7 @@ class Rac1Player extends Component {
     }
   }
 
+  // Removes last podcast from list
   handlePodcastsLastRemove() {
     this.setState({
       ...this.state,
@@ -182,6 +245,7 @@ class Rac1Player extends Component {
     });
   }
 
+  // Updates podcasts list from backend
   handleClickReload() {
     // If there is not already an incomplete update
     if(this.state.completed) {
@@ -195,12 +259,15 @@ class Rac1Player extends Component {
     }
   }
 
-  selectPodcastByDate() {
-    const { date } = this.state;
+  // Select a podcast from list using date&time argument
+  selectPodcastByDate(date) {
+    // Find all podcasts matching >= date
     const found = this.state.podcasts.filter(podcast => {
       return podcast.audio.hour >= date.getHours() &&
         podcast.audio.minute >= date.getMinutes()
-      });
+    });
+
+    // Play first matched podcast
     if(found.length > 0) {
       this.playPodcast(
         this.findPodcastByUUID(found[0].uuid));
@@ -223,15 +290,25 @@ class Rac1Player extends Component {
   }
 
   playPodcast(index) {
-    const { date } = this.state;
-    date.setHours(Number(this.state.podcasts[index].audio.hour));
-    date.setMinutes(Number(this.state.podcasts[index].audio.minute));
+    const { date, currentUUID } = this.state;
+    const podcast = this.state.podcasts[index];
+
+    // Force push&replace if it's not exact match with date, and update date in state
+    let replace = false;
+    if(podcast.audio.hour !== date.getHours() ||
+      podcast.audio.minute !== date.getMinutes()) {
+      date.setHours(Number(podcast.audio.hour));
+      date.setMinutes(Number(podcast.audio.minute));
+    }
+
+    replace = currentUUID === '';
+    document.title = `${this.initialTitle}: ${podcast.appTabletTitle}`;
     this.setState({
       ...this.state,
-      currentUUID: this.state.podcasts[index].uuid,
+      currentUUID: podcast.uuid,
       date,
     });
-    this.historyPush();
+    this.historyPush(date, replace);
   }
 
   playPrev() {
