@@ -283,7 +283,7 @@ class App extends Component {
     const todayStr = `/${date.getFullYear()}/${1 + date.getMonth()}/${date.getDate()}/0/0`;
 
     return (
-      <Router basename={process.env.PUBLIC_URL} >
+      <Router>
         <Switch>
           <Route
             path="/:year/:month/:day/:hour/:minute"
