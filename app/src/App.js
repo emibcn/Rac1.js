@@ -20,6 +20,7 @@ class Rac1Player extends Component {
   constructor(props, history) {
     super();
 
+    console.log(process);
     this.history = props.history;
 
     // Initial state
