@@ -52,7 +52,7 @@ class Playlist extends Component {
         </button>
         <div style={{ textAlign: 'center', fontSize: 'large' }}>
           <DatePicker
-            onChange={ this.props.onDateChange.bind(this) }
+            onChange={ this.handleDateChange.bind(this) }
             onBlur={ this.handleDateBlur.bind(this) }
             minDate={ new Date(2015, 5, 1) /* 1st date with HOUR podcasts */ }
             maxDate={ new Date() }
@@ -65,6 +65,12 @@ class Playlist extends Component {
         </div>
       </div>
     );
+  }
+
+  handleDateChange(date) {
+    date.setHours(2);
+    date.setMinutes(0);
+    this.props.onDateChange(date);
   }
 
   handleDateBlur(e) {

@@ -226,7 +226,8 @@ class Rac1 {
       .then(podcast => {
         // Add some data to the podcast
         podcast.uuid = uuid;
-        podcast.audio.hour = podcast.audio.time.split(':')[0];
+        podcast.audio.hour   = podcast.audio.time.split(':')[0];
+        podcast.audio.minute = podcast.audio.time.split(':')[1];
 
         // Save to cache
         this._podcastsData[uuid] = podcast;
