@@ -1,16 +1,17 @@
-import React, { Component } from 'react';
+import { Component } from 'react';
 import { PropTypes } from 'prop-types';
 import ReactGA from 'react-ga';
 
-class GAListener extends React.Component {
+const GACode = 'UA-129704402-1';
+
+class GAListener extends Component {
   static contextTypes = {
     router: PropTypes.object
   };
-  static GACode = 'UA-129704402-1';
 
   constructor(){
      super();
-     ReactGA.initialize(this.GACode);
+     ReactGA.initialize(GACode);
   }
 
   componentDidMount() {
@@ -34,7 +35,7 @@ class GAListener extends React.Component {
     // Load GTag script async
     setTimeout(() => {
       let scriptTag = document.createElement('script');
-      scriptTag.src = `https://www.googletagmanager.com/gtag/js?id=${this.GACode}`;
+      scriptTag.src = `https://www.googletagmanager.com/gtag/js?id=${GACode}`;
       document.body.appendChild(scriptTag);
     }, 1);
   }
