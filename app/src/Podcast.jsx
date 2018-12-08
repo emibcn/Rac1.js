@@ -3,7 +3,8 @@ import PropTypes from 'prop-types';
 
 class Podcast extends Component {
   render() {
-    const { path, uuid, audio, appTabletTitle} = this.props;
+    const { path, uuid, hour, minute, title} = this.props;
+    const pad2 = num => ( num < 10 ? '0' : '' ) + num;
 
     return (
       <span>
@@ -17,7 +18,7 @@ class Podcast extends Component {
                 onClick={ this.handleClick.bind(this) }
                 style={{ textDecoration: "none" }}
               >
-                { audio.hour }h: { appTabletTitle }
+                { hour }h{ minute ? pad2(minute) : '' }: { title }
               </a>
             )
         }
@@ -35,8 +36,9 @@ Podcast.defaultProps = {
 Podcast.propTypes = {
   uuid: PropTypes.string.isRequired,
   path: PropTypes.string,
-  appTabletTitle: PropTypes.string,
-  audio: PropTypes.shape(),
+  title: PropTypes.string,
+  hour: PropTypes.number,
+  minute: PropTypes.number,
   onClick: PropTypes.func.isRequired,
 };
 

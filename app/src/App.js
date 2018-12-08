@@ -97,7 +97,7 @@ class Rac1Player extends Component {
           <h3>
           { podcasts !== undefined && podcasts.length > 0 ?
                 ( 'audio' in podcasts[current] ?
-                    `${podcasts[current].appTabletTitle}` :
+                    `${podcasts[current].titleFull}` :
                     dateText )
               : dateText
           }
@@ -263,8 +263,9 @@ class Rac1Player extends Component {
   selectPodcastByDate(date) {
     // Find all podcasts matching >= date
     const found = this.state.podcasts.filter(podcast => {
-      return podcast.audio.hour >= date.getHours() &&
-        podcast.audio.minute >= date.getMinutes()
+      return podcast.hour >= date.getHours() &&
+        (podcast.hour > date.getHours() ||
+        podcast.minute >= date.getMinutes())
     });
 
     // Play first matched podcast
@@ -295,14 +296,14 @@ class Rac1Player extends Component {
 
     // Force push&replace if it's not exact match with date, and update date in state
     let replace = false;
-    if(podcast.audio.hour !== date.getHours() ||
-      podcast.audio.minute !== date.getMinutes()) {
-      date.setHours(Number(podcast.audio.hour));
-      date.setMinutes(Number(podcast.audio.minute));
+    if(podcast.hour !== date.getHours() ||
+      podcast.minute !== date.getMinutes()) {
+      date.setHours(Number(podcast.hour));
+      date.setMinutes(Number(podcast.minute));
     }
 
     replace = currentUUID === '';
-    document.title = `${this.initialTitle}: ${podcast.appTabletTitle}`;
+    document.title = `${this.initialTitle}: ${podcast.titleFull}`;
     this.setState({
       ...this.state,
       currentUUID: podcast.uuid,
@@ -361,7 +362,7 @@ const loadGoogleTag = () => {
   global.gtag('js', new Date());
   global.gtag('config', 'UA-129704402-1');
 
-  // Defer gTag script loading
+  // Load GTag script async
   setTimeout(() => {
     let scriptTag = document.createElement('script');
     scriptTag.src = "https://www.googletagmanager.com/gtag/js?id=UA-129704402-1";
@@ -370,12 +371,13 @@ const loadGoogleTag = () => {
 };
 
 class App extends Component {
+  componentDidMount() {
+    loadGoogleTag();
+  }
+
   render() {
     const date = new Date();
-
     const todayStr = `/${date.getFullYear()}/${1 + date.getMonth()}/${date.getDate()}/0/0`;
-
-    loadGoogleTag();
 
     return (
       <Router>
@@ -383,6 +385,8 @@ class App extends Component {
           <Route
             path="/:year/:month/:day/:hour/:minute"
             render={props => <Rac1Player { ...props } /> } />
+
+          {/* Set default date to today */}
           <Redirect to={{ pathname: todayStr }} />
         </Switch>
       </Router>

@@ -176,12 +176,10 @@ class Rac1 {
 
     return fetch(
       "https://cors-anywhere.herokuapp.com/" // Anti CORS
-      //+ "https://www.rac1.cat/a-la-carta/cerca?"
       + "https://api.audioteca.rac1.cat/a-la-carta/cerca?"
       + `text=&programId=&sectionId=HOUR&from=${date}&to=${date}&pageNumber=${pageNumber}`,
       {
-        //mode: 'no-cors',
-        credentials: 'omit',
+        credentials: 'same-origin',
       })
       .then(handleFetchErrors)
       .then(response => response.text())
@@ -226,8 +224,10 @@ class Rac1 {
       .then(podcast => {
         // Add some data to the podcast
         podcast.uuid = uuid;
-        podcast.audio.hour   = Number(podcast.audio.time.split(':')[0]);
-        podcast.audio.minute = Number(podcast.audio.time.split(':')[1]);
+        podcast.hour   = Number(podcast.audio.time.split(':')[0]);
+        podcast.minute = Number(podcast.audio.time.split(':')[1]);
+        podcast.title = podcast.appTabletTitle.replace(/ \d\d\/.*/, '');
+        podcast.titleFull = podcast.appTabletTitle;
 
         // Save to cache
         this._podcastsData[uuid] = podcast;

@@ -168,12 +168,15 @@ class Controls extends Component {
         <input
           name="player-key-handler"
           style={{
-            width: '0px',
-            height: '0px',
+            width: '1px',
+            height: '1px',
             border: 0,
             margin: 0,
             padding: 0,
-            position: 'absolute'
+            position: 'fixed',
+            backgroundColor: 'transparent',
+            color: 'transparent',
+            cursor: 'default',
           }}
           ref={(element) => { this._keyHandler = element; }}
           onKeyUp={ this.handleKey.bind(this) }
