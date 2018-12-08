@@ -12,6 +12,7 @@ import Controls from './Controls';
 import Playlist from './Playlist';
 import PodcastsList from './PodcastsList';
 import Podcast from './Podcast';
+import GAListener from './GAListener';
 
 import Rac1 from './rac1';
 import './App.css';
@@ -354,41 +355,23 @@ class Rac1Player extends Component {
   }
 }
 
-const loadGoogleTag = () => {
-  // Global site tag (gtag.js) - Google Analytics
-  global.dataLayer = global.dataLayer || [];
-  global.gtag = function(){ global.dataLayer.push(arguments) }
-
-  global.gtag('js', new Date());
-  global.gtag('config', 'UA-129704402-1');
-
-  // Load GTag script async
-  setTimeout(() => {
-    let scriptTag = document.createElement('script');
-    scriptTag.src = "https://www.googletagmanager.com/gtag/js?id=UA-129704402-1";
-    document.body.appendChild(scriptTag);
-  }, 1);
-};
-
 class App extends Component {
-  componentDidMount() {
-    loadGoogleTag();
-  }
-
   render() {
     const date = new Date();
     const todayStr = `/${date.getFullYear()}/${1 + date.getMonth()}/${date.getDate()}/0/0`;
 
     return (
       <Router>
-        <Switch>
-          <Route
-            path="/:year/:month/:day/:hour/:minute"
-            render={props => <Rac1Player { ...props } /> } />
+        <GAListener>
+          <Switch>
+            <Route
+              path="/:year/:month/:day/:hour/:minute"
+              render={props => <Rac1Player { ...props } /> } />
 
-          {/* Set default date to today */}
-          <Redirect to={{ pathname: todayStr }} />
-        </Switch>
+            {/* Set default date to today */}
+            <Redirect to={{ pathname: todayStr }} />
+          </Switch>
+        </GAListener>
       </Router>
     )
   }
