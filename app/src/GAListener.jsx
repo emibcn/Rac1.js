@@ -2,7 +2,6 @@ import { Component } from 'react';
 import { PropTypes } from 'prop-types';
 import ReactGA from 'react-ga';
 
-const GACode = 'UA-129704402-1';
 
 class GAListener extends Component {
   static contextTypes = {
@@ -11,6 +10,9 @@ class GAListener extends Component {
 
   constructor(){
      super();
+
+     const GACode = 'UA-129704402-1';
+     this.loadGoogleTag(GACode);
      ReactGA.initialize(GACode);
   }
 
@@ -24,13 +26,13 @@ class GAListener extends Component {
     ReactGA.pageview(location.pathname);
   }
 
-  loadGoogleTag() {
+  loadGoogleTag(GACode) {
     // Global site tag (gtag.js) - Google Analytics
     global.dataLayer = global.dataLayer || [];
     global.gtag = function(){ global.dataLayer.push(arguments) }
 
     global.gtag('js', new Date());
-    global.gtag('config', 'UA-129704402-1');
+    global.gtag('config', GACode);
 
     // Load GTag script async
     setTimeout(() => {
