@@ -12,7 +12,7 @@ class PodcastsList extends Component {
       null :
       (
         <ul style={{
-          listStyleType: "none",
+          listStyleType: 'none',
           marginLeft: 0,
           paddingLeft: 0,
           textAlign: 'left'
@@ -20,14 +20,20 @@ class PodcastsList extends Component {
           { children.map((child, index) =>
             <li
               key={ child.key }
-              style={{ position: "relative", marginLeft: "1em" }}>
+              style={{
+                position: 'relative',
+                marginLeft: '2.5em',
+                textIndent: '-1.5em',
+                padding: '1pt 0',
+              }}
+            >
               { index === current ? (
                 <FontAwesomeIcon
                   icon={faPlay}
                   style={{
                     position: 'absolute',
-                    left: '-1.25em',
-                    top: 'calc(.2vmin + .2em)',
+                    left: '-2.75em',
+                    padding: '1pt 0',
                   }}/>
               ) : null
               }
