@@ -92,18 +92,16 @@ class Rac1Player extends Component {
         && podcasts.length > current
         && 'path' in podcasts[current]
         ? podcasts[current].path : '';
+    const title = podcasts !== undefined && podcasts.length > 0 ?
+      ( 'audio' in podcasts[current] ?
+          `${podcasts[current].titleFull}` :
+          dateText )
+      : dateText;
 
     return (
       <div className="App">
         <header className="App-header">
-          <h3>
-          { podcasts !== undefined && podcasts.length > 0 ?
-                ( 'audio' in podcasts[current] ?
-                    `${podcasts[current].titleFull}` :
-                    dateText )
-              : dateText
-          }
-          </h3>
+          <h3>{ title }</h3>
           <Controls
             getPlayer={ this.player.bind(this) }
             volume={ volume }
@@ -126,6 +124,7 @@ class Rac1Player extends Component {
           />
           <Playlist
             date={ date }
+            minDate={ new Date(2015, 5, 1) /* 1st date with HOUR podcasts */ }
             maxDate={ maxDate }
             completedDownload={ completed }
             onClickReload={ this.handleClickReload.bind(this) }

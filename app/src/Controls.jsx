@@ -110,11 +110,6 @@ class Controls extends Component {
   keyHandlerFocus = () => {};
 
   componentDidMount() {
-    this.keyHandlerFocus();
-    this.setState({
-      ...this.state,
-      controls: this.controls,
-    });
 
     // Disable key handler on mobile devices
     if (!(/Mobi|Android/i.test(navigator.userAgent))) {
@@ -132,6 +127,12 @@ class Controls extends Component {
         }
       };
     }
+
+    this.keyHandlerFocus();
+    this.setState({
+      ...this.state,
+      controls: this.controls,
+    });
   }
 
   player = () => this.props.getPlayer();
@@ -167,12 +168,14 @@ class Controls extends Component {
         })}
         <input
           name="player-key-handler"
-          style={{
+          style={{ // Almost invisible ;)
             width: '1px',
             height: '1px',
             border: 0,
             margin: 0,
             padding: 0,
+            bottom: 0,
+            right: 0,
             position: 'fixed',
             backgroundColor: 'transparent',
             color: 'transparent',
