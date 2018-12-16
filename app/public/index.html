@@ -33,6 +33,46 @@
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
     <title>Rac1 alternativa</title>
+    <script>
+"use strict"; !function(self, global){
+  self.pad2 = num => ( num < 10 ? '0' : '' ) + num;
+  self.dateStr = '';
+
+  // Get date from location hash
+  if(global.location.hash.length > 1) {
+    self.dateStr = global.location.hash
+      .split('/')
+      .slice(1, 4)
+      .reverse()
+      .map( self.pad2 )
+      .join('/');
+  }
+  // Get today's date
+  else {
+    self.date = new Date();
+    self.dateStr =
+      self.pad2( self.date.getDate() ) + '/' +
+      self.pad2( 1 + self.date.getMonth() ) + '/' +
+      self.date.getFullYear();
+  }
+
+  self.url =
+    "https://cors-anywhere.herokuapp.com/" // Anti CORS
+    + "https://api.audioteca.rac1.cat/a-la-carta/cerca?"
+    + `text=&programId=&sectionId=HOUR&from=${self.dateStr}&to=${self.dateStr}&pageNumber=0`;
+
+  // Add Link tag to hint the browser
+  let linkTag = document.createElement('link');
+  linkTag.rel = 'preload';
+  linkTag.href = self.url;
+  linkTag.crossOrigin = 'crossorigin';
+  linkTag.credentials = 'omit';
+  linkTag.as = 'fetch';
+  linkTag.type = 'text/html';
+  document.head.appendChild(linkTag);
+  self = null;
+}({}, window)
+    </script>
   </head>
   <body>
     <noscript>
@@ -49,47 +89,5 @@
       To begin the development, run `npm start` or `yarn start`.
       To create a production bundle, use `npm run build` or `yarn build`.
     -->
-    <script type="text/javascript">
-const prefetchRac1 = function() {
-  let self = {}, global = window;
-  self.__pad2 = num => ( num < 10 ? '0' : '' ) + num;
-  self.__dateStr = '';
-
-  // Get date from location hash
-  if(global.location.hash.length > 1) {
-    self.__dateStr = global.location.hash
-      .split('/')
-      .slice(1, 4)
-      .reverse()
-      .map( self.__pad2 )
-      .join('/');
-  }
-  // Get today's date
-  else {
-    self.__date = new Date();
-    self.__dateStr =
-      self.__pad2( self.__date.getDate() ) + '/' +
-      self.__pad2( 1 + self.__date.getMonth() ) + '/' +
-      self.__date.getFullYear();
-  }
-
-  self.__url =
-    "https://cors-anywhere.herokuapp.com/" // Anti CORS
-    + "https://api.audioteca.rac1.cat/a-la-carta/cerca?"
-    + `text=&programId=&sectionId=HOUR&from=${self.__dateStr}&to=${self.__dateStr}&pageNumber=0`;
-
-  // Add Link tag to hint the browser
-  let linkTag = document.createElement('link');
-  linkTag.rel = 'preload';
-  linkTag.href = self.__url;
-  linkTag.crossOrigin = 'crossorigin';
-  linkTag.credentials = 'omit';
-  linkTag.as = 'fetch';
-  linkTag.type = 'text/html';
-  document.head.appendChild(linkTag);
-};
-
-prefetchRac1();
-    </script>
   </body>
 </html>
