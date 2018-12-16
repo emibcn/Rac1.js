@@ -12,3 +12,20 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
+
+/* Fix calendar position for small device (mobile first) */
+.react-date-picker__calendar.react-date-picker__calendar--open {
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%,-50%) !important;
+    position: fixed !important;
+}
+
+@media only screen and (min-width: 768px) {
+	.react-date-picker__calendar.react-date-picker__calendar--open {
+		top: 100% !important;
+		left: 0 !important;
+		transform: none !important;
+		position: absolute !important;
+	}
+}
