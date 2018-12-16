@@ -11,7 +11,7 @@ import {
 
 class Playlist extends Component {
   render() {
-    const { completedDownload, date, children } = this.props;
+    const { completedDownload, date, children, maxDate } = this.props;
 
     return (
       <div
@@ -55,7 +55,7 @@ class Playlist extends Component {
             onChange={ this.handleDateChange.bind(this) }
             onBlur={ this.handleDateBlur.bind(this) }
             minDate={ new Date(2015, 5, 1) /* 1st date with HOUR podcasts */ }
-            maxDate={ new Date() }
+            maxDate={ maxDate }
             required={ true }
             value={ date }
             clearIcon={ null }
@@ -91,6 +91,9 @@ Playlist.defaultProps = {
   onClickReload: (e) => {},
   onDateBlur: (e) => {},
   onDateChange: (e) => {},
+  completedDownload: true,
+  date: new Date(),
+  maxDate: new Date(),
 };
 
 Playlist.propTypes = {
@@ -99,6 +102,7 @@ Playlist.propTypes = {
   onDateChange: PropTypes.func.isRequired,
   completedDownload: PropTypes.bool.isRequired,
   date: PropTypes.instanceOf(Date).isRequired,
+  maxDate: PropTypes.instanceOf(Date).isRequired,
 };
 
 export default Playlist;

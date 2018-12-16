@@ -41,6 +41,7 @@ class Rac1Player extends Component {
       podcasts: [{uuid: '...'}],
       currentUUID: '',
       date: this.getDateFromParams(props),
+      maxDate: new Date(),
       volume: 1,
       completed: false,
       waitingUpdate: false,
@@ -78,7 +79,7 @@ class Rac1Player extends Component {
   }
 
   render() {
-    const { podcasts, volume, completed, date } = this.state;
+    const { podcasts, volume, completed, date, maxDate } = this.state;
     const dateText = date instanceof Date ?
       `${date.getDate()}/${1 + date.getMonth()}/${date.getFullYear()}`
       : '...';
@@ -125,6 +126,7 @@ class Rac1Player extends Component {
           />
           <Playlist
             date={ date }
+            maxDate={ maxDate }
             completedDownload={ completed }
             onClickReload={ this.handleClickReload.bind(this) }
             onDateBlur={ () => this.keyHandlerFocus() }
@@ -204,6 +206,7 @@ class Rac1Player extends Component {
       podcasts: newList,
       completed,
       waitingUpdate: waitingUpdateNext,
+      maxDate: new Date(),
     });
 
     // If there is no podcast selected on update completed, select one
