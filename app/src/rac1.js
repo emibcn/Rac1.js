@@ -229,6 +229,9 @@ class Rac1 {
         podcast.title = podcast.appTabletTitle.replace(/ \d\d\/.*/, '');
         podcast.titleFull = podcast.appTabletTitle;
 
+        // Prevent a redirect of 400ms :/
+        podcast.path = podcast.path.replace(/\/get\//, '/file/').replace(/\/(\d)\//, '/$1/-/')
+
         // Save to cache
         this._podcastsData[uuid] = podcast;
 
