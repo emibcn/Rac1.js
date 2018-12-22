@@ -78,6 +78,10 @@ class App extends Component {
                   render={props => <Rac1Directe { ...props } /> } />
 
                 <Route
+                  path="/:year/:month/:day"
+                  render={props => <Rac1ByDate { ...props } /> } />
+
+                <Route
                   path="/:year/:month/:day/:hour/:minute"
                   render={props => <Rac1ByDate { ...props } /> } />
 
