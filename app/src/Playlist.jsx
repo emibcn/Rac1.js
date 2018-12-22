@@ -10,13 +10,15 @@ import {
 } from '@fortawesome/free-solid-svg-icons'
 
 const ReloadButton = (props) => {
+  const text = 'Reload';
   return (
     <button
       { ...props }
+      aria-label={ text }
       style={{
-        borderRadius: ".5em",
-        padding: ".25em",
-        margin: "0 0 0 1em",
+        borderRadius: '.5em',
+        padding: '.25em',
+        margin: '0 0 0 1em',
       }}
     >
       <div style={{
@@ -28,9 +30,9 @@ const ReloadButton = (props) => {
       </div>
       <span style={{
         fontSize: 'calc(5px + 1vmin)',
-        color: '#777'
+        color: '#333'
       }}>
-        Reload
+        { text }
       </span>
     </button>
   )
@@ -42,13 +44,13 @@ class Playlist extends Component {
 
     return (
       <div style={{
-        color: "#777",
-        backgroundColor: "white",
-        padding: "2em",
-        borderRadius: "1em",
-        margin: "1em",
-        textAlign: "left",
-        position: "relative",
+        color: '#333',
+        backgroundColor: 'white',
+        padding: '2em',
+        borderRadius: '1em',
+        margin: '1em',
+        textAlign: 'left',
+        position: 'relative',
         fontSize: 'large'
       }}>
         <div style={{
