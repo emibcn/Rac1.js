@@ -17,8 +17,8 @@ class Rac1ByDate extends Component {
         date.year,
         date.month-1,
         date.day,
-        date.hour,
-        date.minute,
+        date.hour||0,
+        date.minute||0,
       )
   }
 
