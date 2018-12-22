@@ -2,7 +2,7 @@
 
 React app to listen to [Rac1 radio station](https://www.rac1.cat/) podcasts. Uses GitHub pages to publish it at **[Rac1 podcast player at Github Pages](https://emibcn.github.io/Rac1.js/)**. There you will find [this repo's `docs/`](https://github.com/emibcn/Rac1.js/tree/master/docs) contents, which are the results of executing `yarn build` on [this project's container](#development-container) using [this project's source application](https://github.com/emibcn/Rac1.js/tree/master/app).
 
-The [podcasts lister](https://github.com/emibcn/Rac1.js/blob/master/app/src/rac1.js) is a pure JS app, which does not depends on any other library, so you can re-use for other JS projects. It uses https://cors-anywhere.herokuapp.com/ to allow downloading 3rd party webs. In this case, the app downloads the [page with podcasts list](https://api.audioteca.rac1.cat/a-la-carta/cerca), which is served as `text/html` and violates CORS specifications.
+The [podcasts lister](https://github.com/emibcn/Rac1.js/blob/master/app/src/rac1.js) is a pure JS app, which does not depends on any other library, so you can re-use for other JS projects. It uses https://cors-anywhere.herokuapp.com/ to allow downloading 3rd party webs. In this case, the app downloads the [page with podcasts list](https://api.audioteca.rac1.cat/a-la-carta/cerca), which is served as `text/html` and violates [CORS specifications](https://en.wikipedia.org/wiki/Cross-origin_resource_sharing).
 
 Inspired by [my command line Python app Rac1.py](https://github.com/emibcn/Rac1.py).
 
