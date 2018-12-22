@@ -7,6 +7,12 @@ import {
   Link,
 } from "react-router-dom";
 
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import {
+  faBroadcastTower as faDirecte,
+  faCalendarAlt as faByDate,
+} from '@fortawesome/free-solid-svg-icons'
+
 import GAListener from './GAListener';
 
 import Rac1Directe from './Rac1Directe';
@@ -41,7 +47,11 @@ class App extends Component {
                   backgroundColor: '#ddd',
                   border: '1px solid #777',
                   display: 'block',
-                }}>By date</Link>
+                  borderBottomLeftRadius: '.5em',
+                }}>
+                <FontAwesomeIcon icon={ faByDate } style={{ marginRight: '.5em' }} />
+                By date
+              </Link>
             </li>
             <li>
               <Link
@@ -51,7 +61,11 @@ class App extends Component {
                   backgroundColor: '#ddd',
                   border: '1px solid #777',
                   display: 'block',
-                }}>En directe</Link>
+                  borderBottomRightRadius: '.5em',
+                }}>
+                <FontAwesomeIcon icon={ faDirecte } style={{ marginRight: '.5em' }} />
+                En directe
+              </Link>
             </li>
           </ul>
 
