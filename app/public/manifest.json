@@ -1,6 +1,6 @@
 {
   "short_name": "Rac1",
-  "name": "Rac1 alternativa",
+  "name": "Rac1 podcast player",
   "description": "Rac1 radio podcasts finder and player",
   "lang": "en-US",
   "icons": [
@@ -17,7 +17,7 @@
   ],
   "homepage": "https://emibcn.github.io/Rac1.js/",
   "start_url": "Rac1.js/",
-  "display": "fullscreen",
+  "display": "standalone",
   "theme_color": "#000000",
   "background_color": "#282c34"
 }
