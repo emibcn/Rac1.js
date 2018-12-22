@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -8,146 +8,171 @@ import {
   faFastForward,
 } from '@fortawesome/free-solid-svg-icons'
 
-class Controls extends Component {
+class Controls extends React.PureComponent {
+
+  // Controls definitions
+  controls = [
+    {
+      icon: <FontAwesomeIcon icon={faFastForward} flip="horizontal" />,
+      text: 'Prev',
+      help: 'Play previous podcast',
+      action: () => this.props.onPlayPrev(),
+    },
+    {
+      icon: (
+        <span>
+          <FontAwesomeIcon icon={faForward} flip="horizontal" />
+          <FontAwesomeIcon icon={faForward} flip="horizontal" />
+        </span>
+      ),
+      text: '-10m',
+      help: 'Go backwards 10 minutes',
+      action: () => this.player().currentTime -= 600,
+      keys: [ 'PageUp' ],
+    },
+    {
+      icon: (
+        <span>
+          <FontAwesomeIcon
+            icon={faForward}
+            flip="horizontal"
+            style={{ position: 'relative', left: '.25em' }} />
+          <FontAwesomeIcon
+            icon={faForward}
+            flip="horizontal"
+            style={{ position: 'relative', left: '-.25em' }} />
+        </span>
+      ),
+      text: '-60s',
+      help: 'Go backwards 1 minute',
+      action: () => this.player().currentTime -= 60,
+      keys: [ 'ArrowUp' ],
+    },
+    {
+      icon: <FontAwesomeIcon icon={faForward} flip="horizontal" />,
+      text: '-10s',
+      help: 'Go backwards 10 seconds',
+      action: () => this.player().currentTime -= 10,
+      keys: [ 'ArrowLeft' ],
+    },
+    {
+      icon: <FontAwesomeIcon icon={faEject} rotation={90} />,
+      text: 'Play/Pause',
+      help: 'Toggle Play/Pause',
+      action: () => this.player().paused ? this.player().play() : this.player().pause(),
+      keys: [ ' ', 'p', 'P' ],
+    },
+    {
+      icon: <FontAwesomeIcon icon={faForward} />,
+      text: '+10s',
+      help: 'Go forward 10 seconds',
+      action: () => this.player().currentTime += 10,
+      keys: [ 'ArrowRight' ],
+    },
+    {
+      icon: (
+        <span>
+          <FontAwesomeIcon
+            icon={faForward}
+            style={{ position: 'relative', left: '.25em' }} />
+          <FontAwesomeIcon
+            icon={faForward}
+            style={{ position: 'relative', left: '-.25em' }} />
+        </span>
+      ),
+      text: '+60s',
+      help: 'Go forward 1 minute',
+      action: () => this.player().currentTime += 60,
+      keys: [ 'ArrowDown' ],
+    },
+    {
+      icon: (
+        <span>
+          <FontAwesomeIcon icon={faForward} />
+          <FontAwesomeIcon icon={faForward} />
+        </span>
+      ),
+      text: '+10m',
+      help: 'Go forward 10 minutes',
+      action: () => this.player().currentTime += 600,
+      keys: [ 'PageDown' ],
+    },
+    {
+      icon: <FontAwesomeIcon icon={faFastForward} />,
+      text: 'Next',
+      help: 'Play next podcast',
+      action: () => this.props.onPlayNext(),
+      keys: [ 'Enter' ],
+    },
+    {
+      help: 'Decrement volume 5%',
+      action: () => this.incrementVolume(-.05),
+      keys: [
+        '/',
+        {key: 'ArrowDown', shiftKey: true}
+      ],
+    },
+    {
+      help: 'Increment volume 5%',
+      action: () => this.incrementVolume(.05),
+      keys: [
+        '*',
+        {key: 'ArrowUp', shiftKey: true}
+      ],
+    },
+    {
+      help: 'Toggle mute status',
+      action: () => this.player().muted = !this.player().muted,
+      keys: [ 'm', 'M' ],
+    },
+  ];
+
   constructor(props) {
     super();
 
-    // Initial state
-    this.state = {
-      controls: [],
-    };
-
-    // Controls definitions
-    this.controls = [
-      {
-        icon: <FontAwesomeIcon icon={faFastForward} flip="horizontal" />,
-        text: 'Prev',
-        action: () => this.props.onPlayPrev(),
-      },
-      {
-        icon: (
-          <span>
-            <FontAwesomeIcon icon={faForward} flip="horizontal" />
-            <FontAwesomeIcon icon={faForward} flip="horizontal" />
-          </span>
-        ),
-        text: '-10m',
-        action: () => this.player().currentTime -= 600,
-      },
-      {
-        icon: (
-          <span>
-            <FontAwesomeIcon
-              icon={faForward}
-              flip="horizontal"
-              style={{ position: 'relative', left: '.25em' }} />
-            <FontAwesomeIcon
-              icon={faForward}
-              flip="horizontal"
-              style={{ position: 'relative', left: '-.25em' }} />
-          </span>
-        ),
-        text: '-60s',
-        action: () => this.player().currentTime -= 60,
-      },
-      {
-        icon: <FontAwesomeIcon icon={faForward} flip="horizontal" />,
-        text: '-10s',
-        action: () => this.player().currentTime -= 10,
-      },
-      {
-        icon: <FontAwesomeIcon icon={faEject} rotation={90} />,
-        text: 'Play/Pause',
-        action: () => this.player().paused ? this.player().play() : this.player().pause(),
-      },
-      {
-        icon: <FontAwesomeIcon icon={faForward} />,
-        text: '+10s',
-        action: () => this.player().currentTime += 10,
-      },
-      {
-        icon: (
-          <span>
-            <FontAwesomeIcon
-              icon={faForward}
-              style={{ position: 'relative', left: '.25em' }} />
-            <FontAwesomeIcon
-              icon={faForward}
-              style={{ position: 'relative', left: '-.25em' }} />
-          </span>
-        ),
-        text: '+60s',
-        action: () => this.player().currentTime += 60,
-      },
-      {
-        icon: (
-          <span>
-            <FontAwesomeIcon icon={faForward} />
-            <FontAwesomeIcon icon={faForward} />
-          </span>
-        ),
-        text: '+10m',
-        action: () => this.player().currentTime += 600,
-      },
-      {
-        icon: <FontAwesomeIcon icon={faFastForward} />,
-        text: 'Next',
-        action: () => this.props.onPlayNext(),
-      },
-    ];
-
-    // Debugging on development
-    if(process.env.NODE_ENV === "development") {
-      // Add a button to remove the last podcast in the list
-      this.controls.push({
-          icon: 'RL',
-          text: 'Remove last',
-          action: () => this.props.onPodcastsLastRemove(),
-        });
+    // Add extra controls
+    if ( props.extraControls.length ) {
+      this.controls = this.controls.concat(props.extraControls);
     }
   }
 
   keyHandlerFocus = () => {};
+  _keyHandlerFocus = (e, force) => {
+    let doFocus = true;
 
-  componentDidMount() {
-
-    // Disable key handler on mobile devices
-    if (!(/Mobi|Android/i.test(navigator.userAgent))) {
-      this.keyHandlerFocus = (e) => {
-        let doFocus = true;
-
-        // Allow datepicker to get focus
-        if(e && e.relatedTarget &&
-          this.props.allowFocus(e.relatedTarget)) {
-          doFocus = false;
-        }
-
-        if(doFocus) {
-          setTimeout(() => this._keyHandler.focus(), 100);
-        }
-      };
+    // Allow datepicker to get focus
+    if ( e && e.relatedTarget &&
+          this.props.allowFocus(e.relatedTarget) ) {
+      doFocus = false;
     }
 
-    this.keyHandlerFocus();
-    this.setState({
-      ...this.state,
-      controls: this.controls,
-    });
+    if(doFocus || force) {
+      setTimeout(() => this._keyHandler.focus(), 100);
+    }
+  };
+
+  componentDidMount() {
+    // Disable key handler on mobile devices (enable on the rest)
+    if ( !(/Mobi|Android/i.test(navigator.userAgent)) ) {
+       this.keyHandlerFocus = this._keyHandlerFocus;
+       this.keyHandlerFocus();
+    }
   }
 
-  player = () => this.props.getPlayer();
-
   render() {
-    const { controls } = this.state;
-
     return (
-      <div onFocus={ (e) => this.keyHandlerFocus(e) } >
-        { controls.map((control, index) => {
+      <div>
+        { this.controls
+            .filter( (control) => 'icon' in control)
+            .map((control, index) => {
           return (
             <button
               key={ index }
               onClick={ control.action.bind(this) }
-              aria-label={ control.text }
+              onMouseUp={ (e) => this.keyHandlerFocus(e, true) }
+              aria-label={ control.help }
+              title={ control.help }
+              className='rac1-controls-button'
               style={{
                 borderRadius: '1em',
                 padding: '1em',
@@ -161,7 +186,10 @@ class Controls extends Component {
               }} >
                 { control.icon instanceof Function ? control.icon() : control.icon }
               </div>
-              <span style={{ fontSize: 'calc(8px + 1vmin)', color: '#333' }}>
+              <span style={{
+                fontSize: 'calc(8px + 1vmin)',
+                color: '#333'
+              }}>
                 { control.text instanceof Function ? control.text() : control.text }
               </span>
             </button>
@@ -191,13 +219,15 @@ class Controls extends Component {
     );
   }
 
+  player = () => this.props.getPlayer();
+
   setVolume(volume) {
     this.player().volume = volume;
     this.props.onSetVolume(volume);
   }
 
   incrementVolume(increment) {
-    const { volume } = this.state;
+    const { volume } = this.props;
     let volumeNew = volume;
 
     // Increment
@@ -210,68 +240,28 @@ class Controls extends Component {
       volumeNew = volume >= (-increment) ? volume + increment : 0;
     }
 
+    // Prevent updating volume if limit reached
     if(volumeNew !== volume) {
       this.setVolume(volumeNew);
     }
   }
 
   handleKey(e) {
-    let stopPropagation = true;
-    switch(e.key) {
-      case 'Enter':
-        this.props.onPlayNext();
-        break;
-      case ' ':
-      case 'p':
-      case 'P':
-        this.player().paused ? this.player().play() : this.player().pause();
-        break;
-      case 'ArrowLeft':
-        this.player().currentTime -= 10;
-        break;
-      case 'ArrowRight':
-        this.player().currentTime += 10;
-        break;
-      case 'ArrowUp':
-        if(e.shiftKey) {
-          this.incrementVolume(.05);
+    let stopPropagation = false;
+
+    // Handle controls keys
+    this.controls.forEach( (control) => {
+      (control.keys||[]).forEach( (key_orig) => {
+        let key = typeof key_orig === 'string' ? {key: key_orig} : key_orig;
+        if(e.key === key.key &&
+          ['shiftKey', 'altKey', 'ctrlKey', 'metaKey']
+            .every( (mod) => !!e[mod] === !!key[mod] )) {
+          console.log(control.help);
+          stopPropagation = true;
+          control.action();
         }
-        else {
-          this.player().currentTime -= 60;
-        }
-        break;
-      case 'ArrowDown':
-        if(e.shiftKey) {
-          this.incrementVolume(-.05);
-        }
-        else {
-          this.player().currentTime += 60;
-        }
-        break;
-      case 'PageUp':
-        this.player().currentTime -= 600;
-        break;
-      case 'PageDown':
-        this.player().currentTime += 600;
-        break;
-      case '*':
-        this.incrementVolume(.05);
-        break;
-      case '/':
-        this.incrementVolume(-.05);
-        break;
-      case 'm':
-      case 'M':
-        this.player().muted = !this.player().muted;
-        break;
-      case 'r':
-      case 'R':
-        this.handleClickReload();
-        break;
-      default:
-        stopPropagation = false;
-        break;
-    }
+      });
+    });
 
     if(stopPropagation) {
       e.stopPropagation();
@@ -281,10 +271,11 @@ class Controls extends Component {
 }
 
 Controls.defaultProps = {
-  onSetVolume:          (e) => {},
-  onPodcastsLastRemove: (e) => {},
-  onPlayPrev:           (e) => {},
-  onPlayNext:           (e) => {},
+  onSetVolume:   (e) => {},
+  onPlayPrev:    (e) => {},
+  onPlayNext:    (e) => {},
+  extraControls: [],
+  volume:        1,
 };
 
 Controls.propTypes = {
@@ -292,9 +283,27 @@ Controls.propTypes = {
   volume: PropTypes.number.isRequired,
   allowFocus: PropTypes.func.isRequired,
   onSetVolume: PropTypes.func.isRequired,
-  onPodcastsLastRemove: PropTypes.func.isRequired,
   onPlayPrev: PropTypes.func.isRequired,
   onPlayNext: PropTypes.func.isRequired,
+  extraControls: PropTypes.arrayOf( PropTypes.shape({
+    help: PropTypes.string.isRequired,
+    action: PropTypes.func.isRequired,
+    text: PropTypes.string,
+    icon: PropTypes.oneOfType([
+      PropTypes.func,
+      PropTypes.node,
+    ]),
+    keys: PropTypes.arrayOf( PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.shape({
+        key: PropTypes.string.isRequired,
+        shiftKey: PropTypes.bool,
+        altKey: PropTypes.bool,
+        ctrlKey: PropTypes.bool,
+        metaKey: PropTypes.bool,
+      }),
+    ])),
+  })),
 };
 
 export default Controls;
