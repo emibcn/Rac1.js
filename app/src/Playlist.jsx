@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 
 import DatePicker from 'react-date-picker'
@@ -38,7 +38,7 @@ const ReloadButton = (props) => {
   )
 };
 
-class Playlist extends Component {
+class Playlist extends React.PureComponent {
   render() {
     const { completedDownload, date, children, minDate, maxDate } = this.props;
 

@@ -1,7 +1,7 @@
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 
-class Podcast extends Component {
+class Podcast extends React.PureComponent {
   render() {
     const { path, uuid, hour, minute, title} = this.props;
     const pad2 = num => ( num < 10 ? '0' : '' ) + num;
