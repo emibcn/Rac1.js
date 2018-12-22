@@ -147,7 +147,7 @@ class Controls extends React.PureComponent {
     }
 
     if(doFocus || force) {
-      setTimeout(() => this._keyHandler.focus(), 100);
+      this.timer = setTimeout(() => this._keyHandler.focus(), 100);
     }
   };
 
@@ -159,11 +159,16 @@ class Controls extends React.PureComponent {
     }
   }
 
+  componentWillUnmount() {
+    clearTimeout(this.timer);
+  }
+
   render() {
     return (
       <div>
         { this.controls
-            .filter( (control) => 'icon' in control)
+            .filter( control => 'icon' in control && 'text' in control)
+            .filter( control => !this.props.hideButtons.includes(control.text) )
             .map((control, index) => {
           return (
             <button
@@ -274,7 +279,9 @@ Controls.defaultProps = {
   onSetVolume:   (e) => {},
   onPlayPrev:    (e) => {},
   onPlayNext:    (e) => {},
+  allowFocus:    (e) => {},
   extraControls: [],
+  hideButtons:   [],
   volume:        1,
 };
 
@@ -285,6 +292,10 @@ Controls.propTypes = {
   onSetVolume: PropTypes.func.isRequired,
   onPlayPrev: PropTypes.func.isRequired,
   onPlayNext: PropTypes.func.isRequired,
+  hideButtons: PropTypes.arrayOf(
+    PropTypes.oneOf(
+      ['Prev', 'Next', '-10m', '-60s', '-10s', '+10m', '+60s', '+10s', 'Play/Pause']
+  )).isRequired,
   extraControls: PropTypes.arrayOf( PropTypes.shape({
     help: PropTypes.string.isRequired,
     action: PropTypes.func.isRequired,
