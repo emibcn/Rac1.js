@@ -47,8 +47,17 @@ class Rac1Player extends Component {
       waitingUpdate: false,
     };
 
+    this.extraControls = [
+      {
+        help: 'Reload playlist',
+        action: this.handleClickReload.bind(this),
+        keys: [ 'r', 'R' ],
+      },
+    ];
+
     // Debugging on development
     if(process.env.NODE_ENV === "development") {
+
       // Log state changes
       this._setState = this.setState;
       this.setState = (props) => {
@@ -58,6 +67,14 @@ class Rac1Player extends Component {
         });
         this._setState(props);
       }
+
+      // Add a button to remove the last podcast in the list
+      this.extraControls.push({
+        icon: 'RL',
+        text: 'Remove last',
+        help: 'Remove last podcast from playlist',
+        action: this.handlePodcastsLastRemove.bind(this),
+      });
     }
   }
 
@@ -109,8 +126,8 @@ class Rac1Player extends Component {
             onPlayNext={ this.playNext.bind(this) }
             onPlayPrev={ this.playPrev.bind(this) }
             onSetVolume={ (v) => this.setState({ ...this.state, volume: v }) }
-            onPodcastsLastRemove={ this.handlePodcastsLastRemove.bind(this) }
             ref={ (el) => { if(el) { this.keyHandlerFocus = el.keyHandlerFocus } } }
+            extraControls={ this.extraControls }
           />
           <ReactAudioPlayer
             ref={(element) => { this._player = element; }}
@@ -251,6 +268,7 @@ class Rac1Player extends Component {
 
   // Updates podcasts list from backend
   handleClickReload() {
+
     // If there is not already an incomplete update
     if(this.state.completed) {
       this.setState({
