@@ -1,23 +1,18 @@
 [![Build Status](https://travis-ci.com/emibcn/Rac1.js.svg?branch=master)](https://travis-ci.com/emibcn/Rac1.js)
 
-React app to listen to Rac1 radio station podcasts. Uses GitHub pages to publish it at
-https://emibcn.github.io/Rac1.js/ (publishes this repo's `docs/` contents). The podcasts
-lister is a pure JS app, which does not depends on any other library, so you can re-use
-for other JS projects.
+React app to listen to [Rac1 radio station](https://www.rac1.cat/) podcasts. Uses GitHub pages to publish it at **[Rac1 podcast player at Github Pages](https://emibcn.github.io/Rac1.js/)**. There you will find [this repo's `docs/`](https://github.com/emibcn/Rac1.js/tree/master/docs) contents, which are the results of executing `yarn build` on [this project's container](#development-container) using [this project's source application](https://github.com/emibcn/Rac1.js/tree/master/app).
 
-Uses https://cors-anywhere.herokuapp.com/ to allow downloading 3rd party webs. In this
-case, the app downloads the page with podcasts list, which is served as `text/html`,
-which violates CORS specifications.
+The [podcasts lister](https://github.com/emibcn/Rac1.js/blob/master/app/src/rac1.js) is a pure JS app, which does not depends on any other library, so you can re-use for other JS projects. It uses https://cors-anywhere.herokuapp.com/ to allow downloading 3rd party webs. In this case, the app downloads the [page with podcasts list](https://api.audioteca.rac1.cat/a-la-carta/cerca), which is served as `text/html` and violates CORS specifications.
 
 Inspired by [my command line Python app Rac1.py](https://github.com/emibcn/Rac1.py).
 
 ## Features
-- [ReactJS](https://reactjs.org/) based browser application
+- [ReactJS](https://reactjs.org/) based browser [Single Page Application](https://en.wikipedia.org/wiki/Single-page_application)
 - `<audio>` HTML tag, via [react-audio-player](https://github.com/justinmc/react-audio-player)
 - Nice [DatePicker](https://www.npmjs.com/package/react-date-picker) to allow listening to any day's podcasts
 - Use [Fontawesome free icons](https://fontawesome.com/)
+- Use [\<HashRouter\>](https://github.com/ReactTraining/react-router/blob/master/packages/react-router-dom/docs/api/HashRouter.md) to handle date and podcast selection, linking and history ([Github Pages doesn't allows](https://itnext.io/so-you-want-to-host-your-single-age-react-app-on-github-pages-a826ab01e48) [\<BrowserRouter\>](https://github.com/ReactTraining/react-router/blob/master/packages/react-router-dom/docs/api/BrowserRouter.md))
 - [Docker](https://docs.docker.com/) with [DockerCompose](https://docs.docker.com/compose/) to start a development container, with all the [Create React App](https://github.com/facebook/create-react-app) goodies
-- Use [\<HashRouter\>](https://github.com/ReactTraining/react-router/blob/master/packages/react-router-dom/docs/api/HashRouter.md) to handle date and podcast selection, linking and history (Github Pages doesn't allows [\<BrowserRouter\>](https://github.com/ReactTraining/react-router/blob/master/packages/react-router-dom/docs/api/BrowserRouter.md))
 - KeyPress event handling, via a non-visible `<input>` element which focus itself everytime `onBlur` is detected. You can use some of the `mplayer` default key bindings:
   - `LEFT`: seek backwards 10s
   - `UP`: seek backwards 1m
@@ -30,7 +25,15 @@ Inspired by [my command line Python app Rac1.py](https://github.com/emibcn/Rac1.
   - `M`: (Un)Mute
   - `ENTER`: Jump to next podcast
   - `R`: Update the list of podcasts
-- Good UI controls for use with mobile devices (big buttons, no key bindings)
+- Good UI controls for use with mobile devices (big buttons, disabled key bindings)
+- Almost [WCAG](https://www.w3.org/WAI/standards-guidelines/wcag/) accessible
+- Very fast:
+  - Use `<meta rel="preconnect">` to pre-initiate external HTTPS connections early
+  - Use `<meta rel="prefetch">` to begin early download of external very slow server
+  - Use [ServiceWorker](https://github.com/emibcn/Rac1.js/blob/master/app/src/index.js) (SW) to predownload and maintain the assets in cache
+  - Included [manifest](https://github.com/emibcn/Rac1.js/blob/master/app/public/manifest.json) and SW to allow adding the app icon to mobile desktop with splash screen
+  - Very fast [backend HTML parser](https://github.com/emibcn/Rac1.js/blob/master/app/src/rac1.js)
+  - Use [React.PureComponent](https://reactjs.org/docs/react-api.html) where possible
 - Asynchronuosly `fetch` podcast list and pages list HTML page, parse it with RegExp and download remaining pages
 - Asynchronuosly `fetch` podcasts JSON data
 - Always with a coherently time ordered list of available podcasts
