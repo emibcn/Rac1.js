@@ -6,6 +6,11 @@
       "src": "favicon.ico",
       "sizes": "128x128 64x64 32x32 24x24 16x16",
       "type": "image/x-icon"
+    },
+    {
+      "src": "logo-rac1.png",
+      "sizes": "640x640",
+      "type": "image/png"
     }
   ],
   "homepage": "https://emibcn.github.io/Rac1.js/",
