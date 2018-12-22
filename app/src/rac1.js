@@ -7,8 +7,13 @@ function handleFetchErrors(response) {
 }
 
 // Catches the fetch error, original or 'self-raised'
-function catchFetchErrors(error) {
-  console.error(error);
+function catchFetchErrors(err) {
+  if (err.name === 'AbortError') {
+    console.log(err.message);
+  }
+  else {
+    console.error(err);
+  }
 }
 
 // Cached/compiled regexps for parsing HTML
@@ -26,12 +31,19 @@ class Rac1 {
   // Cache for reloads
   _previous_uuids = [];
 
+  // Abort controller
+  controller = new AbortController();
+
   constructor(props) {
     const noop = () => {};
     this.date = props.date;
     this.onListUpdate = props.onListUpdate || noop;
 
     this.updateList();
+  }
+
+  abort() {
+    this.controller.abort();
   }
 
   setDate(date) {
@@ -55,7 +67,8 @@ class Rac1 {
       // Download podcast data if needed
       .then(this.getPodcasts.bind(this, pageNumber))
       // Trigger event for list updated
-      .then(this.handleListUpdate.bind(this, pageNumber));
+      .then(this.handleListUpdate.bind(this, pageNumber))
+      .catch(catchFetchErrors)
   }
 
   getPodcasts(pageNumber, podcasts) {
@@ -67,6 +80,7 @@ class Rac1 {
           // event when updated
           this.getPodcastData(podcast.uuid)
             .then( this.handlePodcastUpdate.bind(this, pageNumber) )
+            .catch(catchFetchErrors)
         }
         return podcast;
       })
@@ -180,10 +194,10 @@ class Rac1 {
       + `text=&programId=&sectionId=HOUR&from=${date}&to=${date}&pageNumber=${pageNumber}`,
       {
         credentials: 'same-origin',
+        signal: this.controller.signal,
       })
       .then(handleFetchErrors)
       .then(response => response.text())
-      .catch(catchFetchErrors)
   }
 
   // Parses a page raw HTML to obtain audio UUIDs and the list of pages
@@ -218,7 +232,10 @@ class Rac1 {
       return new Promise( resolve => resolve(this._podcastsData[uuid]) );
     }
 
-    return fetch(`https://api.audioteca.rac1.cat/piece/audio?id=${uuid}`)
+    return fetch(
+      `https://api.audioteca.rac1.cat/piece/audio?id=${uuid}`,
+      { signal: this.controller.signal }
+    )
       .then(handleFetchErrors)
       .then(data => data.json())
       .then(podcast => {
@@ -237,7 +254,6 @@ class Rac1 {
 
         return podcast;
       })
-      .catch(catchFetchErrors)
   }
 
 }
