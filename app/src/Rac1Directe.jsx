@@ -46,6 +46,7 @@ class Rac1Directe extends Component {
           hideButtons={['Prev', 'Next', '-10m', '-60s', '-10s', '+10m', '+60s', '+10s']}
         />
         <ReactAudioPlayer
+          ref={(element) => { this._player = element; }}
           style={{ width: '100%' }}
           src={ currentPath }
           autoPlay={ autoplay }
