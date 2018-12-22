@@ -1,10 +1,10 @@
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlay } from '@fortawesome/free-solid-svg-icons'
 
-class PodcastsList extends Component {
+class PodcastsList extends React.PureComponent {
   render() {
     const { children, current } = this.props;
 
@@ -17,7 +17,7 @@ class PodcastsList extends Component {
           paddingLeft: 0,
           textAlign: 'left'
         }}>
-          { children.map((child, index) =>
+          { children.map( (child, index) =>
             <li
               key={ child.key }
               style={{
@@ -29,7 +29,7 @@ class PodcastsList extends Component {
             >
               { index === current ? (
                 <FontAwesomeIcon
-                  icon={faPlay}
+                  icon={ faPlay }
                   style={{
                     position: 'absolute',
                     left: '-2.75em',
