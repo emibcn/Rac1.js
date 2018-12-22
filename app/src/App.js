@@ -105,7 +105,7 @@ class Rac1Player extends Component {
           <Controls
             getPlayer={ this.player.bind(this) }
             volume={ volume }
-            allowFocus={ (el) => el.className.match(/date-?picker/) }
+            allowFocus={ (el) => el.className.match( /date-?picker/ ) }
             onPlayNext={ this.playNext.bind(this) }
             onPlayPrev={ this.playPrev.bind(this) }
             onSetVolume={ (v) => this.setState({ ...this.state, volume: v }) }
@@ -118,6 +118,7 @@ class Rac1Player extends Component {
             src={ currentPath }
             autoPlay={ autoplay }
             controls
+            controlsList="nodownload"
             preload={ (autoplay ? "auto" : "metadata") }
             onEnded={ this.playNext.bind(this) }
             volume={ volume }

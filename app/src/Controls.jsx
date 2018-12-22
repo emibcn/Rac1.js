@@ -147,10 +147,11 @@ class Controls extends Component {
             <button
               key={ index }
               onClick={ control.action.bind(this) }
+              aria-label={ control.text }
               style={{
-                borderRadius: "1em",
-                padding: "1em",
-                margin: "1em",
+                borderRadius: '1em',
+                padding: '1em',
+                margin: '1em',
               }}
             >
               <div style={{
@@ -160,14 +161,14 @@ class Controls extends Component {
               }} >
                 { control.icon instanceof Function ? control.icon() : control.icon }
               </div>
-              <span style={{ fontSize: 'calc(8px + 1vmin)', color: '#777' }}>
+              <span style={{ fontSize: 'calc(8px + 1vmin)', color: '#333' }}>
                 { control.text instanceof Function ? control.text() : control.text }
               </span>
             </button>
           )
         })}
         <input
-          name="player-key-handler"
+          name='player-key-handler'
           style={{ // Almost invisible ;)
             width: '1px',
             height: '1px',
@@ -181,9 +182,10 @@ class Controls extends Component {
             color: 'transparent',
             cursor: 'default',
           }}
-          ref={(element) => { this._keyHandler = element; }}
+          ref={ (element) => { this._keyHandler = element } }
           onKeyUp={ this.handleKey.bind(this) }
           onBlur={ this.keyHandlerFocus.bind(this) }
+          aria-label="Key input handler"
         />
       </div>
     );
