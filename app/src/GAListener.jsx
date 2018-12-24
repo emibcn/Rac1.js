@@ -2,7 +2,7 @@ import React from 'react';
 import { PropTypes } from 'prop-types';
 import ReactGA from 'react-ga';
 
-class GAListenerProd extends React.PureComponent {
+class GAListenerProd extends React.Component {
   static contextTypes = {
     router: PropTypes.object
   };
@@ -46,14 +46,18 @@ class GAListenerProd extends React.PureComponent {
   }
 }
 
+// Renders GA+children in production, only children for the rest
+class GAListener extends React.Component {
+  render() {
 
-// Disable GA in dev
-let GAListener;
-if(process.env.NODE_ENV !== 'production') {
-  GAListener = React.Fragment;
-}
-else {
-  GAListener = GAListenerProd;
+    // Disable GA in dev
+    return process.env.NODE_ENV !== 'production' ?
+      this.props.children : (
+      <GAListenerProd>
+        { this.props.children }
+      </GAListenerProd>
+    )
+  }
 }
 
 export default GAListener;
