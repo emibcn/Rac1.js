@@ -78,11 +78,11 @@ class App extends React.Component {
                   render={props => <Rac1Directe { ...props } /> } />
 
                 <Route
-                  path="/:year/:month/:day"
+                  path="/:year/:month/:day/:hour/:minute"
                   render={props => <Rac1ByDate { ...props } /> } />
 
                 <Route
-                  path="/:year/:month/:day/:hour/:minute"
+                  path="/:year/:month/:day"
                   render={props => <Rac1ByDate { ...props } /> } />
 
                 {/* Set default date to today */}
