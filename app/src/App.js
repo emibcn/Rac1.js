@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import {
   HashRouter as Router,
   Route,
@@ -20,7 +20,7 @@ import Rac1ByDate from './Rac1ByDate';
 
 import './App.css';
 
-class App extends Component {
+class App extends React.Component {
   render() {
     const date = new Date();
     const todayStr = `/${date.getFullYear()}/${1 + date.getMonth()}/${date.getDate()}/0/0`;
