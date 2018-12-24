@@ -50,8 +50,10 @@ class GAListenerProd extends React.Component {
 class GAListener extends React.Component {
   render() {
 
-    // Disable GA in dev
-    return process.env.NODE_ENV !== 'production' ?
+    const dnt = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+
+    // Disable GA in dev and for people with DoNotTrack HTTP header
+    return process.env.NODE_ENV !== 'production' || dnt === "1" || dnt === "yes" ?
       this.props.children : (
       <GAListenerProd>
         { this.props.children }
