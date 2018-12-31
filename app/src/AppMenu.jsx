@@ -24,7 +24,7 @@ class AppMenu extends React.Component {
     };
 
     return (
-      <div style={{ padding: '1em' }}>
+      <div style={{ padding: '2em 1em 1em' }}>
         <Link className="bm-item" style={ linkStyle } to="/">
           <FontAwesomeIcon icon={ faByDate } style={{ marginRight: '.5em' }} />
           <span>By date</span>
