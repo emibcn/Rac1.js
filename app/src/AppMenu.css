@@ -20,7 +20,7 @@
 
 .news .bm-burger-button::after {
   background-color: rgba(0, 255, 0, .8);
-  border: 1px solid rgba(100, 255, 100, .8);
+  border: 1px solid rgba(50, 255, 50, .8);
   border-radius: 50%;
   width: .7em;
   height: .7em;
@@ -28,7 +28,12 @@
   position: absolute;
   top: -8px;
   right: -5px;
-  content: " ";
+  content: "!";
+  color: rgba(255,255,0,.8);
+  line-height: .5em;
+  font-weight: bold;
+  font-size: 1em;
+  transform: rotate(15deg);
 }
 
 /* Position and sizing of clickable cross button */
