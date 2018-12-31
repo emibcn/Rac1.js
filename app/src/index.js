@@ -16,6 +16,19 @@ serviceWorker.register({
     console.log({ registration, scope: registration.scope })
     if( registration.waiting ) {
       console.log("We can force update!");
+
+      // When the user asks to refresh the UI, we'll need to reload the window
+      var preventDevToolsReloadLoop;
+      navigator.serviceWorker.addEventListener('controllerchange', function(event) {
+        // Ensure refresh is only called once.
+        // This works around a bug in "force update on reload".
+        if (preventDevToolsReloadLoop)
+          return;
+        preventDevToolsReloadLoop = true;
+        console.log('Controller loaded');
+        window.location.reload();
+      });
+
       registration.waiting.postMessage('skipWaiting');
     }
   }
