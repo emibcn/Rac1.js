@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import {
   HashRouter as Router,
   Route,
@@ -11,6 +12,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   faBroadcastTower as faDirecte,
   faCalendarAlt as faByDate,
+  faArrowAltCircleUp as faUpgrade,
 } from '@fortawesome/free-solid-svg-icons'
 
 import GAListener from './GAListener';
@@ -21,9 +23,41 @@ import Rac1ByDate from './Rac1ByDate';
 import './App.css';
 
 class App extends React.Component {
+
+  constructor() {
+    super();
+    this.registration = false;
+    this.state = {
+      newServiceWorkerDetected: false,
+    };
+  }
+
+  componentDidMount() {
+    document.addEventListener('onNewServiceWorker', this.handleNewServiceWorker.bind(this));
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('onNewServiceWorker', this.handleNewServiceWorker.bind(this));
+  }
+
+  handleNewServiceWorker(event) {
+    this.registration = event.registration;
+    this.setState({
+      ...this.state,
+      newServiceWorkerDetected: true,
+    });
+  }
+
   render() {
     const date = new Date();
     const todayStr = `/${date.getFullYear()}/${1 + date.getMonth()}/${date.getDate()}/0/0`;
+    const { newServiceWorkerDetected } = this.state;
+    const linkStyle = {
+      padding: '1em',
+      backgroundColor: '#ddd',
+      border: '1px solid #777',
+      display: 'block',
+    };
 
     return (
       <Router>
@@ -43,10 +77,7 @@ class App extends React.Component {
               <Link
                 to="/"
                 style={{
-                  padding: '1em',
-                  backgroundColor: '#ddd',
-                  border: '1px solid #777',
-                  display: 'block',
+                  ...linkStyle,
                   borderBottomLeftRadius: '.5em',
                 }}>
                 <FontAwesomeIcon icon={ faByDate } style={{ marginRight: '.5em' }} />
@@ -57,16 +88,33 @@ class App extends React.Component {
               <Link
                 to="/directe"
                 style={{
-                  padding: '1em',
-                  backgroundColor: '#ddd',
-                  border: '1px solid #777',
-                  display: 'block',
-                  borderBottomRightRadius: '.5em',
+                  ...linkStyle,
+                  borderBottomRightRadius: newServiceWorkerDetected ? null : '.5em',
                 }}>
                 <FontAwesomeIcon icon={ faDirecte } style={{ marginRight: '.5em' }} />
                 En directe
               </Link>
             </li>
+            { newServiceWorkerDetected ? (
+                <li>
+                  <a
+                    href='/'
+                    title="New version available!"
+                    onClick={ (e) => {
+                      e.preventDefault();
+                      this.props.onLoadNewServiceWorkerAccept(this.registration)
+                    }}
+                    style={{
+                      ...linkStyle,
+                      color: 'green',
+                      borderBottomRightRadius: '.5em',
+                    }}>
+                    <FontAwesomeIcon icon={ faUpgrade } style={{ marginRight: '.5em' }} />
+                    Update!
+                  </a>
+                </li>
+              ) : null
+            }
           </ul>
 
           {/* App Route */}
@@ -79,6 +127,10 @@ class App extends React.Component {
 
                 <Route
                   path="/:year/:month/:day/:hour/:minute"
+                  render={props => <Rac1ByDate { ...props } /> } />
+
+                <Route
+                  path="/:year/:month/:day/:hour"
                   render={props => <Rac1ByDate { ...props } /> } />
 
                 <Route
@@ -95,5 +147,13 @@ class App extends React.Component {
     )
   }
 }
+
+App.defaultProps = {
+  onLoadNewServiceWorkerAccept: (e) => {},
+};
+
+App.propTypes = {
+  onLoadNewServiceWorkerAccept: PropTypes.func.isRequired,
+};
 
 export default App;
