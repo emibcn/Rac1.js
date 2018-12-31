@@ -32,18 +32,18 @@ class AppMenu extends React.Component {
           backgroundRepeat: 'no-repeat',
           backgroundPosition: 'center .5em',
         }}>
-        <Link className="bm-item" style={ linkStyle } to="/">
+        <Link className='bm-item' style={ linkStyle } to="/">
           <FontAwesomeIcon icon={ faByDate } style={{ marginRight: '.5em' }} />
           <span>By date</span>
         </Link>
-        <Link className="bm-item" style={ linkStyle } to="/directe">
+        <Link className='bm-item' style={ linkStyle } to="/directe">
           <FontAwesomeIcon icon={ faDirecte } style={{ marginRight: '.5em' }} />
           <span>En directe</span>
         </Link>
         { newServiceWorkerDetected ? (
             <a
               href='/'
-              className="bm-item"
+              className='bm-item'
               style={{ ...linkStyle, color: 'green' }}
               title="New version available!"
               onClick={ this.handleClickUpdate.bind(this) }
@@ -67,10 +67,10 @@ class AppMenu extends React.Component {
         { matches => {
           if ( matches ) {
             return (
-              <div className={ "menu-big" + extraClass }>
+              <div className={ 'menu-big' + extraClass }>
                 <BigMenu
-                  pageWrapId="page-wrap"
-                  outerContainerId="outer-container"
+                  pageWrapId='page-wrap'
+                  outerContainerId='outer-container'
                   disableCloseOnEsc
                 >
                   { this.renderLinks() }
@@ -79,10 +79,10 @@ class AppMenu extends React.Component {
             );
           } else {
             return (
-              <div className={ "menu-small" + extraClass }>
+              <div className={ 'menu-small' + extraClass }>
                 <SmallMenu
-                  pageWrapId="page-wrap"
-                  outerContainerId="outer-container"
+                  pageWrapId='page-wrap'
+                  outerContainerId='outer-container'
                   disableCloseOnEsc
                 >
                   { this.renderLinks() }
