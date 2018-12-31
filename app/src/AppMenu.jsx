@@ -24,7 +24,14 @@ class AppMenu extends React.Component {
     };
 
     return (
-      <div style={{ padding: '2em 1em 1em' }}>
+      <div
+        style={{
+          padding: '3em 1em 1em',
+          background: 'url(logo-rac1.png)',
+          backgroundSize: 50,
+          backgroundRepeat: 'no-repeat',
+          backgroundPosition: 'center .5em',
+        }}>
         <Link className="bm-item" style={ linkStyle } to="/">
           <FontAwesomeIcon icon={ faByDate } style={{ marginRight: '.5em' }} />
           <span>By date</span>
@@ -54,8 +61,8 @@ class AppMenu extends React.Component {
   render() {
     return (
       <MediaQuery minWidth={700}>
-				{ matches => {
-					if ( matches ) {
+        { matches => {
+          if ( matches ) {
             return (
               <div className="menu-big">
                 <BigMenu
@@ -67,7 +74,7 @@ class AppMenu extends React.Component {
                 </BigMenu>
               </div>
             );
-					} else {
+          } else {
             return (
               <div className="menu-small">
                 <SmallMenu
