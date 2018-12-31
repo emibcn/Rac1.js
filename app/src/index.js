@@ -16,7 +16,7 @@ serviceWorker.register({
     console.log({ registration, self, win })
     if( self.skipWaiting ) {
       console.log("We can force update!");
+      self.skipWaiting();
     }
-    debugger
   }
 });
