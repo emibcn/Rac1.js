@@ -8,6 +8,7 @@ import * as serviceWorker from './serviceWorker';
 // - Send message to SW to trigger the update
 // - Once updated, reload this window to load new assets
 const updateSW = (registration) => {
+  console.log("Registration from index.js::updateSW :", registration);
   if( registration.waiting ) {
 
     // When the user asks to refresh the UI, we'll need to reload the window
