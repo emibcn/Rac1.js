@@ -1,25 +1,3 @@
-// Raises exception on response error
-function handleFetchErrors(response) {
-  if ( !response.ok ) {
-    throw Error(response.statusText);
-  }
-  return response;
-}
-
-// Catches the fetch error, original or 'self-raised'
-function catchFetchErrors(err) {
-  if ( err.name === 'AbortError' ) {
-    console.log(err.message);
-  }
-  else {
-    console.error(err);
-  }
-}
-
-// Cached/compiled regexps for parsing HTML
-const dataAttrsFind   = / class="(audioteca-item|pagination-link)" /;
-const dataAttrsClean  = /.* (data-[^=]*)="([^"]*)".*/;
-
 class Rac1 {
 
   // Cache for UUID => podcast
@@ -43,6 +21,28 @@ class Rac1 {
   abort() {
     this.controller.abort();
   }
+
+  // Raises exception on response error
+  handleFetchErrors(response) {
+    if ( !response.ok ) {
+      throw Error(response.statusText);
+    }
+    return response;
+  }
+
+  // Catches the fetch error, original or 'self-raised'
+  catchFetchErrors(err) {
+    if ( err.name === 'AbortError' ) {
+      console.log(err.message);
+    }
+    else {
+      console.error(err);
+    }
+  }
+
+  // Cached/compiled regexps for parsing HTML
+  dataAttrsFind  = / class="(audioteca-item|pagination-link)" /;
+  dataAttrsClean = /.* (data-[^=]*)="([^"]*)".*/;
 
   setDate(date) {
     if ( this.date !== date ) {
@@ -70,7 +70,7 @@ class Rac1 {
       .then( this.handleListUpdate.bind(this, pageNumber) )
 
       // Catch Exceptions
-      .catch( catchFetchErrors )
+      .catch( this.catchFetchErrors )
   }
 
   getPodcasts(pageNumber, podcasts) {
@@ -84,7 +84,7 @@ class Rac1 {
           // event when updated
           this.getPodcastData(podcast.uuid)
             .then( this.handlePodcastUpdate.bind(this, pageNumber) )
-            .catch( catchFetchErrors )
+            .catch( this.catchFetchErrors )
         }
         return podcast;
       })
@@ -231,8 +231,8 @@ class Rac1 {
         credentials: 'same-origin',
         signal: this.controller.signal,
       })
-      .then(handleFetchErrors)
-      .then(response => response.text())
+      .then( this.handleFetchErrors )
+      .then( response => response.text() )
   }
 
   // Parses a page raw HTML to obtain audio UUIDs and the list of pages
@@ -241,8 +241,8 @@ class Rac1 {
     const searchData = ['data-audio-id','data-audioteca-search-page'];
     const data = dataRaw
       .split('\n')
-      .filter( line => dataAttrsFind.test(line) )
-      .map( v => v.replace(dataAttrsClean, '$1=$2') )
+      .filter( line => this.dataAttrsFind.test(line) )
+      .map( v => v.replace(this.dataAttrsClean, '$1=$2') )
       .map( line => line.split('=') )
       .filter( v => searchData.includes(v[0]) );
 
@@ -271,7 +271,7 @@ class Rac1 {
       `https://api.audioteca.rac1.cat/piece/audio?id=${uuid}`,
       { signal: this.controller.signal }
     )
-      .then( handleFetchErrors )
+      .then( this.handleFetchErrors )
       .then( data => data.json() )
       .then( podcast => {
 
