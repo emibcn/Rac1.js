@@ -18,6 +18,19 @@
   border-radius: 2px;
 }
 
+.news .bm-burger-button::after {
+  background-color: rgba(0, 255, 0, .8);
+  border: 1px solid rgba(100, 255, 100, .8);
+  border-radius: 50%;
+  width: .7em;
+  height: .7em;
+  display: block;
+  position: absolute;
+  top: -8px;
+  right: -5px;
+  content: " ";
+}
+
 /* Position and sizing of clickable cross button */
 .bm-cross-button {
   height: 36px !important;
