@@ -16,7 +16,6 @@ import {
 } from '@fortawesome/free-solid-svg-icons'
 
 import GAListener from './GAListener';
-
 import Rac1Directe from './Rac1Directe';
 import Rac1ByDate from './Rac1ByDate';
 
@@ -100,7 +99,7 @@ class App extends React.Component {
                   <a
                     href='/'
                     title="New version available!"
-                    onClick={ (e) => {
+                    onClick={ e => {
                       e.preventDefault();
                       this.props.onLoadNewServiceWorkerAccept(this.registration)
                     }}
@@ -123,15 +122,15 @@ class App extends React.Component {
               <Switch>
                 <Route
                   path="/directe"
-                  render={props => <Rac1Directe { ...props } /> } />
+                  render={ props => <Rac1Directe { ...props } /> } />
 
                 <Route
                   path="/:year/:month/:day/:hour/:minute"
-                  render={props => <Rac1ByDate { ...props } /> } />
+                  render={ props => <Rac1ByDate { ...props } /> } />
 
                 <Route
                   path="/:year/:month/:day/:hour"
-                  render={props => <Rac1ByDate { ...props } /> } />
+                  render={ props => <Rac1ByDate { ...props } /> } />
 
                 <Route
                   path="/:year/:month/:day"
@@ -149,7 +148,7 @@ class App extends React.Component {
 }
 
 App.defaultProps = {
-  onLoadNewServiceWorkerAccept: (e) => {},
+  onLoadNewServiceWorkerAccept: e => {},
 };
 
 App.propTypes = {

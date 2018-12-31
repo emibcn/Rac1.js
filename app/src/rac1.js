@@ -1,6 +1,6 @@
 // Raises exception on response error
 function handleFetchErrors(response) {
-  if (!response.ok) {
+  if ( !response.ok ) {
     throw Error(response.statusText);
   }
   return response;
@@ -8,7 +8,7 @@ function handleFetchErrors(response) {
 
 // Catches the fetch error, original or 'self-raised'
 function catchFetchErrors(err) {
-  if (err.name === 'AbortError') {
+  if ( err.name === 'AbortError' ) {
     console.log(err.message);
   }
   else {
@@ -45,7 +45,7 @@ class Rac1 {
   }
 
   setDate(date) {
-    if(this.date !== date) {
+    if ( this.date !== date ) {
       this._previous_uuids = [];
     }
     this.date = date;
@@ -54,7 +54,7 @@ class Rac1 {
 
   // Download podcasts UUIDs and then, each podcast data
   updateList(pageNumber=0) {
-    if(pageNumber === 0) {
+    if ( pageNumber === 0 ) {
       this._pages_uuids = [];
       this.pages = [0];
       this.handleListUpdate();
@@ -62,23 +62,29 @@ class Rac1 {
 
     // Get list of UUIDs
     return this.getPodcastsUUIDs(pageNumber)
+
       // Download podcast data if needed
-      .then(this.getPodcasts.bind(this, pageNumber))
+      .then( this.getPodcasts.bind(this, pageNumber) )
+
       // Trigger event for list updated
-      .then(this.handleListUpdate.bind(this, pageNumber))
-      .catch(catchFetchErrors)
+      .then( this.handleListUpdate.bind(this, pageNumber) )
+
+      // Catch Exceptions
+      .catch( catchFetchErrors )
   }
 
   getPodcasts(pageNumber, podcasts) {
     return podcasts
-      .map(podcast => {
+      .map( podcast => {
+
         // If it's a podcast and is not in the cache
-        if(podcast.uuid !== '...' && !(podcast.uuid in this._podcastsData)) {
+        if ( podcast.uuid !== '...' && !(podcast.uuid in this._podcastsData) ) {
+
           // Download podcast data and then trigger
           // event when updated
           this.getPodcastData(podcast.uuid)
             .then( this.handlePodcastUpdate.bind(this, pageNumber) )
-            .catch(catchFetchErrors)
+            .catch( catchFetchErrors )
         }
         return podcast;
       })
@@ -88,13 +94,13 @@ class Rac1 {
   // and fires event onListUpdate with that
   // () => null
   handleListUpdate() {
-    let newList = [...this._previous_uuids.filter(w => w.uuid !== '...')];
+    let newList = [ ...this._previous_uuids.filter(w => w.uuid !== '...') ];
     let completed = true;
 
     // Helper functions
-    const dateToString = (d) => `${d.getFullYear()}/${d.getMonth()+1}/${d.getDate()}`;
+    const dateToString = d => `${d.getFullYear()}/${d.getMonth()+1}/${d.getDate()}`;
     const compareDates = (d1, d2) => dateToString(d1) === dateToString(d2);
-    const filterByDates = (podcast) => {
+    const filterByDates = podcast => {
       return !("date" in podcast) || compareDates( podcast.date, this.date )
     };
 
@@ -105,7 +111,7 @@ class Rac1 {
       var pageUuids = this._pages_uuids[ page ];
 
       // Set temporal UUID for unresolved pages
-      if(pageUuids === undefined) {
+      if ( pageUuids === undefined ) {
         newList.push({uuid: '...'});
         completed = false;
       }
@@ -130,17 +136,17 @@ class Rac1 {
     });
 
     // Get cached data if available
-    newList = newList.map(podcast => this._podcastsData[podcast.uuid] || podcast )
+    newList = newList.map( podcast => this._podcastsData[podcast.uuid] || podcast )
           // Filter out podcasts from other dates
           .filter( filterByDates );
 
     // Save complete list on finish
-    if(completed) {
+    if ( completed ) {
       this._previous_uuids = newList;
     }
 
     // See if all podcasts have already been downloaded
-    const allCompleted = completed && newList.every(podcast => 'path' in podcast);
+    const allCompleted = completed && newList.every( podcast => 'path' in podcast );
 
     // Trigger update event
     this.onListUpdate(newList, allCompleted);
@@ -152,8 +158,8 @@ class Rac1 {
   // (pageNumber, podcastNew) => null
   handlePodcastUpdate(pageNumber, podcastNew) {
     podcastNew.page = pageNumber;
-    this._pages_uuids[pageNumber].forEach((podcast,index) => {
-      if(podcast.uuid === podcastNew.uuid) {
+    this._pages_uuids[pageNumber].forEach( (podcast,index) => {
+      if ( podcast.uuid === podcastNew.uuid ) {
         this._pages_uuids[pageNumber][index] = podcastNew;
       }
     });
@@ -166,13 +172,12 @@ class Rac1 {
   // (pageNumber) => Promise(Array(String(UUID)))
   getPodcastsUUIDs(pageNumber=0) {
     return this.getPage(pageNumber)
-      .then(dataRaw => {
+      .then( dataRaw => {
 
-        //console.log({pageNumber, dataRaw});
         const { uuidsPage, pages } = this.parsePage(dataRaw);
 
         // If it's the first page, call the rest
-        if(pageNumber === 0) {
+        if ( pageNumber === 0 ) {
 
           // Save the list of pages, in reverse order
           // If there are no pages (only one page), create a one element array,
@@ -184,9 +189,10 @@ class Rac1 {
           this.pages.forEach( page => (page !== 0) && this.updateList( page ) );
         }
 
+        // Save in reversed order and along with the page number
         this._pages_uuids[pageNumber] = uuidsPage
           .reverse()
-          .map(uuid => { return {uuid, page: pageNumber} });
+          .map( uuid => { return {uuid, page: pageNumber} } );
 
         return this._pages_uuids[pageNumber];
       });
@@ -195,6 +201,7 @@ class Rac1 {
   // Gets a page with HTML containning a list of podcasts from the server
   // (pageNumber) => Promise(String)
   getPage(pageNumber=0) {
+
     // Format day and month to 2 digits 0 padded strings
     const pad2 = num => ( num < 10 ? '0' : '' ) + num;
     const date =
@@ -218,7 +225,8 @@ class Rac1 {
     return fetch(
       "https://cors-anywhere.herokuapp.com/" // Anti CORS
       + "https://api.audioteca.rac1.cat/a-la-carta/cerca?"
-      + `text=&programId=&sectionId=HOUR&from=${date}&to=${dateNext}&pageNumber=${pageNumber}`,
+      + "text=&programId=&sectionId=HOUR&"
+      + `from=${date}&to=${dateNext}&pageNumber=${pageNumber}`,
       {
         credentials: 'same-origin',
         signal: this.controller.signal,
@@ -233,18 +241,18 @@ class Rac1 {
     const searchData = ['data-audio-id','data-audioteca-search-page'];
     const data = dataRaw
       .split('\n')
-      .filter(line => dataAttrsFind.test(line))
-      .map(v => v.replace(dataAttrsClean, '$1=$2'))
-      .map(line => line.split('='))
-      .filter(v => searchData.includes(v[0]));
+      .filter( line => dataAttrsFind.test(line) )
+      .map( v => v.replace(dataAttrsClean, '$1=$2') )
+      .map( line => line.split('=') )
+      .filter( v => searchData.includes(v[0]) );
 
     return {
       uuidsPage: data
-        .filter(v => v[0] === 'data-audio-id')
-        .map(v => v[1]),
+        .filter( v => v[0] === 'data-audio-id' )
+        .map( v => v[1] ),
       pages: data
-        .filter(v => v[0] === 'data-audioteca-search-page')
-        .map(v => Number(v[1])),
+        .filter( v => v[0] === 'data-audioteca-search-page' )
+        .map( v => Number(v[1]) ),
     };
   }
 
@@ -253,7 +261,7 @@ class Rac1 {
   getPodcastData(uuid) {
 
     // Return cached version if we've got it
-    if(uuid in this._podcastsData) {
+    if ( uuid in this._podcastsData ) {
       // Return podcast as an immediatelly resolved Promise,
       // as it is what's expected
       return new Promise( resolve => resolve(this._podcastsData[uuid]) );
@@ -263,12 +271,14 @@ class Rac1 {
       `https://api.audioteca.rac1.cat/piece/audio?id=${uuid}`,
       { signal: this.controller.signal }
     )
-      .then(handleFetchErrors)
-      .then(data => data.json())
-      .then(podcast => {
+      .then( handleFetchErrors )
+      .then( data => data.json() )
+      .then( podcast => {
 
         // Fix server bug on year's last day, in which gives dates in the future
-        if (podcast.dateTime.startsWith(`${this.date.getFullYear() + 1}-${this.date.getMonth() + 1}`)) {
+        if ( podcast.dateTime.startsWith(
+          `${this.date.getFullYear() + 1}-${this.date.getMonth() + 1}`
+        )) {
           podcast.dateTime = podcast.dateTime
             .replace(`${this.date.getFullYear() + 1}`, `${this.date.getFullYear()}`);
           console.log("Podcast date in future. Fixing to: " + podcast.dateTime);

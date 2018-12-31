@@ -13,7 +13,7 @@ class Controls extends React.PureComponent {
   // Controls definitions
   controls = [
     {
-      icon: <FontAwesomeIcon icon={faFastForward} flip="horizontal" />,
+      icon: <FontAwesomeIcon icon={ faFastForward } flip="horizontal" />,
       text: 'Prev',
       help: 'Play previous podcast',
       action: () => this.props.onPlayPrev(),
@@ -21,8 +21,8 @@ class Controls extends React.PureComponent {
     {
       icon: (
         <span>
-          <FontAwesomeIcon icon={faForward} flip="horizontal" />
-          <FontAwesomeIcon icon={faForward} flip="horizontal" />
+          <FontAwesomeIcon icon={ faForward } flip="horizontal" />
+          <FontAwesomeIcon icon={ faForward } flip="horizontal" />
         </span>
       ),
       text: '-10m',
@@ -49,21 +49,21 @@ class Controls extends React.PureComponent {
       keys: [ 'ArrowUp' ],
     },
     {
-      icon: <FontAwesomeIcon icon={faForward} flip="horizontal" />,
+      icon: <FontAwesomeIcon icon={ faForward } flip="horizontal" />,
       text: '-10s',
       help: 'Go backwards 10 seconds',
       action: () => this.player().currentTime -= 10,
       keys: [ 'ArrowLeft' ],
     },
     {
-      icon: <FontAwesomeIcon icon={faEject} rotation={90} />,
+      icon: <FontAwesomeIcon icon={ faEject } rotation={90} />,
       text: 'Play/Pause',
       help: 'Toggle Play/Pause',
       action: () => this.player().paused ? this.player().play() : this.player().pause(),
       keys: [ ' ', 'p', 'P' ],
     },
     {
-      icon: <FontAwesomeIcon icon={faForward} />,
+      icon: <FontAwesomeIcon icon={ faForward } />,
       text: '+10s',
       help: 'Go forward 10 seconds',
       action: () => this.player().currentTime += 10,
@@ -88,8 +88,8 @@ class Controls extends React.PureComponent {
     {
       icon: (
         <span>
-          <FontAwesomeIcon icon={faForward} />
-          <FontAwesomeIcon icon={faForward} />
+          <FontAwesomeIcon icon={ faForward } />
+          <FontAwesomeIcon icon={ faForward } />
         </span>
       ),
       text: '+10m',
@@ -98,7 +98,7 @@ class Controls extends React.PureComponent {
       keys: [ 'PageDown' ],
     },
     {
-      icon: <FontAwesomeIcon icon={faFastForward} />,
+      icon: <FontAwesomeIcon icon={ faFastForward } />,
       text: 'Next',
       help: 'Play next podcast',
       action: () => this.props.onPlayNext(),
@@ -132,7 +132,7 @@ class Controls extends React.PureComponent {
 
     // Add extra controls
     if ( props.extraControls.length ) {
-      this.controls = this.controls.concat(props.extraControls);
+      this.controls = this.controls.concat( props.extraControls );
     }
   }
 
@@ -142,11 +142,11 @@ class Controls extends React.PureComponent {
 
     // Allow datepicker to get focus
     if ( e && e.relatedTarget &&
-          this.props.allowFocus(e.relatedTarget) ) {
+          this.props.allowFocus( e.relatedTarget ) ) {
       doFocus = false;
     }
 
-    if(doFocus || force) {
+    if ( doFocus || force ) {
       this.timer = setTimeout(() => this._keyHandler.focus(), 100);
     }
   };
@@ -169,12 +169,12 @@ class Controls extends React.PureComponent {
         { this.controls
             .filter( control => 'icon' in control && 'text' in control)
             .filter( control => !this.props.hideButtons.includes(control.text) )
-            .map((control, index) => {
+            .map( (control, index) => {
           return (
             <button
               key={ index }
               onClick={ control.action.bind(this) }
-              onMouseUp={ (e) => this.keyHandlerFocus(e, true) }
+              onMouseUp={ e => this.keyHandlerFocus(e, true) }
               aria-label={ control.help }
               title={ control.help }
               className='rac1-controls-button'
@@ -215,7 +215,7 @@ class Controls extends React.PureComponent {
             color: 'transparent',
             cursor: 'default',
           }}
-          ref={ (element) => { this._keyHandler = element } }
+          ref={ element => { this._keyHandler = element } }
           onKeyUp={ this.handleKey.bind(this) }
           onBlur={ this.keyHandlerFocus.bind(this) }
           aria-label="Key input handler"
@@ -236,17 +236,17 @@ class Controls extends React.PureComponent {
     let volumeNew = volume;
 
     // Increment
-    if(increment > 0 && volume < 1) {
+    if ( increment > 0 && volume < 1 ) {
       volumeNew = volume <= (1 - increment) ? volume + increment : 1;
     }
 
     // Decrement
-    if(increment < 0 && volume > 0) {
+    if ( increment < 0 && volume > 0 ) {
       volumeNew = volume >= (-increment) ? volume + increment : 0;
     }
 
     // Prevent updating volume if limit reached
-    if(volumeNew !== volume) {
+    if ( volumeNew !== volume ) {
       this.setVolume(volumeNew);
     }
   }
@@ -255,9 +255,13 @@ class Controls extends React.PureComponent {
     let stopPropagation = false;
 
     // Handle controls keys
-    this.controls.forEach( (control) => {
-      (control.keys||[]).forEach( (key_orig) => {
+    this.controls.forEach( control => {
+      (control.keys||[]).forEach( key_orig => {
+
+        // Understand plain string or custom key object
         let key = typeof key_orig === 'string' ? {key: key_orig} : key_orig;
+
+        // If it's exact key match
         if(e.key === key.key &&
           ['shiftKey', 'altKey', 'ctrlKey', 'metaKey']
             .every( (mod) => !!e[mod] === !!key[mod] )) {
@@ -268,7 +272,7 @@ class Controls extends React.PureComponent {
       });
     });
 
-    if(stopPropagation) {
+    if ( stopPropagation ) {
       e.stopPropagation();
       e.preventDefault();
     }
@@ -276,10 +280,10 @@ class Controls extends React.PureComponent {
 }
 
 Controls.defaultProps = {
-  onSetVolume:   (e) => {},
-  onPlayPrev:    (e) => {},
-  onPlayNext:    (e) => {},
-  allowFocus:    (e) => {},
+  onSetVolume:   e => {},
+  onPlayPrev:    e => {},
+  onPlayNext:    e => {},
+  allowFocus:    e => {},
   extraControls: [],
   hideButtons:   [],
   volume:        1,
