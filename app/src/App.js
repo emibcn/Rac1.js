@@ -44,7 +44,7 @@ class App extends React.Component {
     if ( 'persist' in event) {
       event.persist();
     }
-    console.log({event});
+    console.log("handleNewServiceWorker: ", event);
     this.registration = event.registration;
     this.setState({
       ...this.state,
