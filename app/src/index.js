@@ -14,6 +14,10 @@ serviceWorker.register({
     //console.log("Forcing new update activation");
     //self.skipWaiting()
     console.log({ registration, self, win })
+    if( registration.waiting.skipWaiting ) {
+      console.log("We can force update!");
+      registration.waiting.skipWaiting();
+    }
     if( self.skipWaiting ) {
       console.log("We can force update!");
       self.skipWaiting();
