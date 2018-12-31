@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/3.6.3/workbox-sw.js");
 
 importScripts(
-  "/Rac1.js/precache-manifest.c8efe817ec3e63d8881a095619657898.js"
+  "/Rac1.js/precache-manifest.371433be1fdf13d772eeccd86a96fec6.js"
 );
 
 workbox.clientsClaim();
@@ -31,4 +31,11 @@ workbox.precaching.precacheAndRoute(self.__precacheManifest, {});
 workbox.routing.registerNavigationRoute("/Rac1.js/index.html", {
   
   blacklist: [/^\/_/,/\/[^\/]+\.[^\/]+$/],
+});
+self.addEventListener('message', function(event){
+  console.log("SW Received Message: " + event.data);
+  if ( event.data === 'skipWaiting' ) {
+    console.log("Forcing SW update!");
+    self.skipWaiting();
+  }
 });
