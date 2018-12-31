@@ -105,14 +105,27 @@ class Rac1 {
         completed = false;
       }
       else {
+
+        // Helper functions
+        const dateToString = (d) => `${d.getFullYear()}/${d.getMonth()}/${d.getDate()}`;
+        const compareDates = (d1,d2) => dateToString(d1) === dateToString(d2);
+
         // Add this page's podcasts to the list
         pageUuids
-          // filter out already added podcasts
+
+          // Filter out already added podcasts
           .filter( podcastPage => {
             const found = newList.filter(
               podcast => podcast.uuid === podcastPage.uuid );
             return found.length === 0;
           })
+
+          // Filter out podcasts from other dates
+          .filter( podcast => {
+            return !("date" in podcast) || compareDates( podcast.date, this.date )
+          })
+
+          // Add remaining podcasts to the list
           .forEach( podcast => newList.push( podcast ) );
       }
     });
@@ -188,10 +201,23 @@ class Rac1 {
       pad2( 1 + this.date.getMonth() ) + '/' +
       this.date.getFullYear();
 
+    // Set next day's date and string
+    let next = new Date(this.date.getTime());
+    next.setDate(next.getDate() + 1);
+    let dateNext = '';
+
+    // Don't use next day date if it's year's last day
+    if ( !(( next.getMonth() + 1 ) === 1 && next.getDate() === 1) ) {
+      dateNext =
+        pad2( next.getDate() ) + '/' +
+        pad2( 1 + next.getMonth() ) + '/' +
+        next.getFullYear();
+    }
+
     return fetch(
       "https://cors-anywhere.herokuapp.com/" // Anti CORS
       + "https://api.audioteca.rac1.cat/a-la-carta/cerca?"
-      + `text=&programId=&sectionId=HOUR&from=${date}&to=&pageNumber=${pageNumber}`,
+      + `text=&programId=&sectionId=HOUR&from=${date}&to=${dateNext}&pageNumber=${pageNumber}`,
       {
         credentials: 'same-origin',
         signal: this.controller.signal,
@@ -239,11 +265,21 @@ class Rac1 {
       .then(handleFetchErrors)
       .then(data => data.json())
       .then(podcast => {
+
+        // Fix server bug on year's last day, in which gives dates in the future
+        const today = new Date();
+        if (podcast.dateTime.startsWith(`${today.getFullYear() + 1}`)) {
+          podcast.dateTime = podcast.dateTime
+            .replace(`${today.getFullYear() + 1}`, `${today.getFullYear()}`);
+          console.log("Podcast date in future. Fixing to: " + podcast.dateTime);
+        }
+
         // Add some data to the podcast
-        podcast.uuid = uuid;
-        podcast.hour   = Number(podcast.audio.time.split(':')[0]);
-        podcast.minute = Number(podcast.audio.time.split(':')[1]);
-        podcast.title = podcast.appTabletTitle.replace(/ \d\d\/.*/, '');
+        podcast.uuid      = uuid;
+        podcast.date      = new Date(podcast.dateTime);
+        podcast.hour      = Number(podcast.audio.time.split(':')[0]);
+        podcast.minute    = Number(podcast.audio.time.split(':')[1]);
+        podcast.title     = podcast.appTabletTitle.replace(/ \d\d\/.*/, '');
         podcast.titleFull = podcast.appTabletTitle;
 
         // Prevent a redirect of 400ms :/
