@@ -41,6 +41,10 @@ class App extends React.Component {
   }
 
   handleNewServiceWorker(event) {
+    if ( 'persist' in event) {
+      event.persist();
+    }
+    console.log({event});
     this.registration = event.registration;
     this.setState({
       ...this.state,
@@ -102,6 +106,7 @@ class App extends React.Component {
                     title="New version available!"
                     onClick={ (e) => {
                       e.preventDefault();
+                      console.log({ registration: this.registration });
                       this.props.onLoadNewServiceWorkerAccept(this.registration)
                     }}
                     style={{
