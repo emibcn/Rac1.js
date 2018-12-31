@@ -5,16 +5,9 @@ import {
   Route,
   Switch,
   Redirect,
-  Link,
 } from "react-router-dom";
 
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import {
-  faBroadcastTower as faDirecte,
-  faCalendarAlt as faByDate,
-  faArrowAltCircleUp as faUpgrade,
-} from '@fortawesome/free-solid-svg-icons'
-
+import AppMenu from './AppMenu';
 import GAListener from './GAListener';
 import Rac1Directe from './Rac1Directe';
 import Rac1ByDate from './Rac1ByDate';
@@ -51,73 +44,19 @@ class App extends React.Component {
     const date = new Date();
     const todayStr = `/${date.getFullYear()}/${1 + date.getMonth()}/${date.getDate()}/0/0`;
     const { newServiceWorkerDetected } = this.state;
-    const linkStyle = {
-      padding: '1em',
-      backgroundColor: '#ddd',
-      border: '1px solid #777',
-      display: 'block',
-    };
 
     return (
       <Router>
-        <div className="App">
+        <div className="App" id="outer-container">
 
           {/* Menu */}
-          <ul style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              listStyleType: 'none',
-              backgroundColor: '#282c34',
-              paddingInlineStart: 0,
-              margin: 0,
-          }}>
-            <li>
-              <Link
-                to="/"
-                style={{
-                  ...linkStyle,
-                  borderBottomLeftRadius: '.5em',
-                }}>
-                <FontAwesomeIcon icon={ faByDate } style={{ marginRight: '.5em' }} />
-                By date
-              </Link>
-            </li>
-            <li>
-              <Link
-                to="/directe"
-                style={{
-                  ...linkStyle,
-                  borderBottomRightRadius: newServiceWorkerDetected ? null : '.5em',
-                }}>
-                <FontAwesomeIcon icon={ faDirecte } style={{ marginRight: '.5em' }} />
-                En directe
-              </Link>
-            </li>
-            { newServiceWorkerDetected ? (
-                <li>
-                  <a
-                    href='/'
-                    title="New version available!"
-                    onClick={ e => {
-                      e.preventDefault();
-                      this.props.onLoadNewServiceWorkerAccept(this.registration)
-                    }}
-                    style={{
-                      ...linkStyle,
-                      color: 'green',
-                      borderBottomRightRadius: '.5em',
-                    }}>
-                    <FontAwesomeIcon icon={ faUpgrade } style={{ marginRight: '.5em' }} />
-                    Update!
-                  </a>
-                </li>
-              ) : null
-            }
-          </ul>
+          <AppMenu
+            newServiceWorkerDetected={ newServiceWorkerDetected }
+            onLoadNewServiceWorkerAccept={ this.handleLoadNewServiceWorkerAccept.bind(this) }
+          />
 
           {/* App Route */}
-          <header className="App-header">
+          <header className="App-header" id="page-wrap">
             <GAListener>
               <Switch>
                 <Route
@@ -145,10 +84,14 @@ class App extends React.Component {
       </Router>
     )
   }
+
+  handleLoadNewServiceWorkerAccept() {
+    this.props.onLoadNewServiceWorkerAccept(this.registration);
+  }
 }
 
 App.defaultProps = {
-  onLoadNewServiceWorkerAccept: e => {},
+  onLoadNewServiceWorkerAccept: registration => {},
 };
 
 App.propTypes = {
