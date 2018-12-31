@@ -36,10 +36,8 @@ class Rac1 {
 
   constructor(props) {
     const noop = () => {};
-    this.date = props.date;
     this.onListUpdate = props.onListUpdate || noop;
-
-    this.updateList();
+    this.setDate(props.date);
   }
 
   abort() {
@@ -93,6 +91,13 @@ class Rac1 {
     let newList = [...this._previous_uuids.filter(w => w.uuid !== '...')];
     let completed = true;
 
+    // Helper functions
+    const dateToString = (d) => `${d.getFullYear()}/${d.getMonth()+1}/${d.getDate()}`;
+    const compareDates = (d1, d2) => dateToString(d1) === dateToString(d2);
+    const filterByDates = (podcast) => {
+      return !("date" in podcast) || compareDates( podcast.date, this.date )
+    };
+
     // Create a virtual list of all podcasts correctly ordered
     this.pages.forEach( page => {
 
@@ -106,10 +111,6 @@ class Rac1 {
       }
       else {
 
-        // Helper functions
-        const dateToString = (d) => `${d.getFullYear()}/${d.getMonth()}/${d.getDate()}`;
-        const compareDates = (d1,d2) => dateToString(d1) === dateToString(d2);
-
         // Add this page's podcasts to the list
         pageUuids
 
@@ -121,9 +122,7 @@ class Rac1 {
           })
 
           // Filter out podcasts from other dates
-          .filter( podcast => {
-            return !("date" in podcast) || compareDates( podcast.date, this.date )
-          })
+          .filter( filterByDates )
 
           // Add remaining podcasts to the list
           .forEach( podcast => newList.push( podcast ) );
@@ -131,7 +130,9 @@ class Rac1 {
     });
 
     // Get cached data if available
-    newList = newList.map(podcast => this._podcastsData[podcast.uuid] || podcast );
+    newList = newList.map(podcast => this._podcastsData[podcast.uuid] || podcast )
+          // Filter out podcasts from other dates
+          .filter( filterByDates );
 
     // Save complete list on finish
     if(completed) {
@@ -206,8 +207,8 @@ class Rac1 {
     next.setDate(next.getDate() + 1);
     let dateNext = '';
 
-    // Don't use next day date if it's year's last day
-    if ( !(( next.getMonth() + 1 ) === 1 && next.getDate() === 1) ) {
+    // Don't use next day date if it's 2018's last day
+    if ( !(next.getFullYear() === 2019 && next.getMonth() === 0 && next.getDate() === 1) ) {
       dateNext =
         pad2( next.getDate() ) + '/' +
         pad2( 1 + next.getMonth() ) + '/' +
@@ -267,10 +268,9 @@ class Rac1 {
       .then(podcast => {
 
         // Fix server bug on year's last day, in which gives dates in the future
-        const today = new Date();
-        if (podcast.dateTime.startsWith(`${today.getFullYear() + 1}`)) {
+        if (podcast.dateTime.startsWith(`${this.date.getFullYear() + 1}-${this.date.getMonth() + 1}`)) {
           podcast.dateTime = podcast.dateTime
-            .replace(`${today.getFullYear() + 1}`, `${today.getFullYear()}`);
+            .replace(`${this.date.getFullYear() + 1}`, `${this.date.getFullYear()}`);
           console.log("Podcast date in future. Fixing to: " + podcast.dateTime);
         }
 
