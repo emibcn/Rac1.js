@@ -10,5 +10,9 @@ ReactDOM.render(<App />, document.getElementById('root'));
 // unregister() to register() below. Note this comes with some pitfalls.
 // Learn more about service workers: http://bit.ly/CRA-PWA
 serviceWorker.register({
-  onUpdate: registration => console.log({ registration })
+  onUpdate: registration => {
+    //console.log("Forcing new update activation");
+    //self.skipWaiting()
+    console.log({ registration })
+  }
 });
