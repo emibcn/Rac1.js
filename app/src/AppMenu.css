@@ -15,6 +15,7 @@
 /* Color/shape of burger icon bars */
 .bm-burger-bars {
   background-color: #ddd;
+  border-radius: 2px;
 }
 
 /* Position and sizing of clickable cross button */
@@ -25,12 +26,14 @@
 
 .bm-cross-button > span {
   position: relative !important;
-  top: 6px !important;
+  top: 1px !important;
   right: 1px !important;
 }
 
 .bm-cross {
-  height: 24px !important;
+  height: 34px !important;
+  width: 5px !important;
+  border-radius: 3px;
 }
 
 /* Color/shape of close button cross */
