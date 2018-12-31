@@ -59,12 +59,15 @@ class AppMenu extends React.Component {
   }
 
   render() {
+    const { newServiceWorkerDetected } = this.props;
+    const extraClass = newServiceWorkerDetected ? ' news' : '';
+
     return (
       <MediaQuery minWidth={700}>
         { matches => {
           if ( matches ) {
             return (
-              <div className="menu-big">
+              <div className={ "menu-big" + extraClass }>
                 <BigMenu
                   pageWrapId="page-wrap"
                   outerContainerId="outer-container"
@@ -76,7 +79,7 @@ class AppMenu extends React.Component {
             );
           } else {
             return (
-              <div className="menu-small">
+              <div className={ "menu-small" + extraClass }>
                 <SmallMenu
                   pageWrapId="page-wrap"
                   outerContainerId="outer-container"
