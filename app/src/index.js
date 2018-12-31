@@ -42,6 +42,7 @@ serviceWorker.register({
   // passing `registration` as extra data
   onUpdate: (registration) => {
     var event = new CustomEvent('onNewServiceWorker', { registration });
+    console.log("Generated event: ", event);
     document.dispatchEvent(event);
   }
 
