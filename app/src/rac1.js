@@ -191,7 +191,7 @@ class Rac1 {
     return fetch(
       "https://cors-anywhere.herokuapp.com/" // Anti CORS
       + "https://api.audioteca.rac1.cat/a-la-carta/cerca?"
-      + `text=&programId=&sectionId=HOUR&from=${date}&to=${date}&pageNumber=${pageNumber}`,
+      + `text=&programId=&sectionId=HOUR&from=${date}&to=&pageNumber=${pageNumber}`,
       {
         credentials: 'same-origin',
         signal: this.controller.signal,
