@@ -56,10 +56,25 @@
         self.date.getFullYear();
     }
 
+    // Set next day date is it's not the year's last day (server inconsistency)
+    if ( !self.dateStr.match(/^31\/12\//) ) {
+      self.dateParts = self.dateStr.split('/').reverse().map( str => Number(str));
+      self.date = new Date( self.dateParts[0], self.dateParts[1] - 1, self.dateParts[2] );
+      self.dateTo = new Date(self.date);
+      self.dateTo.setDate( self.dateTo.getDate() + 1 );
+      self.dateStrTo =
+        self.pad2( self.dateTo.getDate() ) + '/' +
+        self.pad2( 1 + self.dateTo.getMonth() ) + '/' +
+        self.dateTo.getFullYear();
+    }
+    else {
+      self.dateStrTo = '';
+    }
+
     self.url =
       "https://cors-anywhere.herokuapp.com/" // Anti CORS
       + "https://api.audioteca.rac1.cat/a-la-carta/cerca?"
-      + `text=&programId=&sectionId=HOUR&from=${self.dateStr}&to=&pageNumber=0`;
+      + `text=&programId=&sectionId=HOUR&from=${self.dateStr}&to=${self.dateStrTo}&pageNumber=0`;
 
     // Add Link tag to hint the browser
     let linkTag = document.createElement('link');
