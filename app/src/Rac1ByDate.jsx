@@ -48,7 +48,7 @@ class Rac1ByDate extends Component {
     ];
 
     // Debugging on development
-    if(process.env.NODE_ENV === 'development') {
+    if ( process.env.NODE_ENV === 'development' ) {
 
       // Log state changes
       this._setState = this.setState;
@@ -167,7 +167,7 @@ class Rac1ByDate extends Component {
     const { date } = this.state;
 
     // Do nothing when change is made by us
-    if(action !== 'POP') {
+    if( action !== 'POP' ) {
       return;
     }
 
@@ -176,14 +176,14 @@ class Rac1ByDate extends Component {
      */
 
     // Date changed
-    if(date.getFullYear() !== dateNew.getFullYear() ||
+    if ( date.getFullYear() !== dateNew.getFullYear() ||
       date.getMonth() !== dateNew.getMonth() ||
       date.getDate() !== dateNew.getDate() ) {
       this.handleDateChange(dateNew);
     }
 
     // Podcast changed
-    else if( date.getHours() !== dateNew.getHours()  ||
+    else if ( date.getHours() !== dateNew.getHours()  ||
       date.getMinutes() !== dateNew.getMinutes() ) {
       // Save new date to state
       this.setState({
@@ -199,8 +199,8 @@ class Rac1ByDate extends Component {
     const newPath = `/${date.getFullYear()}/${1 + date.getMonth()}/${date.getDate()}/${date.getHours()}/${date.getMinutes()}`;
 
     // Only PUSH or REPLACE if something have to change
-    if(this.history.location.pathname !== newPath) {
-      if(!replace) {
+    if ( this.history.location.pathname !== newPath ) {
+      if ( !replace ) {
         this.history.push(newPath);
       }
       else {
@@ -223,18 +223,18 @@ class Rac1ByDate extends Component {
     });
 
     // If there is no podcast selected on update completed, select one
-    if(completed && currentUUID === '') {
+    if ( completed && currentUUID === '' ) {
       this.selectPodcastByDate(date);
     }
 
     // Play next podcast if stop waiting, but without retrying download
-    if(waitingUpdate === true && waitingUpdateNext === false) {
+    if ( waitingUpdate === true && waitingUpdateNext === false ) {
       this.playNext(false);
     }
   }
 
   handleDateChange(date) {
-    if(date !== this.state.date) {
+    if ( date !== this.state.date ) {
 
       // Save new date to state
       this.setState({
@@ -244,7 +244,7 @@ class Rac1ByDate extends Component {
       });
 
       // If it's a valid date, trigger state change
-      if(date !== null) {
+      if ( date !== null ) {
         // Push new date to URL and history
         this.historyPush(date);
 
@@ -266,7 +266,7 @@ class Rac1ByDate extends Component {
   handleClickReload() {
 
     // If there is not already an incomplete update
-    if(this.state.completed) {
+    if ( this.state.completed ) {
       this.setState({
         ...this.state,
         completed: false,
@@ -280,14 +280,14 @@ class Rac1ByDate extends Component {
   // Select a podcast from list using date&time argument
   selectPodcastByDate(date) {
     // Find all podcasts matching >= date
-    const found = this.state.podcasts.filter(podcast => {
+    const found = this.state.podcasts.filter( podcast => {
       return podcast.hour >= date.getHours() &&
         (podcast.hour > date.getHours() ||
         podcast.minute >= date.getMinutes())
     });
 
     // Play first matched podcast
-    if(found.length > 0) {
+    if ( found.length > 0 ) {
       this.playPodcast(
         this.findPodcastByUUID(found[0].uuid));
     }
@@ -295,8 +295,8 @@ class Rac1ByDate extends Component {
 
   findPodcastByUUID(uuid) {
     let found = 0;
-    this.state.podcasts.forEach((podcast, index) => {
-      if(podcast.uuid === uuid) {
+    this.state.podcasts.forEach( (podcast, index) => {
+      if ( podcast.uuid === uuid ) {
         found = index
       }
     });
@@ -314,10 +314,10 @@ class Rac1ByDate extends Component {
 
     // Force push&replace if it's not exact match with date, and update date in state
     let replace = false;
-    if(podcast.hour !== date.getHours() ||
-      podcast.minute !== date.getMinutes()) {
-      date.setHours(Number(podcast.hour));
-      date.setMinutes(Number(podcast.minute));
+    if ( podcast.hour !== date.getHours() ||
+      podcast.minute !== date.getMinutes() ) {
+      date.setHours( Number(podcast.hour) );
+      date.setMinutes( Number(podcast.minute) );
     }
 
     replace = currentUUID === '';
@@ -332,7 +332,7 @@ class Rac1ByDate extends Component {
 
   playPrev() {
     const current = this.findCurrentPodcast();
-    if(current > 0) {
+    if ( current > 0 ) {
       this.playPodcast(current - 1);
     }
   }
@@ -341,16 +341,16 @@ class Rac1ByDate extends Component {
     const current = this.findCurrentPodcast();
 
     // If there is a next podcast and it has path, play it
-    if(current < (this.state.podcasts.length - 1) &&
+    if ( current < (this.state.podcasts.length - 1 ) &&
        'path' in this.state.podcasts[current]) {
       this.playPodcast(current + 1);
     }
     else {
       // If we are called to retry, update list
-      if(retry) {
+      if ( retry ) {
         // If we are not already waiting for update,
         // set  and trigger a list update
-        if(!this.state.waitingUpdate) {
+        if ( !this.state.waitingUpdate ) {
           this.handleClickReload();
           this.setState({
             ...this.state,

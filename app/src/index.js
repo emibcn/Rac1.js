@@ -13,10 +13,13 @@ const updateSW = (registration) => {
     // When the user asks to refresh the UI, we'll need to reload the window
     var preventDevToolsReloadLoop;
     navigator.serviceWorker.addEventListener('controllerchange', function(event) {
+
       // Ensure refresh is only called once.
       // This works around a bug in "force update on reload".
-      if (preventDevToolsReloadLoop)
+      if (preventDevToolsReloadLoop) {
         return;
+      }
+
       preventDevToolsReloadLoop = true;
       console.log('Controller loaded');
       window.location.reload();
@@ -39,7 +42,7 @@ serviceWorker.register({
 
   // When new ServiceWorker is available, trigger an event on `document`,
   // passing `registration` as extra data
-  onUpdate: (registration) => {
+  onUpdate: registration => {
     var event = new CustomEvent('onNewServiceWorker', { detail: { registration } });
     document.dispatchEvent(event);
   }
