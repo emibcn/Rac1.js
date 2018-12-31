@@ -42,6 +42,7 @@ class App extends React.Component {
 
   handleNewServiceWorker(event) {
     if ( 'persist' in event) {
+      console.log("Persisting event...");
       event.persist();
     }
     console.log("handleNewServiceWorker: ", event);
