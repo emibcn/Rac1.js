@@ -12,16 +12,21 @@ import {
 import MediaQuery from 'react-responsive';
 import {
   slide as SmallMenu,
-  slide as BigMenu,
+  scaleRotate as BigMenu,
 } from 'react-burger-menu'
 
 import './AppMenu.css';
 
 class AppMenu extends React.Component {
+  constructor() {
+    super();
+    this.state = {
+      isOpen: false,
+    };
+  }
+
   renderLinks() {
     const { newServiceWorkerDetected, children } = this.props;
-    const linkStyle = {
-    };
 
     return (
       <div
@@ -32,11 +37,11 @@ class AppMenu extends React.Component {
           backgroundRepeat: 'no-repeat',
           backgroundPosition: 'center .5em',
         }}>
-        <Link className='bm-item' style={ linkStyle } to="/">
+        <Link className='bm-item' onClick={ this.handleClick.bind(this) } to="/">
           <FontAwesomeIcon icon={ faByDate } style={{ marginRight: '.5em' }} />
           <span>By date</span>
         </Link>
-        <Link className='bm-item' style={ linkStyle } to="/directe">
+        <Link className='bm-item' onClick={ this.handleClick.bind(this) } to="/directe" >
           <FontAwesomeIcon icon={ faDirecte } style={{ marginRight: '.5em' }} />
           <span>En directe</span>
         </Link>
@@ -44,7 +49,7 @@ class AppMenu extends React.Component {
             <a
               href='/'
               className='bm-item'
-              style={{ ...linkStyle, color: 'green' }}
+              style={{ color: 'green' }}
               title="New version available!"
               onClick={ this.handleClickUpdate.bind(this) }
               >
@@ -60,6 +65,7 @@ class AppMenu extends React.Component {
 
   render() {
     const { newServiceWorkerDetected } = this.props;
+    const { isOpen } = this.state;
     const extraClass = newServiceWorkerDetected ? ' news' : '';
 
     return (
@@ -71,6 +77,8 @@ class AppMenu extends React.Component {
                 <BigMenu
                   pageWrapId='page-wrap'
                   outerContainerId='outer-container'
+                  isOpen={ isOpen }
+                  onStateChange={ state => this.handleMenuStateChange(state.isOpen) }
                   disableCloseOnEsc
                 >
                   { this.renderLinks() }
@@ -95,8 +103,19 @@ class AppMenu extends React.Component {
     )
   }
 
+  handleMenuStateChange(isOpen) {
+    this.setState({
+      isOpen,
+    });
+  }
+
+  handleClick(e) {
+    this.handleMenuStateChange(false);
+  }
+
   handleClickUpdate(e) {
     e.preventDefault();
+    this.handleMenuStateChange(false);
     this.props.onLoadNewServiceWorkerAccept();
   }
 }
