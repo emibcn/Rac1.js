@@ -15,7 +15,10 @@ import { Button, ButtonsGroup } from './Button';
 
 class Controls extends React.Component {
 
-  // Controls definitions
+  // Controls definitions:
+  // - Only button
+  // - Only key binding
+  // - Both
   controls = [
     {
       icon: <FontAwesomeIcon icon={ faFastForward } flip="horizontal" />,
@@ -35,7 +38,7 @@ class Controls extends React.Component {
       help: 'Go backwards 10 minutes',
       action: () => this.player().currentTime -= 600,
       keys: [ 'PageUp' ],
-      group: 'advanced',
+      group: 'advanced prev',
     },
     {
       icon: (
@@ -54,7 +57,7 @@ class Controls extends React.Component {
       help: 'Go backwards 1 minute',
       action: () => this.player().currentTime -= 60,
       keys: [ 'ArrowUp' ],
-      group: 'advanced',
+      group: 'advanced prev',
     },
     {
       icon: <FontAwesomeIcon icon={ faForward } flip="horizontal" />,
@@ -62,7 +65,7 @@ class Controls extends React.Component {
       help: 'Go backwards 10 seconds',
       action: () => this.player().currentTime -= 10,
       keys: [ 'ArrowLeft' ],
-      group: 'advanced',
+      group: 'advanced prev',
     },
     {
       icon: () => this.props.isPlaying ?
@@ -80,7 +83,7 @@ class Controls extends React.Component {
       help: 'Go forward 10 seconds',
       action: () => this.player().currentTime += 10,
       keys: [ 'ArrowRight' ],
-      group: 'advanced',
+      group: 'advanced next',
     },
     {
       icon: (
@@ -97,7 +100,7 @@ class Controls extends React.Component {
       help: 'Go forward 1 minute',
       action: () => this.player().currentTime += 60,
       keys: [ 'ArrowDown' ],
-      group: 'advanced',
+      group: 'advanced next',
     },
     {
       icon: (
@@ -110,7 +113,7 @@ class Controls extends React.Component {
       help: 'Go forward 10 minutes',
       action: () => this.player().currentTime += 600,
       keys: [ 'PageDown' ],
-      group: 'advanced',
+      group: 'advanced next',
     },
     {
       icon: <FontAwesomeIcon icon={ faFastForward } />,
@@ -179,19 +182,19 @@ class Controls extends React.Component {
     clearTimeout(this.timer);
   }
 
-  filterButtonsGroup(group) {
+  filterButtonsGroup(controls, group) {
     const { hideButtons } = this.props;
 
-    return this.controls
+    return controls
       .filter( control => 'icon' in control && 'text' in control )
       .filter( control => !hideButtons.includes(control.text) )
-      .filter( control => control.group === group )
+      .filter( control => control.group.split(' ').includes(group) )
   }
 
   render() {
     const { showAdvanced } = this.props;
     const buttons = ['basic','advanced'].reduce( (res, group) => {
-      res[group] = this.filterButtonsGroup(group);
+      res[group] = this.filterButtonsGroup(this.controls, group);
       return res;
     }, {});
 
@@ -199,16 +202,24 @@ class Controls extends React.Component {
       <div>
         { showAdvanced && buttons['advanced'].length ? (
           <div>
-            <ButtonsGroup
-              buttons={ buttons['advanced']}
-              keyHandlerFocus={ this.keyHandlerFocus.bind(this) }
-            />
+            <div>
+              <ButtonsGroup
+                buttons={ this.filterButtonsGroup(buttons['advanced'], 'prev') }
+                keyHandlerFocus={ this.keyHandlerFocus.bind(this) }
+              />
+            </div>
+            <div>
+              <ButtonsGroup
+                buttons={ this.filterButtonsGroup(buttons['advanced'], 'next') }
+                keyHandlerFocus={ this.keyHandlerFocus.bind(this) }
+              />
+            </div>
           </div>
         ) : null }
         { buttons['basic'].length ? (
           <div>
             <ButtonsGroup
-              buttons={ buttons['basic']}
+              buttons={ buttons['basic'] }
               keyHandlerFocus={ this.keyHandlerFocus.bind(this) }
             />
             { buttons['advanced'].length ? (
@@ -219,7 +230,7 @@ class Controls extends React.Component {
                 text={ showAdvanced ? 'Less' : 'More' }
                 icon={ <FontAwesomeIcon icon={ showAdvanced ? faEyeSlash : faEye } /> }
               />
-            ) : null}
+            ) : null }
           </div>
         ) : null }
         <input

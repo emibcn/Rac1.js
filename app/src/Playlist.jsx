@@ -55,7 +55,7 @@ class Playlist extends React.PureComponent {
       }}>
         <div style={{
           display: 'flex',
-          justifyContent: 'space-around',
+          justifyContent: 'center',
           alignItems: 'center',
         }}>
           <DatePicker
