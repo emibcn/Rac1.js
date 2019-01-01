@@ -46,7 +46,7 @@ class PodcastsList extends React.PureComponent {
 
     return children === undefined || children.length === 0 ?
       null : (
-        <MediaQuery minWidth={700}>
+        <MediaQuery minWidth={ 1024 }>
           { matches => {
             return (
               <ul style={{

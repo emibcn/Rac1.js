@@ -175,7 +175,7 @@ class Rac1ByDate extends Component {
         </Playlist>;
 
     return (
-      <MediaQuery minWidth={700}>
+      <MediaQuery minWidth={ 1024 }>
         { matches => {
           if ( matches ) {
             return (
