@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlay } from '@fortawesome/free-solid-svg-icons'
 
 class PodcastsList extends React.PureComponent {
+
   render() {
     const { children, current } = this.props;
 
@@ -15,7 +16,8 @@ class PodcastsList extends React.PureComponent {
           listStyleType: 'none',
           marginLeft: 0,
           paddingLeft: 0,
-          textAlign: 'left'
+          textAlign: 'left',
+          columnCount: Math.floor(children.length / 10) || 1,
         }}>
           { children.map( (child, index) =>
             <li
