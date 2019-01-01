@@ -18,6 +18,12 @@ class Rac1Directe extends Component {
     super();
 
     this.history = props.history;
+
+    // Initial state
+    this.state = {
+      volume: 1,
+      isPlaying: false,
+    };
   }
 
   componentDidMount() {
@@ -31,7 +37,7 @@ class Rac1Directe extends Component {
   }
 
   render() {
-    const { volume } = this.state;
+    const { volume, isPlaying } = this.state;
     const currentPath = 'http://rac1.radiocat.net/;*.nsv';
     const autoplay = true;
     const title = 'Rac1 en Directe';
@@ -42,6 +48,7 @@ class Rac1Directe extends Component {
         <Controls
           getPlayer={ this.player.bind(this) }
           volume={ volume }
+          isPlaying={ isPlaying }
           onSetVolume={ (v) => this.setState({ ...this.state, volume: v }) }
           hideButtons={['Prev', 'Next', '-10m', '-60s', '-10s', '+10m', '+60s', '+10s']}
         />
@@ -50,13 +57,23 @@ class Rac1Directe extends Component {
           style={{ width: '100%' }}
           src={ currentPath }
           autoPlay={ autoplay }
+          title={ title }
           controls
           controlsList='nodownload'
           preload={ (autoplay ? 'auto' : 'metadata') }
           volume={ volume }
+          onPlay={ this.handlePlayStatusChange.bind(this, true) }
+          onPause={ this.handlePlayStatusChange.bind(this, false) }
         />
       </React.Fragment>
     );
+  }
+
+  handlePlayStatusChange(isPlaying) {
+    this.setState({
+      ...this.state,
+      isPlaying,
+    });
   }
 }
 
