@@ -3,12 +3,13 @@ import PropTypes from 'prop-types';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
-  faEject,
+  faPlay,
+  faPause,
   faForward,
   faFastForward,
 } from '@fortawesome/free-solid-svg-icons'
 
-class Controls extends React.PureComponent {
+class Controls extends React.Component {
 
   // Controls definitions
   controls = [
@@ -56,8 +57,10 @@ class Controls extends React.PureComponent {
       keys: [ 'ArrowLeft' ],
     },
     {
-      icon: <FontAwesomeIcon icon={ faEject } rotation={90} />,
-      text: 'Play/Pause',
+      icon: () => this.props.isPlaying ?
+         <FontAwesomeIcon icon={ faPause } /> :
+         <FontAwesomeIcon icon={ faPlay } /> ,
+      text: () => this.props.isPlaying ? 'Pause' : 'Play',
       help: 'Toggle Play/Pause',
       action: () => this.player().paused ? this.player().play() : this.player().pause(),
       keys: [ ' ', 'p', 'P' ],
@@ -287,6 +290,7 @@ Controls.defaultProps = {
   extraControls: [],
   hideButtons:   [],
   volume:        1,
+  isPlaying:     false,
 };
 
 Controls.propTypes = {
@@ -296,6 +300,7 @@ Controls.propTypes = {
   onSetVolume: PropTypes.func.isRequired,
   onPlayPrev: PropTypes.func.isRequired,
   onPlayNext: PropTypes.func.isRequired,
+  isPlaying: PropTypes.bool.isRequired,
   hideButtons: PropTypes.arrayOf(
     PropTypes.oneOf(
       ['Prev', 'Next', '-10m', '-60s', '-10s', '+10m', '+60s', '+10s', 'Play/Pause']

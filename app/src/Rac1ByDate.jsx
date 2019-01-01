@@ -35,6 +35,7 @@ class Rac1ByDate extends Component {
       date: this.getDateFromParams(props),
       maxDate: new Date(),
       volume: 1,
+      isPlaying: false,
       completed: false,
       waitingUpdate: false,
     };
@@ -94,7 +95,14 @@ class Rac1ByDate extends Component {
   }
 
   render() {
-    const { podcasts, volume, completed, date, maxDate } = this.state;
+    const {
+      podcasts,
+      volume,
+      completed,
+      date,
+      maxDate,
+      isPlaying,
+    } = this.state;
     const dateText = date instanceof Date ?
       `${date.getDate()}/${1 + date.getMonth()}/${date.getFullYear()}`
       : '...';
@@ -123,6 +131,7 @@ class Rac1ByDate extends Component {
           onPlayNext={ this.playNext.bind(this) }
           onPlayPrev={ this.playPrev.bind(this) }
           onSetVolume={ (v) => this.setState({ ...this.state, volume: v }) }
+          isPlaying={ isPlaying }
           ref={ (el) => { if(el) { this.keyHandlerFocus = el.keyHandlerFocus } } }
           extraControls={ this.extraControls }
         />
@@ -136,6 +145,8 @@ class Rac1ByDate extends Component {
           preload={ (autoplay ? 'auto' : 'metadata') }
           onEnded={ this.playNext.bind(this) }
           volume={ volume }
+          onPlay={ this.handlePlayStatusChange.bind(this, true) }
+          onPause={ this.handlePlayStatusChange.bind(this, false) }
         />
         <Playlist
           date={ date }
@@ -207,6 +218,13 @@ class Rac1ByDate extends Component {
         this.history.replace(newPath);
       }
     }
+  }
+
+  handlePlayStatusChange(isPlaying) {
+    this.setState({
+      ...this.state,
+      isPlaying,
+    });
   }
 
   handleListUpdate(newList, completed) {
