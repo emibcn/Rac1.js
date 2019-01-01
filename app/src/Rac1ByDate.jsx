@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 
 import ReactAudioPlayer from 'react-audio-player';
+import MediaQuery from 'react-responsive';
 
 import Controls from './Controls';
 import Playlist from './Playlist';
@@ -54,13 +55,13 @@ class Rac1ByDate extends Component {
 
       // Log state changes
       this._setState = this.setState;
-      this.setState = (props) => {
+      this.setState = props => {
         console.log({
           a0_prev: JSON.parse(JSON.stringify(this.state)),
           a1_next: JSON.parse(JSON.stringify(props)),
         });
         this._setState(props);
-      }
+      };
 
       // Add a button to remove the last podcast in the list
       this.extraControls.push({
@@ -124,10 +125,7 @@ class Rac1ByDate extends Component {
           dateText )
       : dateText;
 
-    return (
-      <React.Fragment>
-        <h3>{ title }</h3>
-        <Controls
+    const controls = <Controls
           getPlayer={ this.player.bind(this) }
           volume={ volume }
           allowFocus={ (el) => el.className.match( /date-?picker/ ) }
@@ -139,8 +137,8 @@ class Rac1ByDate extends Component {
           isPlaying={ isPlaying }
           ref={ (el) => { if(el) { this.keyHandlerFocus = el.keyHandlerFocus } } }
           extraControls={ this.extraControls }
-        />
-        <ReactAudioPlayer
+        />;
+    const player = <ReactAudioPlayer
           ref={(element) => { this._player = element; }}
           style={{ width: '100%' }}
           src={ currentPath }
@@ -153,8 +151,8 @@ class Rac1ByDate extends Component {
           volume={ volume }
           onPlay={ this.handlePlayStatusChange.bind(this, true) }
           onPause={ this.handlePlayStatusChange.bind(this, false) }
-        />
-        <Playlist
+        />;
+    const playlist = <Playlist
           date={ date }
           minDate={ new Date(2015, 5, 1) /* 1st date with HOUR podcasts */ }
           maxDate={ maxDate }
@@ -174,8 +172,42 @@ class Rac1ByDate extends Component {
             />
           )}
           </PodcastsList>
-        </Playlist>
-      </React.Fragment>
+        </Playlist>;
+
+    return (
+      <MediaQuery minWidth={700}>
+        { matches => {
+          if ( matches ) {
+            return (
+              <div style={{
+                display: 'flex',
+                alignItems: 'stretch',
+              }}>
+                <div style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'stretch',
+                  justifyContent: 'space-evenly',
+                }}>
+                  <h3>{ title }</h3>
+                  { controls }
+                  { player }
+                </div>
+                { playlist }
+              </div>
+            );
+          } else {
+            return (
+              <React.Fragment>
+                <h3>{ title }</h3>
+                { controls }
+                { player }
+                { playlist }
+              </React.Fragment>
+            );
+          }
+        }}
+      </MediaQuery>
     );
   }
 
