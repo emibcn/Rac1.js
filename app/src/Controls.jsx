@@ -7,7 +7,11 @@ import {
   faPause,
   faForward,
   faFastForward,
+  faEye,
+  faEyeSlash,
 } from '@fortawesome/free-solid-svg-icons'
+
+import { Button, ButtonsGroup } from './Button';
 
 class Controls extends React.Component {
 
@@ -18,6 +22,7 @@ class Controls extends React.Component {
       text: 'Prev',
       help: 'Play previous podcast',
       action: () => this.props.onPlayPrev(),
+      group: 'basic',
     },
     {
       icon: (
@@ -30,6 +35,7 @@ class Controls extends React.Component {
       help: 'Go backwards 10 minutes',
       action: () => this.player().currentTime -= 600,
       keys: [ 'PageUp' ],
+      group: 'advanced',
     },
     {
       icon: (
@@ -48,6 +54,7 @@ class Controls extends React.Component {
       help: 'Go backwards 1 minute',
       action: () => this.player().currentTime -= 60,
       keys: [ 'ArrowUp' ],
+      group: 'advanced',
     },
     {
       icon: <FontAwesomeIcon icon={ faForward } flip="horizontal" />,
@@ -55,6 +62,7 @@ class Controls extends React.Component {
       help: 'Go backwards 10 seconds',
       action: () => this.player().currentTime -= 10,
       keys: [ 'ArrowLeft' ],
+      group: 'advanced',
     },
     {
       icon: () => this.props.isPlaying ?
@@ -64,6 +72,7 @@ class Controls extends React.Component {
       help: 'Toggle Play/Pause',
       action: () => this.player().paused ? this.player().play() : this.player().pause(),
       keys: [ ' ', 'p', 'P' ],
+      group: 'basic',
     },
     {
       icon: <FontAwesomeIcon icon={ faForward } />,
@@ -71,6 +80,7 @@ class Controls extends React.Component {
       help: 'Go forward 10 seconds',
       action: () => this.player().currentTime += 10,
       keys: [ 'ArrowRight' ],
+      group: 'advanced',
     },
     {
       icon: (
@@ -87,6 +97,7 @@ class Controls extends React.Component {
       help: 'Go forward 1 minute',
       action: () => this.player().currentTime += 60,
       keys: [ 'ArrowDown' ],
+      group: 'advanced',
     },
     {
       icon: (
@@ -99,6 +110,7 @@ class Controls extends React.Component {
       help: 'Go forward 10 minutes',
       action: () => this.player().currentTime += 600,
       keys: [ 'PageDown' ],
+      group: 'advanced',
     },
     {
       icon: <FontAwesomeIcon icon={ faFastForward } />,
@@ -106,6 +118,7 @@ class Controls extends React.Component {
       help: 'Play next podcast',
       action: () => this.props.onPlayNext(),
       keys: [ 'Enter' ],
+      group: 'basic',
     },
     {
       help: 'Decrement volume 5%',
@@ -166,43 +179,49 @@ class Controls extends React.Component {
     clearTimeout(this.timer);
   }
 
+  filterButtonsGroup(group) {
+    const { hideButtons } = this.props;
+
+    return this.controls
+      .filter( control => 'icon' in control && 'text' in control )
+      .filter( control => !hideButtons.includes(control.text) )
+      .filter( control => control.group === group )
+  }
+
   render() {
+    const { showAdvanced } = this.props;
+    const buttons = ['basic','advanced'].reduce( (res, group) => {
+      res[group] = this.filterButtonsGroup(group);
+      return res;
+    }, {});
+
     return (
       <div>
-        { this.controls
-            .filter( control => 'icon' in control && 'text' in control)
-            .filter( control => !this.props.hideButtons.includes(control.text) )
-            .map( (control, index) => {
-          return (
-            <button
-              key={ index }
-              onClick={ control.action.bind(this) }
-              onMouseUp={ e => this.keyHandlerFocus(e, true) }
-              aria-label={ control.help }
-              title={ control.help }
-              className='rac1-controls-button'
-              style={{
-                borderRadius: '1em',
-                padding: '1em',
-                margin: '1em',
-              }}
-            >
-              <div style={{
-                fontSize: 'calc(1em + 2.5vmin)',
-                fontWeight: 'bold',
-                minWidth: '1.5em',
-              }} >
-                { control.icon instanceof Function ? control.icon() : control.icon }
-              </div>
-              <span style={{
-                fontSize: 'calc(8px + 1vmin)',
-                color: '#333'
-              }}>
-                { control.text instanceof Function ? control.text() : control.text }
-              </span>
-            </button>
-          )
-        })}
+        { showAdvanced && buttons['advanced'].length ? (
+          <div>
+            <ButtonsGroup
+              buttons={ buttons['advanced']}
+              keyHandlerFocus={ this.keyHandlerFocus.bind(this) }
+            />
+          </div>
+        ) : null }
+        { buttons['basic'].length ? (
+          <div>
+            <ButtonsGroup
+              buttons={ buttons['basic']}
+              keyHandlerFocus={ this.keyHandlerFocus.bind(this) }
+            />
+            { buttons['advanced'].length ? (
+              <Button
+                onMouseUp={ e => this.keyHandlerFocus(e, true) }
+                action={ this.handleShowAdvancedChange.bind(this, !showAdvanced) }
+                help={ `Show ${ showAdvanced ? 'less' : 'more' } controls` }
+                text={ showAdvanced ? 'Less' : 'More' }
+                icon={ <FontAwesomeIcon icon={ showAdvanced ? faEyeSlash : faEye } /> }
+              />
+            ) : null}
+          </div>
+        ) : null }
         <input
           name='player-key-handler'
           style={{ // Almost invisible ;)
@@ -280,6 +299,11 @@ class Controls extends React.Component {
       e.preventDefault();
     }
   }
+
+  handleShowAdvancedChange(showAdvanced, event) {
+    event.preventDefault();
+    this.props.onShowAdvancedChange(showAdvanced);
+  }
 }
 
 Controls.defaultProps = {
@@ -287,10 +311,12 @@ Controls.defaultProps = {
   onPlayPrev:    e => {},
   onPlayNext:    e => {},
   allowFocus:    e => {},
+  onShowAdvancedChange: e => {},
   extraControls: [],
   hideButtons:   [],
   volume:        1,
   isPlaying:     false,
+  showAdvanced:  false,
 };
 
 Controls.propTypes = {
@@ -301,6 +327,8 @@ Controls.propTypes = {
   onPlayPrev: PropTypes.func.isRequired,
   onPlayNext: PropTypes.func.isRequired,
   isPlaying: PropTypes.bool.isRequired,
+  showAdvanced: PropTypes.bool.isRequired,
+  onShowAdvancedChange: PropTypes.func.isRequired,
   hideButtons: PropTypes.arrayOf(
     PropTypes.oneOf(
       ['Prev', 'Next', '-10m', '-60s', '-10s', '+10m', '+60s', '+10s', 'Play/Pause']

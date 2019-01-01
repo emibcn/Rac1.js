@@ -38,6 +38,7 @@ class Rac1ByDate extends Component {
       isPlaying: false,
       completed: false,
       waitingUpdate: false,
+      showAdvancedControls: false,
     };
 
     this.extraControls = [
@@ -67,6 +68,7 @@ class Rac1ByDate extends Component {
         text: 'Remove last',
         help: 'Remove last podcast from playlist',
         action: this.handlePodcastsLastRemove.bind(this),
+        group: 'advanced',
       });
     }
   }
@@ -102,6 +104,7 @@ class Rac1ByDate extends Component {
       date,
       maxDate,
       isPlaying,
+      showAdvancedControls,
     } = this.state;
     const dateText = date instanceof Date ?
       `${date.getDate()}/${1 + date.getMonth()}/${date.getFullYear()}`
@@ -131,6 +134,8 @@ class Rac1ByDate extends Component {
           onPlayNext={ this.playNext.bind(this) }
           onPlayPrev={ this.playPrev.bind(this) }
           onSetVolume={ (v) => this.setState({ ...this.state, volume: v }) }
+          showAdvanced={ showAdvancedControls }
+          onShowAdvancedChange={ show => this.setState({ ...this.state, showAdvancedControls: show }) }
           isPlaying={ isPlaying }
           ref={ (el) => { if(el) { this.keyHandlerFocus = el.keyHandlerFocus } } }
           extraControls={ this.extraControls }
@@ -140,6 +145,7 @@ class Rac1ByDate extends Component {
           style={{ width: '100%' }}
           src={ currentPath }
           autoPlay={ autoplay }
+          title={ title }
           controls
           controlsList='nodownload'
           preload={ (autoplay ? 'auto' : 'metadata') }
