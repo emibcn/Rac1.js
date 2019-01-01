@@ -57,17 +57,15 @@ class ButtonsGroup extends React.PureComponent {
     return (
       <React.Fragment>
         { buttons.map( (control, index) => {
-              return (
-                <Button
-                  key={ index }
-                  onMouseUp={ e => keyHandlerFocus(e, true) }
-                  action={ control.action.bind(this) }
-                  help={ control.help }
-                  text={ control.text }
-                  icon={ control.icon }
-                />
-              )
-            })
+            return <Button
+              key={ index }
+              onMouseUp={ e => keyHandlerFocus(e, true) }
+              action={ control.action.bind(this) }
+              help={ control.help }
+              text={ control.text }
+              icon={ control.icon }
+            />
+          })
         }
       </React.Fragment>
     )
@@ -80,6 +78,7 @@ ButtonsGroup.defaultProps = {
 
 ButtonsGroup.propTypes = {
   keyHandlerFocus: PropTypes.func.isRequired,
+  buttons: PropTypes.arrayOf( PropTypes.shape( Button.propTypes ) )
 };
 
 export { Button, ButtonsGroup };

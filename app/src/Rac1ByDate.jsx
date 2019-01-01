@@ -69,7 +69,7 @@ class Rac1ByDate extends Component {
         text: 'Remove last',
         help: 'Remove last podcast from playlist',
         action: this.handlePodcastsLastRemove.bind(this),
-        group: 'advanced',
+        group: 'advanced basic',
       });
     }
   }
