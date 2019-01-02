@@ -197,7 +197,6 @@ class Controls extends React.Component {
       .map( control => {
         if ( this.noKeys ) {
           const { keys, ...rest } = control;
-          console.log({keys});
           return rest
         }
         return control

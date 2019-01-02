@@ -69,37 +69,23 @@ class AppMenu extends React.Component {
     const extraClass = newServiceWorkerDetected ? ' news' : '';
 
     return (
-      <MediaQuery minWidth={700}>
+      <MediaQuery minWidth={ 1024 }>
         { matches => {
-          if ( matches ) {
-            return (
-              <div className={ 'menu-big' + extraClass }>
-                <BigMenu
-                  pageWrapId='page-wrap'
-                  outerContainerId='outer-container'
-                  isOpen={ isOpen }
-                  onStateChange={ state => this.handleMenuStateChange(state.isOpen) }
-                  disableCloseOnEsc
-                >
-                  { this.renderLinks() }
-                </BigMenu>
-              </div>
-            );
-          } else {
-            return (
-              <div className={ 'menu-small' + extraClass }>
-                <SmallMenu
-                  pageWrapId='page-wrap'
-                  outerContainerId='outer-container'
-                  isOpen={ isOpen }
-                  onStateChange={ state => this.handleMenuStateChange(state.isOpen) }
-                  disableCloseOnEsc
-                >
-                  { this.renderLinks() }
-                </SmallMenu>
-              </div>
-            );
-          }
+          const Menu = matches ? BigMenu : SmallMenu;
+
+          return (
+            <div className={ `menu-${matches ? 'big' : 'small'}${extraClass}` }>
+              <Menu
+                pageWrapId='page-wrap'
+                outerContainerId='outer-container'
+                isOpen={ isOpen }
+                onStateChange={ state => this.handleMenuStateChange(state.isOpen) }
+                disableCloseOnEsc
+              >
+                { this.renderLinks() }
+              </Menu>
+            </div>
+          )
         }}
       </MediaQuery>
     )
