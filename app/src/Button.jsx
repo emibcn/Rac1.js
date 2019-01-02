@@ -10,13 +10,13 @@ class Button extends React.PureComponent {
     // Transform ' ' to 'Space'
     // Transform letters (not texts) to uppercase
     // Uniq with [...new Set()]
-    return ` | Keys: ${[
+    const keys = [
       ...new Set(
         this.props.keys
           .map( key => key === ' ' ? 'Space' : key )
           .map( key => key.length === 1 ?  key.toUpperCase() : key )
-      )].join(', ')
-    }`
+      )];
+    return ` | Key${ keys.length > 1 ? 's' : '' }: ${ keys.join(', ') }`
   }
 
   render() {
