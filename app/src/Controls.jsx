@@ -212,73 +212,59 @@ class Controls extends React.Component {
     }, {});
 
     return (
-      <div style={{ display: 'flex' }}>
-        <div style={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'self-end',
-          justifyContent: 'space-between',
-        }}>
-          { buttons['basic'].length ? (
-            <div>
+      <div style={{
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'flex-end',
+      }}>
+        { buttons['basic'].length ? (
+          <div style={{
+            display: 'flex',
+            alignItems: 'flex-end',
+          }}>
+            <ButtonsGroup
+              buttons={ buttons['basic'] }
+              keyHandlerFocus={ this.keyHandlerFocus.bind(this) }
+            >
+              { buttons['advanced'].length ? (
+                <Button
+                  onMouseUp={ e => this.keyHandlerFocus(e, true) }
+                  action={ this.handleShowAdvancedChange.bind(this, !showAdvanced) }
+                  help={ `Show ${ showAdvanced ? 'less' : 'more' } controls` }
+                  text={ showAdvanced ? 'Less' : 'More' }
+                  icon={ <FontAwesomeIcon icon={ showAdvanced ? faEyeSlash : faEye } /> }
+                />
+              ) : null }
+            </ButtonsGroup>
+            { !volumeAsAdvanced ? (
+              <Volume
+                volume={ volume }
+                muted={ muted }
+                onSetVolume={ this.setVolume.bind(this) }
+                onSetMuted={ this.setMuted.bind(this) }
+                keyHandlerFocus={ this.keyHandlerFocus.bind(this) }
+              />
+            ) : null }
+          </div>
+        ) : null }
+        <div style={{ display: 'flex' }}>
+          { showAdvanced && buttons['advanced'].length ? (
+            <div style={{
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'space-around',
+            }}>
               <ButtonsGroup
-                buttons={ buttons['basic'] }
+                buttons={ this.filterButtonsGroup(buttons['advanced'], 'prev') }
+                keyHandlerFocus={ this.keyHandlerFocus.bind(this) }
+              />
+              <ButtonsGroup
+                buttons={ this.filterButtonsGroup(buttons['advanced'], 'next') }
                 keyHandlerFocus={ this.keyHandlerFocus.bind(this) }
               />
             </div>
           ) : null }
-          { showAdvanced && buttons['advanced'].length ? (
-            <div>
-              <div>
-                <ButtonsGroup
-                  buttons={ this.filterButtonsGroup(buttons['advanced'], 'prev') }
-                  keyHandlerFocus={ this.keyHandlerFocus.bind(this) }
-                />
-              </div>
-              <div>
-                <ButtonsGroup
-                  buttons={ this.filterButtonsGroup(buttons['advanced'], 'next') }
-                  keyHandlerFocus={ this.keyHandlerFocus.bind(this) }
-                />
-              </div>
-            </div>
-          ) : null }
-          <input
-            name='player-key-handler'
-            style={{ // Almost invisible ;)
-              width: '1px',
-              height: '1px',
-              border: 0,
-              margin: 0,
-              padding: 0,
-              bottom: 0,
-              right: 0,
-              position: 'fixed',
-              backgroundColor: 'transparent',
-              color: 'transparent',
-              cursor: 'default',
-            }}
-            ref={ element => { this._keyHandler = element } }
-            onKeyUp={ this.handleKey.bind(this) }
-            onBlur={ this.keyHandlerFocus.bind(this) }
-            aria-label="Key input handler"
-          />
-        </div>
-        <div style={{
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'space-between',
-        }}>
-          { buttons['basic'].length && buttons['advanced'].length ? (
-            <Button
-              onMouseUp={ e => this.keyHandlerFocus(e, true) }
-              action={ this.handleShowAdvancedChange.bind(this, !showAdvanced) }
-              help={ `Show ${ showAdvanced ? 'less' : 'more' } controls` }
-              text={ showAdvanced ? 'Less' : 'More' }
-              icon={ <FontAwesomeIcon icon={ showAdvanced ? faEyeSlash : faEye } /> }
-            />
-          ) : null }
-          { showAdvanced || !volumeAsAdvanced ? (
+          { showAdvanced && volumeAsAdvanced ? (
             <Volume
               volume={ volume }
               muted={ muted }
@@ -288,6 +274,26 @@ class Controls extends React.Component {
             />
           ) : null }
         </div>
+        <input
+          name='player-key-handler'
+          style={{ // Almost invisible ;)
+            width: '1px',
+            height: '1px',
+            border: 0,
+            margin: 0,
+            padding: 0,
+            bottom: 0,
+            right: 0,
+            position: 'fixed',
+            backgroundColor: 'transparent',
+            color: 'transparent',
+            cursor: 'default',
+          }}
+          ref={ element => { this._keyHandler = element } }
+          onKeyUp={ this.handleKey.bind(this) }
+          onBlur={ this.keyHandlerFocus.bind(this) }
+          aria-label="Key input handler"
+        />
       </div>
     );
   }
