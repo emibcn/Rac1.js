@@ -91,6 +91,8 @@ class AppMenu extends React.Component {
                 <SmallMenu
                   pageWrapId='page-wrap'
                   outerContainerId='outer-container'
+                  isOpen={ isOpen }
+                  onStateChange={ state => this.handleMenuStateChange(state.isOpen) }
                   disableCloseOnEsc
                 >
                   { this.renderLinks() }
