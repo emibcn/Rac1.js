@@ -38,6 +38,7 @@ class Volume extends React.Component {
           display: 'flex',
           alignItems: 'center',
           flexDirection: 'column',
+          paddingTop: '.3em',
         }}>
           <Slider
             onAfterChange={ () => this.props.keyHandlerFocus() }
