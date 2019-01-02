@@ -2,19 +2,51 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 class Button extends React.PureComponent {
+  keysString() {
+    if ( this.props.keys.length === 0 ) {
+      return '';
+    }
+
+    // Transform ' ' to 'Space'
+    // Transform letters (not texts) to uppercase
+    // Uniq with [...new Set()]
+    return ` | Keys: ${[
+      ...new Set(
+        this.props.keys
+          .map( key => key === ' ' ? 'Space' : key )
+          .map( key => key.length === 1 ?  key.toUpperCase() : key )
+      )].join(', ')
+    }`
+  }
+
   render() {
-    const { text, help, icon, action, ...restProps } = this.props;
+    const {
+      text,
+      help,
+      icon,
+      action,
+      keys,
+      style,
+      className,
+      ...restProps
+    } = this.props;
+
+    const styleButton = {
+      borderRadius: '1em',
+      padding: '.7em',
+      margin: '1em',
+      ...style,
+    };
+
+    const helpExtra = help + this.keysString();
+
     return (
       <button
         onClick={ action }
-        aria-label={ help }
-        title={ help }
-        className='rac1-controls-button'
-        style={{
-          borderRadius: '1em',
-          padding: '.7em',
-          margin: '1em',
-        }}
+        aria-label={ helpExtra }
+        title={ helpExtra }
+        className={ 'rac1-controls-button' + (className ? ` ${className}` : '') }
+        style={ styleButton }
         { ...restProps }
       >
         <div style={{
@@ -36,6 +68,8 @@ class Button extends React.PureComponent {
 };
 
 Button.defaultProps = {
+  action: () => {},
+  keys: [],
 };
 
 Button.propTypes = {
@@ -49,6 +83,20 @@ Button.propTypes = {
   ]).isRequired,
   action: PropTypes.func.isRequired,
   help: PropTypes.string.isRequired,
+
+  // Get keys to let user know how to access the button
+  keys: PropTypes.arrayOf(
+    PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.shape({
+        key: PropTypes.string.isRequired,
+        shiftKey: PropTypes.bool,
+        altKey: PropTypes.bool,
+        ctrlKey: PropTypes.bool,
+        metaKey: PropTypes.bool,
+      }),
+    ])
+  ),
 };
 
 class ButtonsGroup extends React.PureComponent {
@@ -64,6 +112,7 @@ class ButtonsGroup extends React.PureComponent {
               help={ control.help }
               text={ control.text }
               icon={ control.icon }
+              keys={ control.keys }
             />
           })
         }
