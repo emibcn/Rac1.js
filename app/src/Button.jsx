@@ -101,9 +101,13 @@ Button.propTypes = {
 
 class ButtonsGroup extends React.PureComponent {
   render() {
-    const { buttons, keyHandlerFocus } = this.props;
+    const { buttons, keyHandlerFocus, children } = this.props;
     return (
-      <React.Fragment>
+      <div style={{
+        display: 'flex',
+        justifyContent: 'space-between',
+        width: '100%',
+      }}>
         { buttons.map( (control, index) => {
             return <Button
               key={ index }
@@ -116,7 +120,8 @@ class ButtonsGroup extends React.PureComponent {
             />
           })
         }
-      </React.Fragment>
+        { children }
+      </div>
     )
   }
 }
