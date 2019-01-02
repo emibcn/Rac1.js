@@ -12,6 +12,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons'
 
 import { Button, ButtonsGroup } from './Button';
+import Volume from './Volume';
 
 class Controls extends React.Component {
 
@@ -141,7 +142,7 @@ class Controls extends React.Component {
     },
     {
       help: 'Toggle mute status',
-      action: () => this.player().muted = !this.player().muted,
+      action: () => this.setMuted( !this.player().muted ),
       keys: [ 'm', 'M' ],
     },
   ];
@@ -171,10 +172,14 @@ class Controls extends React.Component {
   };
 
   componentDidMount() {
+
+    this.noKeys = true;
+
     // Disable key handler on mobile devices (enable on the rest)
     if ( !(/Mobi|Android/i.test(navigator.userAgent)) ) {
-       this.keyHandlerFocus = this._keyHandlerFocus;
-       this.keyHandlerFocus();
+      this.noKeys = false;
+      this.keyHandlerFocus = this._keyHandlerFocus;
+      this.keyHandlerFocus();
     }
   }
 
@@ -189,75 +194,110 @@ class Controls extends React.Component {
       .filter( control => 'icon' in control && 'text' in control )
       .filter( control => !hideButtons.includes(control.text) )
       .filter( control => control.group.split(' ').includes(group) )
+      .map( control => {
+        if ( this.noKeys ) {
+          const { keys, ...rest } = control;
+          console.log({keys});
+          return rest
+        }
+        return control
+      })
   }
 
   render() {
-    const { showAdvanced } = this.props;
+    const { showAdvanced, volumeAsAdvanced, volume, muted} = this.props;
     const buttons = ['basic','advanced'].reduce( (res, group) => {
       res[group] = this.filterButtonsGroup(this.controls, group);
       return res;
     }, {});
 
     return (
-      <div>
-        { showAdvanced && buttons['advanced'].length ? (
-          <div>
+      <div style={{ display: 'flex' }}>
+        <div style={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'self-end',
+          justifyContent: 'space-between',
+        }}>
+          { buttons['basic'].length ? (
             <div>
               <ButtonsGroup
-                buttons={ this.filterButtonsGroup(buttons['advanced'], 'prev') }
+                buttons={ buttons['basic'] }
                 keyHandlerFocus={ this.keyHandlerFocus.bind(this) }
               />
             </div>
+          ) : null }
+          { showAdvanced && buttons['advanced'].length ? (
             <div>
-              <ButtonsGroup
-                buttons={ this.filterButtonsGroup(buttons['advanced'], 'next') }
-                keyHandlerFocus={ this.keyHandlerFocus.bind(this) }
-              />
+              <div>
+                <ButtonsGroup
+                  buttons={ this.filterButtonsGroup(buttons['advanced'], 'prev') }
+                  keyHandlerFocus={ this.keyHandlerFocus.bind(this) }
+                />
+              </div>
+              <div>
+                <ButtonsGroup
+                  buttons={ this.filterButtonsGroup(buttons['advanced'], 'next') }
+                  keyHandlerFocus={ this.keyHandlerFocus.bind(this) }
+                />
+              </div>
             </div>
-          </div>
-        ) : null }
-        { buttons['basic'].length ? (
-          <div>
-            <ButtonsGroup
-              buttons={ buttons['basic'] }
+          ) : null }
+          <input
+            name='player-key-handler'
+            style={{ // Almost invisible ;)
+              width: '1px',
+              height: '1px',
+              border: 0,
+              margin: 0,
+              padding: 0,
+              bottom: 0,
+              right: 0,
+              position: 'fixed',
+              backgroundColor: 'transparent',
+              color: 'transparent',
+              cursor: 'default',
+            }}
+            ref={ element => { this._keyHandler = element } }
+            onKeyUp={ this.handleKey.bind(this) }
+            onBlur={ this.keyHandlerFocus.bind(this) }
+            aria-label="Key input handler"
+          />
+        </div>
+        <div style={{
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'space-between',
+        }}>
+          { buttons['basic'].length && buttons['advanced'].length ? (
+            <Button
+              onMouseUp={ e => this.keyHandlerFocus(e, true) }
+              action={ this.handleShowAdvancedChange.bind(this, !showAdvanced) }
+              help={ `Show ${ showAdvanced ? 'less' : 'more' } controls` }
+              text={ showAdvanced ? 'Less' : 'More' }
+              icon={ <FontAwesomeIcon icon={ showAdvanced ? faEyeSlash : faEye } /> }
+            />
+          ) : null }
+          { showAdvanced || !volumeAsAdvanced ? (
+            <Volume
+              volume={ volume }
+              muted={ muted }
+              onSetVolume={ this.setVolume.bind(this) }
+              onSetMuted={ this.setMuted.bind(this) }
               keyHandlerFocus={ this.keyHandlerFocus.bind(this) }
             />
-            { buttons['advanced'].length ? (
-              <Button
-                onMouseUp={ e => this.keyHandlerFocus(e, true) }
-                action={ this.handleShowAdvancedChange.bind(this, !showAdvanced) }
-                help={ `Show ${ showAdvanced ? 'less' : 'more' } controls` }
-                text={ showAdvanced ? 'Less' : 'More' }
-                icon={ <FontAwesomeIcon icon={ showAdvanced ? faEyeSlash : faEye } /> }
-              />
-            ) : null }
-          </div>
-        ) : null }
-        <input
-          name='player-key-handler'
-          style={{ // Almost invisible ;)
-            width: '1px',
-            height: '1px',
-            border: 0,
-            margin: 0,
-            padding: 0,
-            bottom: 0,
-            right: 0,
-            position: 'fixed',
-            backgroundColor: 'transparent',
-            color: 'transparent',
-            cursor: 'default',
-          }}
-          ref={ element => { this._keyHandler = element } }
-          onKeyUp={ this.handleKey.bind(this) }
-          onBlur={ this.keyHandlerFocus.bind(this) }
-          aria-label="Key input handler"
-        />
+          ) : null }
+        </div>
       </div>
     );
   }
 
   player = () => this.props.getPlayer();
+
+  setMuted(muted) {
+    this.player().muted = muted;
+    this.props.onSetMuted(muted);
+  }
 
   setVolume(volume) {
     this.player().volume = volume;
@@ -319,6 +359,7 @@ class Controls extends React.Component {
 
 Controls.defaultProps = {
   onSetVolume:   e => {},
+  onSetMuted:    e => {},
   onPlayPrev:    e => {},
   onPlayNext:    e => {},
   allowFocus:    e => {},
@@ -326,43 +367,42 @@ Controls.defaultProps = {
   extraControls: [],
   hideButtons:   [],
   volume:        1,
+  muted:         false,
   isPlaying:     false,
   showAdvanced:  false,
+  volumeAsAdvanced: false,
 };
 
 Controls.propTypes = {
   getPlayer: PropTypes.func.isRequired,
   volume: PropTypes.number.isRequired,
+  muted: PropTypes.bool.isRequired,
   allowFocus: PropTypes.func.isRequired,
   onSetVolume: PropTypes.func.isRequired,
+  onSetMuted: PropTypes.func.isRequired,
   onPlayPrev: PropTypes.func.isRequired,
   onPlayNext: PropTypes.func.isRequired,
   isPlaying: PropTypes.bool.isRequired,
+  volumeAsAdvanced: PropTypes.bool.isRequired,
   showAdvanced: PropTypes.bool.isRequired,
   onShowAdvancedChange: PropTypes.func.isRequired,
   hideButtons: PropTypes.arrayOf(
     PropTypes.oneOf(
       ['Prev', 'Next', '-10m', '-60s', '-10s', '+10m', '+60s', '+10s', 'Play/Pause']
   )).isRequired,
-  extraControls: PropTypes.arrayOf( PropTypes.shape({
-    help: PropTypes.string.isRequired,
-    action: PropTypes.func.isRequired,
-    text: PropTypes.string,
-    icon: PropTypes.oneOfType([
-      PropTypes.func,
-      PropTypes.node,
-    ]),
-    keys: PropTypes.arrayOf( PropTypes.oneOfType([
-      PropTypes.string,
-      PropTypes.shape({
-        key: PropTypes.string.isRequired,
-        shiftKey: PropTypes.bool,
-        altKey: PropTypes.bool,
-        ctrlKey: PropTypes.bool,
-        metaKey: PropTypes.bool,
-      }),
-    ])),
-  })),
+  extraControls: PropTypes.arrayOf(
+    // As a button, but `text` and `icon` are not required
+    PropTypes.shape({
+      ...Button.propTypes,
+      text: PropTypes.oneOfType([
+        PropTypes.func,
+        PropTypes.node,
+      ]),
+      icon: PropTypes.oneOfType([
+        PropTypes.func,
+        PropTypes.node,
+      ]),
+    }) ),
 };
 
 export default Controls;

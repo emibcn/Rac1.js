@@ -36,6 +36,7 @@ class Rac1ByDate extends Component {
       date: this.getDateFromParams(props),
       maxDate: new Date(),
       volume: 1,
+      muted: false,
       isPlaying: false,
       completed: false,
       waitingUpdate: false,
@@ -101,6 +102,7 @@ class Rac1ByDate extends Component {
     const {
       podcasts,
       volume,
+      muted,
       completed,
       date,
       maxDate,
@@ -128,11 +130,14 @@ class Rac1ByDate extends Component {
     const controls = <Controls
           getPlayer={ this.player.bind(this) }
           volume={ volume }
-          allowFocus={ (el) => el.className.match( /date-?picker/ ) }
+          muted={ muted }
+          allowFocus={ (el) => el.className.match( /date-?picker|rc-slider-handle/ ) }
           onPlayNext={ this.playNext.bind(this) }
           onPlayPrev={ this.playPrev.bind(this) }
-          onSetVolume={ (v) => this.setState({ ...this.state, volume: v }) }
+          onSetVolume={ volume => this.setState({ ...this.state, volume }) }
+          onSetMuted={ muted => this.setState({ ...this.state, muted }) }
           showAdvanced={ showAdvancedControls }
+          volumeAsAdvanced={ true }
           onShowAdvancedChange={ show => this.setState({ ...this.state, showAdvancedControls: show }) }
           isPlaying={ isPlaying }
           ref={ (el) => { if(el) { this.keyHandlerFocus = el.keyHandlerFocus } } }
@@ -149,8 +154,14 @@ class Rac1ByDate extends Component {
           preload={ (autoplay ? 'auto' : 'metadata') }
           onEnded={ this.playNext.bind(this) }
           volume={ volume }
+          muted={ muted }
           onPlay={ this.handlePlayStatusChange.bind(this, true) }
           onPause={ this.handlePlayStatusChange.bind(this, false) }
+          onVolumeChanged={ e => this.setState({
+            ...this.state,
+            volume: e.currentTarget.volume,
+            muted: e.currentTarget.muted,
+          }) }
         />;
     const playlist = <Playlist
           date={ date }
