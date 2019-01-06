@@ -9,6 +9,9 @@ import {
   faCalendarAlt as faByDate,
   faBroadcastTower as faLive,
   faArrowAltCircleUp as faUpgrade,
+  faLanguage,
+  faCaretRight,
+  faCaretDown,
 } from '@fortawesome/free-solid-svg-icons'
 
 import MediaQuery from 'react-responsive';
@@ -24,11 +27,13 @@ class AppMenu extends React.Component {
     super();
     this.state = {
       isOpen: false,
+      isLanguageOpen: false,
     };
   }
 
   renderLinks() {
     const { newServiceWorkerDetected, children, t } = this.props;
+    const { isLanguageOpen } = this.state;
 
     return (
       <div
@@ -60,6 +65,42 @@ class AppMenu extends React.Component {
             </a>
           ) : null
         }
+        <a
+          href='/'
+          className='bm-item'
+          title={ t("Change application language") }
+          onClick={ this.handleLanguageSectionClick.bind(this) }
+          >
+          <FontAwesomeIcon icon={ faLanguage } style={{ marginRight: '.5em' }} />
+          <span>{ t("Language") }</span>
+          <FontAwesomeIcon
+            icon={ isLanguageOpen ? faCaretDown : faCaretRight }
+            style={{ marginLeft: '.5em' }} />
+        </a>
+        { isLanguageOpen ? (
+          <ul style={{
+            listStyleType: 'none',
+            marginTop: 0,
+          }}>
+            { [
+                {code: 'ca', name: "Català"},
+                {code: 'es', name: "Castellano"},
+                {code: 'en', name: "English"},
+              ].map( lang => (
+                <li key={ lang.code } >
+                  <a
+                    href='/'
+                    className='bm-item'
+                    title={ t(`Change language to ${lang.name}`) }
+                    onClick={ this.handleClickLanguage.bind(this, lang.code) }
+                  >
+                    <span>{ lang.name }</span>
+                  </a>
+                </li>
+              ))
+            }
+          </ul>
+        ) : null }
         { children }
       </div>
     )
@@ -103,6 +144,21 @@ class AppMenu extends React.Component {
     this.handleMenuStateChange(false);
   }
 
+  handleLanguageSectionClick(e) {
+    const { isLanguageOpen } = this.state;
+    e.preventDefault();
+    this.setState({
+      ...this.state,
+      isLanguageOpen: !isLanguageOpen
+    });
+  }
+
+  handleClickLanguage(language, e) {
+    e.preventDefault();
+    this.handleMenuStateChange(false);
+    this.props.onLanguageChange(language);
+  }
+
   handleClickUpdate(e) {
     e.preventDefault();
     this.handleMenuStateChange(false);
@@ -113,11 +169,13 @@ class AppMenu extends React.Component {
 AppMenu.defaultProps = {
   onLoadNewServiceWorkerAccept: () => {},
   newServiceWorkerDetected: false,
+  onLanguageChange: (language) => {},
 };
 
 AppMenu.propTypes = {
   onLoadNewServiceWorkerAccept: PropTypes.func.isRequired,
   newServiceWorkerDetected: PropTypes.bool.isRequired,
+  onLanguageChange: PropTypes.func.isRequired,
 };
 
 export default translate('AppMenu')(AppMenu);

@@ -6,6 +6,15 @@ export default {
     "Live": "En directo",
     "Update!": "¡Actualiza!",
     "New version available!": "¡Nueva versión disponible!",
+    "Language": "Idioma",
+    "Change application language": "Cambiar el idioma de la aplicación",
+    ...['Català', 'Castellano', 'English']
+      .reduce( (res, lang) => {
+        return {
+          ...res,
+          [`Change language to ${lang}`]: `Cambiar idioma a ${lang}`,
+        }
+      }, {}),
   },
 
   Rac1ByDate: {

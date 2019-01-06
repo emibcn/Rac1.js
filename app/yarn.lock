@@ -7092,6 +7092,12 @@ react-scripts@2.1.1:
   optionalDependencies:
     fsevents "1.2.4"
 
+react-simple-storage@^1.4.1:
+  version "1.4.1"
+  resolved "https://registry.yarnpkg.com/react-simple-storage/-/react-simple-storage-1.4.1.tgz#d3138d7114b0aebe697ddd9b9a8c5887a9324611"
+  dependencies:
+    store "^2.0.12"
+
 react-translate@^6.0.1:
   version "6.0.1"
   resolved "https://registry.yarnpkg.com/react-translate/-/react-translate-6.0.1.tgz#820a83b20081294e1865fe152a9c0fcaba756fdd"
@@ -7895,6 +7901,10 @@ statuses@~1.4.0:
 stealthy-require@^1.1.0:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/stealthy-require/-/stealthy-require-1.1.1.tgz#35b09875b4ff49f26a777e509b3090a3226bf24b"
+
+store@^2.0.12:
+  version "2.0.12"
+  resolved "https://registry.yarnpkg.com/store/-/store-2.0.12.tgz#8c534e2a0b831f72b75fc5f1119857c44ef5d593"
 
 stream-browserify@^2.0.1:
   version "2.0.1"

@@ -1,11 +1,20 @@
 export default {
-  locale: "es-es", // :(
+  locale: "fr", // :(
 
   AppMenu: {
     "By date": "Per data",
     "Live": "En directe",
     "Update!": "Actualitza!",
     "New version available!": "Nova versió disponible!",
+    "Language": "Idioma",
+    "Change application language": "Canvia l'idioma de l'aplicació",
+    ...['Català', 'Castellano', 'English']
+      .reduce( (res, lang) => {
+        return {
+          ...res,
+          [`Change language to ${lang}`]: `Canviar idioma a ${lang}`,
+        }
+      }, {}),
   },
 
   Rac1ByDate: {
