@@ -7,6 +7,9 @@ import {
   Redirect,
 } from "react-router-dom";
 
+import { TranslatorProvider } from "react-translate"
+import available from "./i18n/available"
+
 import AppMenu from './AppMenu';
 import GAListener from './GAListener';
 import Rac1Directe from './Rac1Directe';
@@ -21,6 +24,7 @@ class App extends React.Component {
     this.registration = false;
     this.state = {
       newServiceWorkerDetected: false,
+      language: available.hasOwnProperty(navigator.language) ? navigator.language : "en-en",
     };
   }
 
@@ -43,49 +47,52 @@ class App extends React.Component {
   render() {
     const date = new Date();
     const todayStr = `/${date.getFullYear()}/${1 + date.getMonth()}/${date.getDate()}/0/0`;
-    const { newServiceWorkerDetected } = this.state;
+    const { newServiceWorkerDetected, language } = this.state;
+    const translations = available[language];
 
     return (
-      <Router>
-        <div className="App" id="router-container">
+      <TranslatorProvider translations={ translations }>
+        <Router>
+          <div className="App" id="router-container">
 
-          {/* Menu */}
-          <AppMenu
-            newServiceWorkerDetected={ newServiceWorkerDetected }
-            onLoadNewServiceWorkerAccept={ this.handleLoadNewServiceWorkerAccept.bind(this) }
-          />
+            {/* Menu */}
+            <AppMenu
+              newServiceWorkerDetected={ newServiceWorkerDetected }
+              onLoadNewServiceWorkerAccept={ this.handleLoadNewServiceWorkerAccept.bind(this) }
+            />
 
-          {/* App Route */}
-          <header className="App-header" id="page-wrap">
-            <GAListener>
-              <Switch>
-                <Route
-                  path="/live"
-                  render={ props => <Rac1Directe { ...props } /> } />
+            {/* App Route */}
+            <header className="App-header" id="page-wrap">
+              <GAListener>
+                <Switch>
+                  <Route
+                    path="/live"
+                    render={ props => <Rac1Directe { ...props } /> } />
 
-                <Route path="/directe">
-                  <Redirect to={{ pathname: "live" }} />
-                </Route>
+                  <Route path="/directe">
+                    <Redirect to={{ pathname: "live" }} />
+                  </Route>
 
-                <Route
-                  path="/:year/:month/:day/:hour/:minute"
-                  render={ props => <Rac1ByDate { ...props } /> } />
+                  <Route
+                    path="/:year/:month/:day/:hour/:minute"
+                    render={ props => <Rac1ByDate { ...props } /> } />
 
-                <Route
-                  path="/:year/:month/:day/:hour"
-                  render={ props => <Rac1ByDate { ...props } /> } />
+                  <Route
+                    path="/:year/:month/:day/:hour"
+                    render={ props => <Rac1ByDate { ...props } /> } />
 
-                <Route
-                  path="/:year/:month/:day"
-                  render={props => <Rac1ByDate { ...props } /> } />
+                  <Route
+                    path="/:year/:month/:day"
+                    render={props => <Rac1ByDate { ...props } /> } />
 
-                {/* Set default date to today */}
-                <Redirect to={{ pathname: todayStr }} />
-              </Switch>
-            </GAListener>
-          </header>
-        </div>
-      </Router>
+                  {/* Set default date to today */}
+                  <Redirect to={{ pathname: todayStr }} />
+                </Switch>
+              </GAListener>
+            </header>
+          </div>
+        </Router>
+      </TranslatorProvider>
     )
   }
 

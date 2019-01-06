@@ -2,6 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Link } from "react-router-dom";
 
+import { translate } from "react-translate"
+
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   faCalendarAlt as faByDate,
@@ -26,7 +28,7 @@ class AppMenu extends React.Component {
   }
 
   renderLinks() {
-    const { newServiceWorkerDetected, children } = this.props;
+    const { newServiceWorkerDetected, children, t } = this.props;
 
     return (
       <div
@@ -39,22 +41,22 @@ class AppMenu extends React.Component {
         }}>
         <Link className='bm-item' onClick={ this.handleClick.bind(this) } to="/">
           <FontAwesomeIcon icon={ faByDate } style={{ marginRight: '.5em' }} />
-          <span>By date</span>
+          <span>{ t("By date") }</span>
         </Link>
         <Link className='bm-item' onClick={ this.handleClick.bind(this) } to="/live" >
           <FontAwesomeIcon icon={ faLive } style={{ marginRight: '.5em' }} />
-          <span>Live</span>
+          <span>{ t("Live") }</span>
         </Link>
         { newServiceWorkerDetected ? (
             <a
               href='/'
               className='bm-item'
               style={{ color: 'green' }}
-              title="New version available!"
+              title={ t("New version available!") }
               onClick={ this.handleClickUpdate.bind(this) }
               >
               <FontAwesomeIcon icon={ faUpgrade } style={{ marginRight: '.5em' }} />
-              <span>Update!</span>
+              <span>{ t("Update!") }</span>
             </a>
           ) : null
         }
@@ -118,4 +120,4 @@ AppMenu.propTypes = {
   newServiceWorkerDetected: PropTypes.bool.isRequired,
 };
 
-export default AppMenu;
+export default translate('AppMenu')(AppMenu);
