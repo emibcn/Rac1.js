@@ -30,7 +30,7 @@ class Controls extends React.Component {
     },
     {
       icon: (
-        <span>
+        <span style={{ whiteSpace: 'nowrap' }}>
           <FontAwesomeIcon icon={ faForward } flip="horizontal" />
           <FontAwesomeIcon icon={ faForward } flip="horizontal" />
         </span>
@@ -43,7 +43,7 @@ class Controls extends React.Component {
     },
     {
       icon: (
-        <span>
+        <span style={{ whiteSpace: 'nowrap' }}>
           <FontAwesomeIcon
             icon={faForward}
             flip="horizontal"
@@ -88,7 +88,7 @@ class Controls extends React.Component {
     },
     {
       icon: (
-        <span>
+        <span style={{ whiteSpace: 'nowrap' }}>
           <FontAwesomeIcon
             icon={faForward}
             style={{ position: 'relative', left: '.25em' }} />
@@ -105,7 +105,7 @@ class Controls extends React.Component {
     },
     {
       icon: (
-        <span>
+        <span style={{ whiteSpace: 'nowrap' }}>
           <FontAwesomeIcon icon={ faForward } />
           <FontAwesomeIcon icon={ faForward } />
         </span>
