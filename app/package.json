@@ -19,6 +19,7 @@
     "react-responsive": "^6.0.1",
     "react-router-dom": "^4.3.1",
     "react-scripts": "2.1.1",
+    "react-simple-storage": "^1.4.1",
     "react-translate": "^6.0.1"
   },
   "scripts": {

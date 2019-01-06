@@ -6,6 +6,8 @@ export default {
     "Live": "Live",
     "Update!": "Update!",
     "New version available!": "New version available!",
+    "Language": "Language",
+    "Change application language": "Change application language",
   },
 
   Rac1ByDate: {

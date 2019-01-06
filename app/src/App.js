@@ -7,6 +7,7 @@ import {
   Redirect,
 } from "react-router-dom";
 
+import Storage from "react-simple-storage";
 import { TranslatorProvider } from "react-translate"
 import available from "./i18n/available"
 
@@ -24,7 +25,7 @@ class App extends React.Component {
     this.registration = false;
     this.state = {
       newServiceWorkerDetected: false,
-      language: available.hasOwnProperty(navigator.language) ? navigator.language : "en-en",
+      language: available.hasOwnProperty(navigator.language) ? navigator.language : 'en-en',
     };
   }
 
@@ -49,16 +50,25 @@ class App extends React.Component {
     const todayStr = `/${date.getFullYear()}/${1 + date.getMonth()}/${date.getDate()}/0/0`;
     const { newServiceWorkerDetected, language } = this.state;
     const translations = available[language];
+    console.log({language, translations});
 
     return (
       <TranslatorProvider translations={ translations }>
         <Router>
           <div className="App" id="router-container">
 
+            <Storage
+              parent={ this }
+              prefix="App"
+              blacklist={ ['newServiceWorkerDetected'] }
+            />
+
             {/* Menu */}
             <AppMenu
               newServiceWorkerDetected={ newServiceWorkerDetected }
               onLoadNewServiceWorkerAccept={ this.handleLoadNewServiceWorkerAccept.bind(this) }
+              language={ language }
+              onLanguageChange={ this.handleLanguageChange.bind(this) }
             />
 
             {/* App Route */}
@@ -98,6 +108,13 @@ class App extends React.Component {
 
   handleLoadNewServiceWorkerAccept() {
     this.props.onLoadNewServiceWorkerAccept(this.registration);
+  }
+
+  handleLanguageChange(language) {
+    this.setState({
+      ...this.state,
+      language,
+    });
   }
 }
 
