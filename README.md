@@ -14,6 +14,8 @@ Inspired by [my command line Python app Rac1.py](https://github.com/emibcn/Rac1.
 - Use [react-burger-menu](https://github.com/negomi/react-burger-menu) to display off-canvas menu
 - Use [react-responsive](https://github.com/contra/react-responsive) to differentiate display depending on media sizes (design still in construction)
 - Use [react-component/slider](https://github.com/react-component/slider) for volume control (and possibly others in the future!)
+- Use [react-translate](https://www.npmjs.com/package/react-translate) to translate components
+- Use [react-simple-storage](https://github.com/ryanjyost/react-simple-storage) to save and retrieve state to and from `localStorage`
 - Use [\<HashRouter\>](https://github.com/ReactTraining/react-router/blob/master/packages/react-router-dom/docs/api/HashRouter.md) to handle date and podcast selection, linking and history ([Github Pages doesn't allows](https://itnext.io/so-you-want-to-host-your-single-age-react-app-on-github-pages-a826ab01e48) [\<BrowserRouter\>](https://github.com/ReactTraining/react-router/blob/master/packages/react-router-dom/docs/api/BrowserRouter.md))
 - [Docker](https://docs.docker.com/) with [DockerCompose](https://docs.docker.com/compose/) to start a development container, with all the [Create React App](https://github.com/facebook/create-react-app) goodies
 - Use GoogleAnalytics ([integrated as a React component](https://github.com/emibcn/Rac1.js/blob/master/app/src/GAListener.jsx)) for usage statistics, but respect user's [DNT](https://en.wikipedia.org/wiki/Do_Not_Track) and don't even load it if user agent reports DNT header
