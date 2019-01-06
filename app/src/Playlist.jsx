@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import { translate } from "react-translate"
 import DatePicker from 'react-date-picker'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -9,11 +10,12 @@ import {
   faCalendarAlt as faCalendar,
 } from '@fortawesome/free-solid-svg-icons'
 
-const ReloadButton = (props) => {
-  const text = 'Reload';
+const ReloadButton = translate("ReloadButton")( props => {
+  const { t, restProps } = props;
+  const text = t('Reload');
   return (
     <button
-      { ...props }
+      { ...restProps }
       aria-label={ text }
       style={{
         borderRadius: '.5em',
@@ -36,7 +38,7 @@ const ReloadButton = (props) => {
       </span>
     </button>
   )
-};
+});
 
 class Playlist extends React.PureComponent {
   render() {

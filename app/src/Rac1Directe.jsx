@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 
+import { translate } from "react-translate"
 import ReactAudioPlayer from 'react-audio-player';
 
 import Controls from './Controls';
@@ -28,8 +29,9 @@ class Rac1Directe extends Component {
   }
 
   componentDidMount() {
+    const { t } = this.props;
     this.initialTitle = document.title;
-    document.title = `${this.initialTitle} - Directe`;
+    document.title = `${ t(this.initialTitle) } - ${ t("Live") }`;
   }
 
   componentWillUnmount() {
@@ -39,9 +41,10 @@ class Rac1Directe extends Component {
 
   render() {
     const { volume, muted, isPlaying } = this.state;
+    const { t } = this.props;
     const currentPath = 'http://rac1.radiocat.net/;*.nsv';
     const autoplay = true;
-    const title = 'Rac1 en Directe';
+    const title = t('Rac1 live');
 
     return (
       <React.Fragment>
@@ -87,4 +90,4 @@ class Rac1Directe extends Component {
   }
 }
 
-export default Rac1Directe;
+export default translate('Rac1Directe')(Rac1Directe);

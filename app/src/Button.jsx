@@ -1,7 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { translate } from "react-translate"
 
-class Button extends React.PureComponent {
+class ButtonLegacy extends React.PureComponent {
   keysString() {
     if ( this.props.keys.length === 0 ) {
       return '';
@@ -10,13 +11,14 @@ class Button extends React.PureComponent {
     // Transform ' ' to 'Space'
     // Transform letters (not texts) to uppercase
     // Uniq with [...new Set()]
+    const { t } = this.props;
     const keys = [
       ...new Set(
         this.props.keys
           .map( key => key === ' ' ? 'Space' : key )
-          .map( key => key.length === 1 ?  key.toUpperCase() : key )
+          .map( key => key.length === 1 ? key.toUpperCase() : key )
       )];
-    return ` | Key${ keys.length > 1 ? 's' : '' }: ${ keys.join(', ') }`
+    return ` | ${ t(`Key${ keys.length > 1 ? 's' : '' }`) }: ${ keys.join(', ') }`
   }
 
   render() {
@@ -28,6 +30,7 @@ class Button extends React.PureComponent {
       keys,
       style,
       className,
+      t,
       ...restProps
     } = this.props;
 
@@ -38,7 +41,7 @@ class Button extends React.PureComponent {
       ...style,
     };
 
-    const helpExtra = help + this.keysString();
+    const helpExtra = t(help) + this.keysString();
 
     return (
       <button
@@ -60,19 +63,19 @@ class Button extends React.PureComponent {
           fontSize: 'calc(8px + 1vmin)',
           color: '#333'
         }}>
-          { text instanceof Function ? text() : text }
+          { t(text instanceof Function ? text() : text) }
         </span>
       </button>
     )
   }
-};
+}
 
-Button.defaultProps = {
+ButtonLegacy.defaultProps = {
   action: () => {},
   keys: [],
 };
 
-Button.propTypes = {
+ButtonLegacy.propTypes = {
   text: PropTypes.oneOfType([
     PropTypes.func,
     PropTypes.node,
@@ -132,7 +135,8 @@ ButtonsGroup.defaultProps = {
 
 ButtonsGroup.propTypes = {
   keyHandlerFocus: PropTypes.func.isRequired,
-  buttons: PropTypes.arrayOf( PropTypes.shape( Button.propTypes ) )
+  buttons: PropTypes.arrayOf( PropTypes.shape( ButtonLegacy.propTypes ) )
 };
 
+const Button = translate('Button')(ButtonLegacy);
 export { Button, ButtonsGroup };

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 
+import { translate } from "react-translate"
 import ReactAudioPlayer from 'react-audio-player';
 import MediaQuery from 'react-responsive';
 
@@ -377,6 +378,7 @@ class Rac1ByDate extends Component {
 
   playPodcast(index) {
     const { date, currentUUID } = this.state;
+    const { t } = this.props;
     const podcast = this.state.podcasts[index];
 
     // Force push&replace if it's not exact match with date, and update date in state
@@ -388,7 +390,7 @@ class Rac1ByDate extends Component {
     }
 
     replace = currentUUID === '';
-    document.title = `${this.initialTitle}: ${podcast.titleFull}`;
+    document.title = `${ t(this.initialTitle) }: ${podcast.titleFull}`;
     this.setState({
       ...this.state,
       currentUUID: podcast.uuid,
@@ -439,4 +441,4 @@ class Rac1ByDate extends Component {
   }
 }
 
-export default Rac1ByDate;
+export default translate('Rac1ByDate')(Rac1ByDate);

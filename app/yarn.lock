@@ -4101,7 +4101,7 @@ internal-ip@^3.0.1:
     default-gateway "^2.6.0"
     ipaddr.js "^1.5.2"
 
-invariant@^2.2.1, invariant@^2.2.2, invariant@^2.2.4:
+invariant@^2.1.2, invariant@^2.2.1, invariant@^2.2.2, invariant@^2.2.4:
   version "2.2.4"
   resolved "https://registry.yarnpkg.com/invariant/-/invariant-2.2.4.tgz#610f3c92c9359ce1db616e538008d23ff35158e6"
   dependencies:
@@ -7091,6 +7091,13 @@ react-scripts@2.1.1:
     workbox-webpack-plugin "3.6.3"
   optionalDependencies:
     fsevents "1.2.4"
+
+react-translate@^6.0.1:
+  version "6.0.1"
+  resolved "https://registry.yarnpkg.com/react-translate/-/react-translate-6.0.1.tgz#820a83b20081294e1865fe152a9c0fcaba756fdd"
+  dependencies:
+    invariant "^2.1.2"
+    prop-types "^15.6.0"
 
 react@^16.6.3:
   version "16.6.3"
