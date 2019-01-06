@@ -60,8 +60,12 @@ class App extends React.Component {
             <GAListener>
               <Switch>
                 <Route
-                  path="/directe"
+                  path="/live"
                   render={ props => <Rac1Directe { ...props } /> } />
+
+                <Route path="/directe">
+                  <Redirect to={{ pathname: "live" }} />
+                </Route>
 
                 <Route
                   path="/:year/:month/:day/:hour/:minute"
