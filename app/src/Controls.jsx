@@ -150,6 +150,12 @@ class Controls extends React.Component {
   constructor(props) {
     super();
 
+    // Keybindings disabled by default
+    // Enable for anything but mobiles
+    this.state = {
+      noKeys: true,
+    };
+
     // Add extra controls
     if ( props.extraControls.length ) {
       this.controls = this.controls.concat( props.extraControls );
@@ -173,14 +179,19 @@ class Controls extends React.Component {
 
   componentDidMount() {
 
-    this.noKeys = true;
+    let noKeys = true;
 
     // Disable key handler on mobile devices (enable on the rest)
     if ( !(/Mobi|Android/i.test(navigator.userAgent)) ) {
-      this.noKeys = false;
+      noKeys = false;
       this.keyHandlerFocus = this._keyHandlerFocus;
       this.keyHandlerFocus();
     }
+
+    this.setState({
+      ...this.state,
+      noKeys,
+    });
   }
 
   componentWillUnmount() {
@@ -189,13 +200,22 @@ class Controls extends React.Component {
 
   filterButtonsGroup(controls, group) {
     const { hideButtons } = this.props;
+    const { noKeys } = this.state;
 
     return controls
+
+      // Filter controls without button attributes
       .filter( control => 'icon' in control && 'text' in control )
+
+      // Filter hidden buttons
       .filter( control => !hideButtons.includes(control.text) )
+
+      // Filter buttons by group
       .filter( control => control.group.split(' ').includes(group) )
+
+      // Remove keys info if keys are disabled
       .map( control => {
-        if ( this.noKeys ) {
+        if ( noKeys ) {
           const { keys, ...rest } = control;
           return rest
         }
@@ -204,7 +224,8 @@ class Controls extends React.Component {
   }
 
   render() {
-    const { showAdvanced, volumeAsAdvanced, volume, muted} = this.props;
+    const { showAdvanced, volumeAsAdvanced, volume, muted } = this.props;
+    const { noKeys } = this.state;
     const buttons = ['basic','advanced'].reduce( (res, group) => {
       res[group] = this.filterButtonsGroup(this.controls, group);
       return res;
@@ -273,26 +294,28 @@ class Controls extends React.Component {
             />
           ) : null }
         </div>
-        <input
-          name='player-key-handler'
-          style={{ // Almost invisible ;)
-            width: '1px',
-            height: '1px',
-            border: 0,
-            margin: 0,
-            padding: 0,
-            bottom: 0,
-            right: 0,
-            position: 'fixed',
-            backgroundColor: 'transparent',
-            color: 'transparent',
-            cursor: 'default',
-          }}
-          ref={ element => { this._keyHandler = element } }
-          onKeyUp={ this.handleKey.bind(this) }
-          onBlur={ this.keyHandlerFocus.bind(this) }
-          aria-label="Key input handler"
-        />
+        { noKeys ? null : (
+          <input
+            name='player-key-handler'
+            style={{ // Almost invisible ;)
+              width: '1px',
+              height: '1px',
+              border: 0,
+              margin: 0,
+              padding: 0,
+              bottom: 0,
+              right: 0,
+              position: 'fixed',
+              backgroundColor: 'transparent',
+              color: 'transparent',
+              cursor: 'default',
+            }}
+            ref={ element => { this._keyHandler = element } }
+            onKeyUp={ this.handleKey.bind(this) }
+            onBlur={ this.keyHandlerFocus.bind(this) }
+            aria-label="Key input handler"
+          />
+        )}
       </div>
     );
   }
