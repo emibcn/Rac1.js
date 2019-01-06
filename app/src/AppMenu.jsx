@@ -4,8 +4,8 @@ import { Link } from "react-router-dom";
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
-  faBroadcastTower as faDirecte,
   faCalendarAlt as faByDate,
+  faBroadcastTower as faLive,
   faArrowAltCircleUp as faUpgrade,
 } from '@fortawesome/free-solid-svg-icons'
 
@@ -32,7 +32,7 @@ class AppMenu extends React.Component {
       <div
         style={{
           padding: '3em 1em 1em',
-          background: 'url(logo-rac1.png)',
+          background: `url(${ process.env.PUBLIC_URL }/logo-rac1.png)`,
           backgroundSize: 50,
           backgroundRepeat: 'no-repeat',
           backgroundPosition: 'center .5em',
@@ -41,9 +41,9 @@ class AppMenu extends React.Component {
           <FontAwesomeIcon icon={ faByDate } style={{ marginRight: '.5em' }} />
           <span>By date</span>
         </Link>
-        <Link className='bm-item' onClick={ this.handleClick.bind(this) } to="/directe" >
-          <FontAwesomeIcon icon={ faDirecte } style={{ marginRight: '.5em' }} />
-          <span>En directe</span>
+        <Link className='bm-item' onClick={ this.handleClick.bind(this) } to="/live" >
+          <FontAwesomeIcon icon={ faLive } style={{ marginRight: '.5em' }} />
+          <span>Live</span>
         </Link>
         { newServiceWorkerDetected ? (
             <a
