@@ -77,7 +77,7 @@ class AppMenu extends React.Component {
             <div className={ `menu-${matches ? 'big' : 'small'}${extraClass}` }>
               <Menu
                 pageWrapId='page-wrap'
-                outerContainerId='outer-container'
+                outerContainerId='router-container'
                 isOpen={ isOpen }
                 onStateChange={ state => this.handleMenuStateChange(state.isOpen) }
                 disableCloseOnEsc
