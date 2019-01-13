@@ -42,7 +42,7 @@ class Rac1 {
         }
       },
     },
-    { // Direct access to server
+    { // https://github.com/messier31/cors-proxy-server
       url: url => `https://secret-ocean-49799.herokuapp.com/${url}`,
       parser: async response => {
         return await response.text();
@@ -115,6 +115,7 @@ class Rac1 {
     return (err) => {
       if ( err.name === 'AbortError' ) {
         console.log(err.message);
+        return Promise.reject(err);
       }
       else {
         if ( typeof callback === 'function' ) {
@@ -327,13 +328,18 @@ class Rac1 {
       // Reraise error when no more backends available
       .catch( this.catchFetchErrors( err => {
         console.log(`Failed: ${err}`);
-        if ( backend === (this.antiCorsBackends.length - 1) ) {
-          console.log(`AntiCORS backend ${backend} failed. No more backends available.`);
-          throw Error(err);
+        if ( err.name !== 'AbortError' ) {
+          if ( backend === (this.antiCorsBackends.length - 1) ) {
+            console.log(`AntiCORS backend ${backend} failed. No more backends available.`);
+            throw Error(err);
+          }
+          else {
+            console.log(`AntiCORS backend ${backend} failed. Trying next.`);
+            return this.getPage(pageNumber, backend + 1)
+          }
         }
         else {
-          console.log(`AntiCORS backend ${backend} failed. Trying next.`);
-          return this.getPage(pageNumber, backend + 1)
+          Promise.reject(err);
         }
       }))
   }
