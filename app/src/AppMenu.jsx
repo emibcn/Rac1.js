@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import { Link } from "react-router-dom";
 
 import { translate } from "react-translate"
+import Switch from 'rc-switch';
+import 'rc-switch/assets/index.css';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
@@ -32,7 +34,7 @@ class AppMenu extends React.Component {
   }
 
   renderLinks() {
-    const { newServiceWorkerDetected, children, t } = this.props;
+    const { newServiceWorkerDetected, trackOptIn, children, t } = this.props;
     const { isLanguageOpen } = this.state;
 
     return (
@@ -101,6 +103,26 @@ class AppMenu extends React.Component {
             }
           </ul>
         ) : null }
+        <span style={{
+          display: 'flex',
+          alignItems: 'center',
+        }}>
+          <Switch
+            onChange={ this.props.onTrackOptIn }
+            disabled={ false }
+            checkedChildren={ t('Yes') }
+            unCheckedChildren={ t('No') }
+            checked={ trackOptIn }
+          />
+          <a
+            href='/'
+            className='bm-item'
+            title={ t("Allow tracking user interactions for usage analysis") }
+            onClick={ this.handleClickOptTrackIn.bind(this) }
+            >
+            { t('Allow tracking') }
+          </a>
+        </span>
         { children }
       </div>
     )
@@ -164,18 +186,28 @@ class AppMenu extends React.Component {
     this.handleMenuStateChange(false);
     this.props.onLoadNewServiceWorkerAccept();
   }
+
+  handleClickOptTrackIn(e) {
+    e.preventDefault();
+    this.props.onTrackOptIn(!this.props.trackOptIn)
+    window.location.reload();
+  }
 }
 
 AppMenu.defaultProps = {
   onLoadNewServiceWorkerAccept: () => {},
   newServiceWorkerDetected: false,
   onLanguageChange: (language) => {},
+  onTrackOptIn: (optIn) => {},
+  trackOptIn: false,
 };
 
 AppMenu.propTypes = {
   onLoadNewServiceWorkerAccept: PropTypes.func.isRequired,
   newServiceWorkerDetected: PropTypes.bool.isRequired,
   onLanguageChange: PropTypes.func.isRequired,
+  onTrackOptIn: PropTypes.func.isRequired,
+  trackOptIn: PropTypes.bool.isRequired,
 };
 
 export default translate('AppMenu')(AppMenu);
