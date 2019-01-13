@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import ReactGA from 'react-ga';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   faPlay,
@@ -37,7 +38,10 @@ class Controls extends React.Component {
       ),
       text: '-10m',
       help: 'Go backwards 10 minutes',
-      action: () => this.player().currentTime -= 600,
+      action: () => {
+        this.player().currentTime -= 600;
+        return `Current time: ${this.player().currentTime}`
+      },
       keys: [ 'PageUp' ],
       group: 'advanced prev',
     },
@@ -56,7 +60,10 @@ class Controls extends React.Component {
       ),
       text: '-60s',
       help: 'Go backwards 1 minute',
-      action: () => this.player().currentTime -= 60,
+      action: () => {
+        this.player().currentTime -= 60
+        return `Current time: ${this.player().currentTime}`
+      },
       keys: [ 'ArrowUp' ],
       group: 'advanced prev',
     },
@@ -64,7 +71,10 @@ class Controls extends React.Component {
       icon: <FontAwesomeIcon icon={ faForward } flip="horizontal" />,
       text: '-10s',
       help: 'Go backwards 10 seconds',
-      action: () => this.player().currentTime -= 10,
+      action: () => {
+        this.player().currentTime -= 10
+        return `Current time: ${this.player().currentTime}`
+      },
       keys: [ 'ArrowLeft' ],
       group: 'advanced prev',
     },
@@ -74,7 +84,10 @@ class Controls extends React.Component {
          <FontAwesomeIcon icon={ faPlay } /> ,
       text: () => this.props.isPlaying ? 'Pause' : 'Play',
       help: 'Toggle Play/Pause',
-      action: () => this.player().paused ? this.player().play() : this.player().pause(),
+      action: () => {
+        this.player().paused ? this.player().play() : this.player().pause()
+        return `Current pause status: ${this.player().paused}`
+      },
       keys: [ ' ', 'p', 'P' ],
       group: 'basic',
     },
@@ -82,7 +95,10 @@ class Controls extends React.Component {
       icon: <FontAwesomeIcon icon={ faForward } />,
       text: '+10s',
       help: 'Go forward 10 seconds',
-      action: () => this.player().currentTime += 10,
+      action: () => {
+        this.player().currentTime += 10
+        return `Current time: ${this.player().currentTime}`
+      },
       keys: [ 'ArrowRight' ],
       group: 'advanced next',
     },
@@ -99,7 +115,10 @@ class Controls extends React.Component {
       ),
       text: '+60s',
       help: 'Go forward 1 minute',
-      action: () => this.player().currentTime += 60,
+      action: () => {
+        this.player().currentTime += 60
+        return `Current time: ${this.player().currentTime}`
+      },
       keys: [ 'ArrowDown' ],
       group: 'advanced next',
     },
@@ -112,7 +131,10 @@ class Controls extends React.Component {
       ),
       text: '+10m',
       help: 'Go forward 10 minutes',
-      action: () => this.player().currentTime += 600,
+      action: () => {
+        this.player().currentTime += 600
+        return `Current time: ${this.player().currentTime}`
+      },
       keys: [ 'PageDown' ],
       group: 'advanced next',
     },
@@ -126,7 +148,10 @@ class Controls extends React.Component {
     },
     {
       help: 'Decrement volume 5%',
-      action: () => this.incrementVolume(-.05),
+      action: () => {
+        this.incrementVolume(-.05)
+        return `Current volume: ${this.player().volume}`
+      },
       keys: [
         '/',
         {key: 'ArrowDown', shiftKey: true}
@@ -134,7 +159,10 @@ class Controls extends React.Component {
     },
     {
       help: 'Increment volume 5%',
-      action: () => this.incrementVolume(.05),
+      action: () => {
+        this.incrementVolume(.05)
+        return `Current volume: ${this.player().volume}`
+      },
       keys: [
         '*',
         {key: 'ArrowUp', shiftKey: true}
@@ -142,7 +170,10 @@ class Controls extends React.Component {
     },
     {
       help: 'Toggle mute status',
-      action: () => this.setMuted( !this.player().muted ),
+      action: () => {
+        this.setMuted( !this.player().muted )
+        return `Current mute status: ${this.player().muted}`
+      },
       keys: [ 'm', 'M' ],
     },
   ];
@@ -160,6 +191,12 @@ class Controls extends React.Component {
     if ( props.extraControls.length ) {
       this.controls = this.controls.concat( props.extraControls );
     }
+
+    // Wrap control action to send event to GA on action execution
+    this.controls.forEach( c => {
+      c._action = c.action;
+      c.action = (origin) => this.sendEvent(origin, c.help, c._action());
+    });
   }
 
   keyHandlerFocus = () => {};
@@ -226,6 +263,8 @@ class Controls extends React.Component {
   render() {
     const { showAdvanced, volumeAsAdvanced, volume, muted } = this.props;
     const { noKeys } = this.state;
+
+    // Separate control buttons into 2 groups
     const buttons = ['basic','advanced'].reduce( (res, group) => {
       res[group] = this.filterButtonsGroup(this.controls, group);
       return res;
@@ -352,6 +391,22 @@ class Controls extends React.Component {
     }
   }
 
+  // Send event to GA
+  sendEvent(origin, help, status) {
+    const event = {
+      category: origin,
+      action: help,
+    };
+
+    if ( typeof status === 'string' ) {
+      console.log(status);
+      event.label = status;
+    }
+
+    console.log(event);
+    ReactGA.event(event);
+  }
+
   handleKey(e) {
     let stopPropagation = false;
 
@@ -366,9 +421,8 @@ class Controls extends React.Component {
         if(e.key === key.key &&
           ['shiftKey', 'altKey', 'ctrlKey', 'metaKey']
             .every( (mod) => !!e[mod] === !!key[mod] )) {
-          console.log(control.help);
           stopPropagation = true;
-          control.action();
+          control.action("Key pressed");
         }
       });
     });
@@ -379,9 +433,12 @@ class Controls extends React.Component {
     }
   }
 
-  handleShowAdvancedChange(showAdvanced, event) {
+  handleShowAdvancedChange(showAdvanced, origin, event) {
     event.preventDefault();
-    this.props.onShowAdvancedChange(showAdvanced);
+    this.sendEvent(
+      origin,
+      this.props.onShowAdvancedChange(showAdvanced),
+    );
   }
 }
 

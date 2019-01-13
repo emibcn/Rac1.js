@@ -45,7 +45,7 @@ class ButtonLegacy extends React.PureComponent {
 
     return (
       <button
-        onClick={ action }
+        onClick={ action.bind(this, "Button pressed") }
         aria-label={ helpExtra }
         title={ helpExtra }
         className={ 'rac1-controls-button' + (className ? ` ${className}` : '') }
