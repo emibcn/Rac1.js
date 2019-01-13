@@ -39,7 +39,7 @@
   if ( global.location.hash !== '#/directe' ) {
 
     // Get date from location hash
-    if ( global.location.hash.match(/^#\/\d{4}\/\d{2}\/\d{2}/)) {
+    if ( global.location.hash.match(/^#\/\d{4}\/\d+\/\d+/)) {
       self.dateStr = global.location.hash
         .split('/')
         .slice(1, 4)
@@ -56,7 +56,7 @@
         self.date.getFullYear();
     }
 
-    // Set next day date is it's not 2018's last day (server inconsistency)
+    // Set next day date if it's not 2018's last day (server inconsistency)
     if ( !self.dateStr.match(/^31\/12\/2018$/) ) {
       self.dateParts = self.dateStr.split('/').reverse().map( str => Number(str));
       self.date = new Date( self.dateParts[0], self.dateParts[1] - 1, self.dateParts[2] );
