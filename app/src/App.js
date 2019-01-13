@@ -50,7 +50,6 @@ class App extends React.Component {
     const todayStr = `/${date.getFullYear()}/${1 + date.getMonth()}/${date.getDate()}/0/0`;
     const { newServiceWorkerDetected, language } = this.state;
     const translations = available[language];
-    console.log({language, translations});
 
     return (
       <TranslatorProvider translations={ translations }>
@@ -73,7 +72,7 @@ class App extends React.Component {
 
             {/* App Route */}
             <header className="App-header" id="page-wrap">
-              <GAListener>
+              <GAListener language={ language } >
                 <Switch>
                   <Route
                     path="/live"
