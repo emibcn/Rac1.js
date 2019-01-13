@@ -8,16 +8,25 @@ class GAListenerProd extends React.Component {
   };
 
   constructor(){
-     super();
+    super();
 
-     const GACode = 'UA-129704402-1';
-     this.loadGoogleTag(GACode);
-     ReactGA.initialize(GACode);
+    const GACode = 'UA-129704402-1';
+    this.loadGoogleTag(GACode);
+    ReactGA.initialize(GACode, {
+      titleCase: false,
+    });
   }
 
   componentDidMount() {
     this.sendPageView(this.context.router.history.location);
     this.context.router.history.listen(this.sendPageView);
+    ReactGA.set({ PageLanguage: this.props.language });
+  }
+
+  componentDidUpdate(prevProps) {
+    if ( prevProps.language !== this.props.language ) {
+      ReactGA.set({ PageLanguage: this.props.language });
+    }
   }
 
   sendPageView(location) {
@@ -46,20 +55,39 @@ class GAListenerProd extends React.Component {
   }
 }
 
+GAListenerProd.defaultProps = {
+  language: 'en-en',
+};
+
+GAListenerProd.propTypes = {
+  language: PropTypes.string.isRequired,
+};
+
+
 // Renders GA+children in production, only children for the rest
 class GAListener extends React.Component {
-  render() {
+  constructor(){
+    super();
 
+    // Get DoNotTrack user preference
     const dnt = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+    this.dnt = process.env.NODE_ENV !== 'production' || dnt === "1" || dnt === "yes";
+  }
+
+  render() {
+    const { children, ...props } = this.props;
 
     // Disable GA in dev and for people with DoNotTrack HTTP header
-    return process.env.NODE_ENV !== 'production' || dnt === "1" || dnt === "yes" ?
-      this.props.children : (
-      <GAListenerProd>
-        { this.props.children }
+    return this.dnt ?
+      children : (
+      <GAListenerProd { ...props } >
+        { children }
       </GAListenerProd>
     )
   }
 }
+
+GAListener.defaultProps = GAListenerProd.defaultProps;
+GAListener.propTypes = GAListenerProd.propTypes;
 
 export default GAListener;
