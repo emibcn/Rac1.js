@@ -11,7 +11,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons'
 
 const ReloadButton = translate("ReloadButton")( props => {
-  const { t, restProps } = props;
+  const { t, ...restProps } = props;
   const text = t('Reload');
   return (
     <button
