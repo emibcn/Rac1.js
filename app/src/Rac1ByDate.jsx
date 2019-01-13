@@ -132,20 +132,23 @@ class Rac1ByDate extends Component {
           getPlayer={ this.player.bind(this) }
           volume={ volume }
           muted={ muted }
-          allowFocus={ (el) => el.className.match( /date-?picker|rc-slider-handle/ ) }
+          allowFocus={ el => el.className.match( /date-?picker|rc-slider-handle/ ) }
           onPlayNext={ this.playNext.bind(this) }
           onPlayPrev={ this.playPrev.bind(this) }
           onSetVolume={ volume => this.setState({ ...this.state, volume }) }
           onSetMuted={ muted => this.setState({ ...this.state, muted }) }
           showAdvanced={ showAdvancedControls }
           volumeAsAdvanced={ true }
-          onShowAdvancedChange={ show => this.setState({ ...this.state, showAdvancedControls: show }) }
+          onShowAdvancedChange={ show => {
+            this.setState({ ...this.state, showAdvancedControls: show });
+            return `${show ? 'Show' : 'Hide'} advanced buttons`
+          }}
           isPlaying={ isPlaying }
           ref={ (el) => { if(el) { this.keyHandlerFocus = el.keyHandlerFocus } } }
           extraControls={ this.extraControls }
         />;
     const player = <ReactAudioPlayer
-          ref={(element) => { this._player = element; }}
+          ref={ element => { this._player = element; }}
           style={{ width: '100%' }}
           src={ currentPath }
           autoPlay={ autoplay }
@@ -173,16 +176,14 @@ class Rac1ByDate extends Component {
           onDateBlur={ () => this.keyHandlerFocus() }
           onDateChange={ this.handleDateChange.bind(this) }
         >
-          <PodcastsList
-            current={ current }
-          >
-          { podcasts.map((podcast, index) =>
-            <Podcast
-              key={ podcast.uuid !== '...' ? podcast.uuid : `..._${index}` }
-              { ...podcast }
-              onClick={ this.handlePodcastClick.bind(this, index) }
-            />
-          )}
+          <PodcastsList current={ current } >
+            { podcasts.map((podcast, index) =>
+              <Podcast
+                key={ podcast.uuid !== '...' ? podcast.uuid : `..._${index}` }
+                { ...podcast }
+                onClick={ this.handlePodcastClick.bind(this, index) }
+              />
+            )}
           </PodcastsList>
         </Playlist>;
 
@@ -401,8 +402,10 @@ class Rac1ByDate extends Component {
 
   playPrev() {
     const current = this.findCurrentPodcast();
-    if ( current > 0 ) {
+    if ( current > 0 &&
+       'path' in this.state.podcasts[current - 1]) {
       this.playPodcast(current - 1);
+      return `${this.state.podcasts[current - 1].titleFull}`
     }
   }
 
@@ -411,8 +414,9 @@ class Rac1ByDate extends Component {
 
     // If there is a next podcast and it has path, play it
     if ( current < (this.state.podcasts.length - 1 ) &&
-       'path' in this.state.podcasts[current]) {
+       'path' in this.state.podcasts[current + 1]) {
       this.playPodcast(current + 1);
+      return `${this.state.podcasts[current + 1].titleFull}`
     }
     else {
       // If we are called to retry, update list
@@ -425,6 +429,7 @@ class Rac1ByDate extends Component {
             ...this.state,
             waitingUpdate: true,
           });
+          return "Updating podcasts list"
         }
       }
     }
