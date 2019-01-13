@@ -15,6 +15,10 @@ export default {
           [`Change language to ${lang}`]: `Cambiar idioma a ${lang}`,
         }
       }, {}),
+    "Allow tracking": "Seguimiento",
+    "Allow tracking user interactions for usage analysis": "Permitir el seguimiento de las acciones del usuario con fines de análisis de uso",
+    "Yes": "Sí",
+    "No": "No",
   },
 
   Rac1ByDate: {

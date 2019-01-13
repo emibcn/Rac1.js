@@ -15,6 +15,10 @@ export default {
           [`Change language to ${lang}`]: `Canvia l'idioma a ${lang}`,
         }
       }, {}),
+    "Allow tracking": "Seguiment",
+    "Allow tracking user interactions for usage analysis": "Permet el seguiment de les accions de l'usuari amb fins d'anàlisi d'ús",
+    "Yes": "Si",
+    "No": "No",
   },
 
   Rac1ByDate: {

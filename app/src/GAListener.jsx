@@ -75,10 +75,10 @@ class GAListener extends React.Component {
   }
 
   render() {
-    const { children, ...props } = this.props;
+    const { children, trackOptIn, ...props } = this.props;
 
     // Disable GA in dev and for people with DoNotTrack HTTP header
-    return this.dnt ?
+    return this.dnt && trackOptIn ?
       children : (
       <GAListenerProd { ...props } >
         { children }
@@ -87,7 +87,14 @@ class GAListener extends React.Component {
   }
 }
 
-GAListener.defaultProps = GAListenerProd.defaultProps;
-GAListener.propTypes = GAListenerProd.propTypes;
+GAListener.defaultProps = {
+  ...GAListenerProd.defaultProps,
+  trackOptIn: false,
+};
+
+GAListener.propTypes = {
+  ...GAListenerProd.propTypes,
+  trackOptIn: PropTypes.bool.isRequired,
+};
 
 export default GAListener;

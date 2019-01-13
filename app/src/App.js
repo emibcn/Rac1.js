@@ -26,6 +26,7 @@ class App extends React.Component {
     this.state = {
       newServiceWorkerDetected: false,
       language: available.hasOwnProperty(navigator.language) ? navigator.language : 'en-en',
+      trackOptIn: false,
     };
   }
 
@@ -48,7 +49,7 @@ class App extends React.Component {
   render() {
     const date = new Date();
     const todayStr = `/${date.getFullYear()}/${1 + date.getMonth()}/${date.getDate()}/0/0`;
-    const { newServiceWorkerDetected, language } = this.state;
+    const { newServiceWorkerDetected, language, trackOptIn } = this.state;
     const translations = available[language];
 
     return (
@@ -68,11 +69,13 @@ class App extends React.Component {
               onLoadNewServiceWorkerAccept={ this.handleLoadNewServiceWorkerAccept.bind(this) }
               language={ language }
               onLanguageChange={ this.handleLanguageChange.bind(this) }
+              onTrackOptIn={ trackOptIn => this.setState({...this.state, trackOptIn }) }
+              trackOptIn={ trackOptIn }
             />
 
             {/* App Route */}
             <header className="App-header" id="page-wrap">
-              <GAListener language={ language } >
+              <GAListener language={ language } trackOptIn={ trackOptIn } >
                 <Switch>
                   <Route
                     path="/live"
