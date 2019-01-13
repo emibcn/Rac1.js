@@ -12,7 +12,7 @@ export default {
       .reduce( (res, lang) => {
         return {
           ...res,
-          [`Change language to ${lang}`]: `Canviar idioma a ${lang}`,
+          [`Change language to ${lang}`]: `Canvia l'idioma a ${lang}`,
         }
       }, {}),
   },
@@ -57,8 +57,8 @@ export default {
       ].reduce( (res, item) => {
         return {
           ...res,
-          [`-${ item.symbol }`]: [`-${ item.symbol }`],
-          [`+${ item.symbol }`]: [`+${ item.symbol }`],
+          [`-${ item.symbol }`]: `-${ item.symbol }`,
+          [`+${ item.symbol }`]: `+${ item.symbol }`,
           [`Go backwards ${ item.orig }`]: `Retrocedir ${ item.trans }`,
           [`Go forward ${ item.orig }`  ]: `Avançar ${ item.trans }`,
         }

@@ -8,6 +8,13 @@ export default {
     "New version available!": "New version available!",
     "Language": "Language",
     "Change application language": "Change application language",
+    ...['Català', 'Castellano', 'English']
+      .reduce( (res, lang) => {
+        return {
+          ...res,
+          [`Change language to ${lang}`]: `Change language to ${lang}`,
+        }
+      }, {}),
   },
 
   Rac1ByDate: {
@@ -50,8 +57,8 @@ export default {
       ].reduce( (res, item) => {
         return {
           ...res,
-          [`-${ item.symbol }`]: [`-${ item.symbol }`],
-          [`+${ item.symbol }`]: [`+${ item.symbol }`],
+          [`-${ item.symbol }`]: `-${ item.symbol }`,
+          [`+${ item.symbol }`]: `+${ item.symbol }`,
           [`Go backwards ${ item.orig }`]: `Go backwards ${ item.orig }`,
           [`Go forward ${ item.orig }`  ]: `Go forward ${ item.orig }`,
         }
