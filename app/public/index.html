@@ -36,7 +36,7 @@
   self.pad2 = num => ( num < 10 ? '0' : '' ) + num;
   self.dateStr = '';
 
-  if ( global.location.hash !== '#/directe' ) {
+  if ( !(['#/directe', '#/live'].includes(global.location.hash)) ) {
 
     // Get date from location hash
     if ( global.location.hash.match(/^#\/\d{4}\/\d+\/\d+/)) {
