@@ -57,8 +57,8 @@ export default {
       ].reduce( (res, item) => {
         return {
           ...res,
-          [`-${ item.symbol }`]: [`-${ item.symbol }`],
-          [`+${ item.symbol }`]: [`+${ item.symbol }`],
+          [`-${ item.symbol }`]: `-${ item.symbol }`,
+          [`+${ item.symbol }`]: `+${ item.symbol }`,
           [`Go backwards ${ item.orig }`]: `Retroceder ${ item.trans }`,
           [`Go forward ${ item.orig }`  ]: `Avanzar ${ item.trans }`,
         }
