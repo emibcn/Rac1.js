@@ -12,6 +12,86 @@ class Rac1 {
   // Abort controller
   controller = new AbortController();
 
+  // Anti-CORS backends
+  antiCorsBackends = [
+    { // Direct access to server
+      url: url => `${url}`,
+      parser: async response => {
+        return await response.text();
+      },
+      extraOptions: {
+        "Content-Type": "application/json; charset=utf-8",
+      },
+    },
+    {
+      url: url => `https://cors-anywhere.herokuapp.com/${url}`,
+      parser: response => response.text(),
+      extraOptions: {
+        credentials: 'same-origin',
+      },
+    },
+    {
+      url: url => `https://api.allorigins.ml/get?url=${encodeURIComponent(url)}`,
+      parser: async response => {
+        const json = await response.json();
+        if ( json.status.http_code === 200 ) {
+          return json.contents;
+        }
+        else {
+          throw Error(json);
+        }
+      },
+    },
+    { // Direct access to server
+      url: url => `https://secret-ocean-49799.herokuapp.com/${url}`,
+      parser: async response => {
+        return await response.text();
+      },
+      extraOptions: {
+        "Content-Type": "application/json; charset=utf-8",
+      },
+    },
+    /*
+    {
+      url: url => `http://www.whateverorigin.org/get?url=${encodeURIComponent(url)}`,
+      parser: async response => {
+        const text = await response.text();
+        console.log({text: JSON.parse(JSON.stringify(text))});
+        const json = JSON.parse(text);
+        console.log({json});
+        if ( json.status.http_code === 200 ) {
+          return json.contents;
+        }
+        else {
+          throw Error(json);
+        }
+      },
+      extraOptions: {
+        "Content-Type": "application/json; charset=utf-8",
+        headers: {
+          "Accept": "application/jsonp",
+          "Content-Type": "application/json; charset=utf-8",
+          "Access-Control-Request-Method": "GET",
+          "Access-Control-Request-Headers": "content-type,script-charset",
+        },
+      },
+    },
+    {
+      url: url => `https://crossorigin.me/${url}`,
+      parser: async response => await response.text(),
+      extraOptions: {
+        "Content-Type": "application/json; charset=utf-8",
+      },
+    },
+    {
+      url: url => `http://alloworigin.com/get?compress=1&url=${encodeURIComponent(url)}`,
+      parser: response => response.text(),
+      extraOptions: {
+      },
+    },
+    */
+  ];
+
   constructor(props) {
     const noop = () => {};
     this.onListUpdate = props.onListUpdate || noop;
@@ -31,12 +111,20 @@ class Rac1 {
   }
 
   // Catches the fetch error, original or 'self-raised'
-  catchFetchErrors(err) {
-    if ( err.name === 'AbortError' ) {
-      console.log(err.message);
-    }
-    else {
-      console.error(err);
+  catchFetchErrors(callback) {
+    return (err) => {
+      if ( err.name === 'AbortError' ) {
+        console.log(err.message);
+      }
+      else {
+        if ( typeof callback === 'function' ) {
+          callback(err);
+        }
+        else {
+          console.error(err.message);
+          throw Error(err);
+        }
+      }
     }
   }
 
@@ -70,7 +158,7 @@ class Rac1 {
       .then( this.handleListUpdate.bind(this, pageNumber) )
 
       // Catch Exceptions
-      .catch( this.catchFetchErrors )
+      .catch( this.catchFetchErrors() )
   }
 
   getPodcasts(pageNumber, podcasts) {
@@ -84,7 +172,7 @@ class Rac1 {
           // event when updated
           this.getPodcastData(podcast.uuid)
             .then( this.handlePodcastUpdate.bind(this, pageNumber) )
-            .catch( this.catchFetchErrors )
+            .catch( this.catchFetchErrors() )
         }
         return podcast;
       })
@@ -200,7 +288,7 @@ class Rac1 {
 
   // Gets a page with HTML containning a list of podcasts from the server
   // (pageNumber) => Promise(String)
-  getPage(pageNumber=0) {
+  getPage(pageNumber=0, backend=0) {
 
     // Format day and month to 2 digits 0 padded strings
     const pad2 = num => ( num < 10 ? '0' : '' ) + num;
@@ -223,16 +311,31 @@ class Rac1 {
     }
 
     return fetch(
-      "https://cors-anywhere.herokuapp.com/" // Anti CORS
-      + "https://api.audioteca.rac1.cat/a-la-carta/cerca?"
+      this.antiCorsBackends[backend].url( // Anti CORS
+      "https://api.audioteca.rac1.cat/a-la-carta/cerca?"
       + "text=&programId=&sectionId=HOUR&"
-      + `from=${date}&to=${dateNext}&pageNumber=${pageNumber}`,
+      + `from=${date}&to=${dateNext}&pageNumber=${pageNumber}`),
       {
-        credentials: 'same-origin',
+        ...this.antiCorsBackends[backend].extraOptions,
         signal: this.controller.signal,
       })
       .then( this.handleFetchErrors )
-      .then( response => response.text() )
+
+      .then( this.antiCorsBackends[backend].parser )
+
+      // Early catch backend error to retry with the next on list
+      // Reraise error when no more backends available
+      .catch( this.catchFetchErrors( err => {
+        console.log(`Failed: ${err}`);
+        if ( backend === (this.antiCorsBackends.length - 1) ) {
+          console.log(`AntiCORS backend ${backend} failed. No more backends available.`);
+          throw Error(err);
+        }
+        else {
+          console.log(`AntiCORS backend ${backend} failed. Trying next.`);
+          return this.getPage(pageNumber, backend + 1)
+        }
+      }))
   }
 
   // Parses a page raw HTML to obtain audio UUIDs and the list of pages
