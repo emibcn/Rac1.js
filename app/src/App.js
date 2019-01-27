@@ -1,3 +1,4 @@
+import 'babel-polyfill'; // For Google bot
 import React from 'react';
 import PropTypes from 'prop-types';
 import {
