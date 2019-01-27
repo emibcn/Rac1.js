@@ -22,11 +22,13 @@ import {
   scaleRotate as BigMenu,
 } from 'react-burger-menu'
 
+import { withGAEvent } from './GAListener';
 import './AppMenu.css';
 
 class AppMenu extends React.Component {
-  constructor() {
+  constructor(props) {
     super();
+
     this.state = {
       isOpen: false,
       isLanguageOpen: false,
@@ -157,13 +159,17 @@ class AppMenu extends React.Component {
   }
 
   handleMenuStateChange(isOpen) {
-    this.setState({
-      isOpen,
-    });
+    if ( isOpen !== this.state.isOpen ) {
+      this.setState({
+        isOpen,
+      });
+      this.props.sendEvent('Menu', 'Change open state', `Menu is open: ${isOpen}`);
+    }
   }
 
   handleClick(e) {
     this.handleMenuStateChange(false);
+    this.props.sendEvent('Menu', 'Click link', `${e.currentTarget.text}`);
   }
 
   handleLanguageSectionClick(e) {
@@ -179,17 +185,20 @@ class AppMenu extends React.Component {
     e.preventDefault();
     this.handleMenuStateChange(false);
     this.props.onLanguageChange(language);
+    this.props.sendEvent('Menu', 'Change language', `Current language: ${language}`);
   }
 
   handleClickUpdate(e) {
     e.preventDefault();
     this.handleMenuStateChange(false);
     this.props.onLoadNewServiceWorkerAccept();
+    this.props.sendEvent('Menu', 'Update!');
   }
 
   handleClickOptTrackIn(e) {
     e.preventDefault();
     this.props.onTrackOptIn(!this.props.trackOptIn)
+    this.props.sendEvent('Menu', 'Change tracking preference', `Current tracking preference: ${!this.props.trackOptIn}`);
     window.location.reload();
   }
 }
@@ -197,9 +206,10 @@ class AppMenu extends React.Component {
 AppMenu.defaultProps = {
   onLoadNewServiceWorkerAccept: () => {},
   newServiceWorkerDetected: false,
-  onLanguageChange: (language) => {},
-  onTrackOptIn: (optIn) => {},
+  onLanguageChange: language => {},
+  onTrackOptIn: optIn => {},
   trackOptIn: false,
+  sendEvent: (origin, help, status) => {},
 };
 
 AppMenu.propTypes = {
@@ -208,6 +218,7 @@ AppMenu.propTypes = {
   onLanguageChange: PropTypes.func.isRequired,
   onTrackOptIn: PropTypes.func.isRequired,
   trackOptIn: PropTypes.bool.isRequired,
+  sendEvent: PropTypes.func.isRequired,
 };
 
-export default translate('AppMenu')(AppMenu);
+export default translate('AppMenu')(withGAEvent(AppMenu));
