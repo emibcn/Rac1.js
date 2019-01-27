@@ -22,11 +22,17 @@ class App extends React.Component {
 
   constructor() {
     super();
+
+    // Get DoNotTrack user preference
+    // Deactivate tracking by default until legal modal is added to the app
+    const dnt = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+    this.dnt = process.env.NODE_ENV !== 'production' || dnt === "1" || dnt === "yes" || true;
+
     this.registration = false;
     this.state = {
       newServiceWorkerDetected: false,
       language: available.hasOwnProperty(navigator.language) ? navigator.language : 'en-en',
-      trackOptIn: false,
+      trackOptIn: !this.dnt,
     };
   }
 
@@ -57,25 +63,28 @@ class App extends React.Component {
         <Router>
           <div className="App" id="router-container">
 
+            {/* Persistent state saver into localStorage */}
             <Storage
               parent={ this }
               prefix="App"
               blacklist={ ['newServiceWorkerDetected'] }
             />
 
-            {/* Menu */}
-            <AppMenu
-              newServiceWorkerDetected={ newServiceWorkerDetected }
-              onLoadNewServiceWorkerAccept={ this.handleLoadNewServiceWorkerAccept.bind(this) }
-              language={ language }
-              onLanguageChange={ this.handleLanguageChange.bind(this) }
-              onTrackOptIn={ trackOptIn => this.setState({...this.state, trackOptIn }) }
-              trackOptIn={ trackOptIn }
-            />
+            {/* GoogleAnalytics event provider and route change detector */}
+            <GAListener language={ language } trackOptIn={ trackOptIn } >
 
-            {/* App Route */}
-            <header className="App-header" id="page-wrap">
-              <GAListener language={ language } trackOptIn={ trackOptIn } >
+              {/* Menu */}
+              <AppMenu
+                newServiceWorkerDetected={ newServiceWorkerDetected }
+                onLoadNewServiceWorkerAccept={ this.handleLoadNewServiceWorkerAccept.bind(this) }
+                language={ language }
+                onLanguageChange={ this.handleLanguageChange.bind(this) }
+                onTrackOptIn={ trackOptIn => this.setState({...this.state, trackOptIn }) }
+                trackOptIn={ trackOptIn }
+              />
+
+              {/* App Route */}
+              <header className="App-header" id="page-wrap">
                 <Switch>
                   <Route
                     path="/live"
@@ -95,13 +104,13 @@ class App extends React.Component {
 
                   <Route
                     path="/:year/:month/:day"
-                    render={props => <Rac1ByDate { ...props } /> } />
+                    render={ props => <Rac1ByDate { ...props } /> } />
 
                   {/* Set default date to today */}
                   <Redirect to={{ pathname: todayStr }} />
                 </Switch>
-              </GAListener>
-            </header>
+              </header>
+            </GAListener>
           </div>
         </Router>
       </TranslatorProvider>
