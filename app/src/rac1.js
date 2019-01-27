@@ -1,3 +1,5 @@
+import 'abortcontroller-polyfill'; // For GoogleBot
+
 class Rac1 {
 
   // Cache for UUID => podcast
