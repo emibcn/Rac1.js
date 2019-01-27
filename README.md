@@ -57,6 +57,10 @@ Inspired by [my command line Python app Rac1.py](https://github.com/emibcn/Rac1.
 - Consider using Redux
 - Add tests
 
+# See also
+- [Joan Domingo's](https://github.com/joan-domingo) [Podcasts-RAC1-Android](https://github.com/joan-domingo/Podcasts-RAC1-Android) android app
+- [emibcn's](https://github.com/emibcn) [Rac1.py](https://github.com/emibcn/Rac1.py) command line app
+
 # Install
 
 ## Download
