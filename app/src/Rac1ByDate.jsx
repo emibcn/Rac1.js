@@ -144,7 +144,7 @@ class Rac1ByDate extends Component {
             return `${show ? 'Show' : 'Hide'} advanced buttons`
           }}
           isPlaying={ isPlaying }
-          ref={ (el) => { if(el) { this.keyHandlerFocus = el.keyHandlerFocus } } }
+          ref={ el => { if ( el ) { this.keyHandlerFocus = el.keyHandlerFocus } } }
           extraControls={ this.extraControls }
         />;
     const player = <ReactAudioPlayer
