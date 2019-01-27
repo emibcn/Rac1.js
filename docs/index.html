@@ -1,5 +1,5 @@
 <!doctype html><html lang="en"><head><meta charset="utf-8"/><link rel="shortcut icon" href="/Rac1.js/favicon.ico"/><meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no"/><meta name="theme-color" content="#000000"/><meta name="description" content="Rac1 radio podcasts finder and player"/><link rel="manifest" href="/Rac1.js/manifest.json"/><link rel="preconnect" href="https://cors-anywhere.herokuapp.com"/><link rel="preconnect" href="https://api.audioteca.rac1.cat"/><link rel="preconnect" href="https://audioserver.rac1.cat"/><link rel="preconnect" href="https://storage.googleapis.com/workbox-cdn/releases/3.6.3/workbox-sw.js"/><link rel="preconnect" href="https://www.googletagmanager.com/gtag/js?id=UA-129704402-1"/><link rel="preconnect" href="https://www.google-analytics.com/analytics.js"/><title>Rac1 Radio Podcasts Player</title><script>"use strict"; !function(self, global){
-  self.pad2 = num => ( num < 10 ? '0' : '' ) + num;
+  self.pad2 = function(num) { return ( num < 10 ? '0' : '' ) + num };
   self.dateStr = '';
 
   if ( !(['#/directe', '#/live'].includes(global.location.hash)) ) {
@@ -24,7 +24,7 @@
 
     // Set next day date if it's not 2018's last day (server inconsistency)
     if ( !self.dateStr.match(/^31\/12\/2018$/) ) {
-      self.dateParts = self.dateStr.split('/').reverse().map( str => Number(str));
+      self.dateParts = self.dateStr.split('/').reverse().map( function(str) { return Number(str) } );
       self.date = new Date( self.dateParts[0], self.dateParts[1] - 1, self.dateParts[2] );
       self.dateTo = new Date(self.date);
       self.dateTo.setDate( self.dateTo.getDate() + 1 );
