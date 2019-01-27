@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import ReactGA from 'react-ga';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   faPlay,
@@ -14,6 +13,7 @@ import {
 
 import { Button, ButtonsGroup } from './Button';
 import Volume from './Volume';
+import { withGAEvent } from './GAListener';
 
 class Controls extends React.Component {
 
@@ -391,20 +391,9 @@ class Controls extends React.Component {
     }
   }
 
-  // Send event to GA
+  // Send event to GA: get this func from GAListener HOC `withGAEvent`
   sendEvent(origin, help, status) {
-    const event = {
-      category: origin,
-      action: help,
-    };
-
-    if ( typeof status === 'string' ) {
-      console.log(status);
-      event.label = status;
-    }
-
-    console.log(event);
-    ReactGA.event(event);
+    this.props.sendEvent(origin, help, status);
   }
 
   handleKey(e) {
@@ -449,6 +438,7 @@ Controls.defaultProps = {
   onPlayNext:    e => {},
   allowFocus:    e => {},
   onShowAdvancedChange: e => {},
+  sendEvent:     (origin, help, status) => {},
   extraControls: [],
   hideButtons:   [],
   volume:        1,
@@ -487,8 +477,10 @@ Controls.propTypes = {
         PropTypes.func,
         PropTypes.node,
       ]),
-    }) ),
+    })
+  ).isRequired,
+  sendEvent: PropTypes.func.isRequired,
 };
 
-export default Controls;
+export default withGAEvent(Controls);
 
