@@ -36,8 +36,8 @@ class ButtonLegacy extends React.PureComponent {
 
     const styleButton = {
       borderRadius: '1em',
-      padding: '.7em',
-      margin: '1em',
+      padding: '.5em',
+      margin: '.5em',
       ...style,
     };
 
