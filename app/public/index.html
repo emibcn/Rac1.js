@@ -32,61 +32,66 @@
     -->
     <title>Rac1 Radio Podcasts Player</title>
     <script>
-"use strict"; !function(self, global){
+"use strict"; !function(self, global) {
+
+  // Exclude pre-caching for bots and for live player
+  if ( /bot|google|baidu|bing|msn|duckduckbot|teoma|slurp|yandex/i.test(navigator.userAgent) ||
+      ['#/directe', '#/live'].includes(global.location.hash) ) {
+    return;
+  }
+
   self.pad2 = function(num) { return ( num < 10 ? '0' : '' ) + num };
   self.dateStr = '';
 
-  if ( !(['#/directe', '#/live'].includes(global.location.hash)) ) {
-
-    // Get date from location hash
-    if ( global.location.hash.match(/^#\/\d{4}\/\d+\/\d+/)) {
-      self.dateStr = global.location.hash
-        .split('/')
-        .slice(1, 4)
-        .reverse()
-        .map( self.pad2 )
-        .join('/');
-    }
-    // Get today's date
-    else {
-      self.date = new Date();
-      self.dateStr =
-        self.pad2( self.date.getDate() ) + '/' +
-        self.pad2( 1 + self.date.getMonth() ) + '/' +
-        self.date.getFullYear();
-    }
-
-    // Set next day date if it's not 2018's last day (server inconsistency)
-    if ( !self.dateStr.match(/^31\/12\/2018$/) ) {
-      self.dateParts = self.dateStr.split('/').reverse().map( function(str) { return Number(str) } );
-      self.date = new Date( self.dateParts[0], self.dateParts[1] - 1, self.dateParts[2] );
-      self.dateTo = new Date(self.date);
-      self.dateTo.setDate( self.dateTo.getDate() + 1 );
-      self.dateStrTo =
-        self.pad2( self.dateTo.getDate() ) + '/' +
-        self.pad2( 1 + self.dateTo.getMonth() ) + '/' +
-        self.dateTo.getFullYear();
-    }
-    else {
-      self.dateStrTo = '';
-    }
-
-    self.url =
-      //"https://cors-anywhere.herokuapp.com/" // Anti CORS
-      "https://api.audioteca.rac1.cat/a-la-carta/cerca?"
-      + "text=&programId=&sectionId=HOUR&"
-      + `from=${self.dateStr}&to=${self.dateStrTo}&pageNumber=0`;
-
-    // Add Link tag to hint the browser
-    let linkTag = document.createElement('link');
-    linkTag.rel = 'preload';
-    linkTag.href = self.url;
-    linkTag.crossOrigin = 'crossorigin';
-    linkTag.credentials = 'omit';
-    linkTag.as = 'fetch';
-    linkTag.type = 'text/html';
-    document.head.appendChild(linkTag);
+  // Get date from location hash
+  if ( global.location.hash.match(/^#\/\d{4}\/\d+\/\d+/)) {
+    self.dateStr = global.location.hash
+      .split('/')
+      .slice(1, 4)
+      .reverse()
+      .map( self.pad2 )
+      .join('/');
   }
+  // Get today's date
+  else {
+    self.date = new Date();
+    self.dateStr =
+      self.pad2( self.date.getDate() ) + '/' +
+      self.pad2( 1 + self.date.getMonth() ) + '/' +
+      self.date.getFullYear();
+  }
+
+  // Set next day date if it's not 2018's last day (server inconsistency)
+  if ( !self.dateStr.match(/^31\/12\/2018$/) ) {
+    self.dateParts = self.dateStr.split('/').reverse().map( function(str) { return Number(str) } );
+    self.date = new Date( self.dateParts[0], self.dateParts[1] - 1, self.dateParts[2] );
+    self.dateTo = new Date(self.date);
+    self.dateTo.setDate( self.dateTo.getDate() + 1 );
+    self.dateStrTo =
+      self.pad2( self.dateTo.getDate() ) + '/' +
+      self.pad2( 1 + self.dateTo.getMonth() ) + '/' +
+      self.dateTo.getFullYear();
+  }
+  else {
+    self.dateStrTo = '';
+  }
+
+  self.url =
+    //"https://cors-anywhere.herokuapp.com/" // Anti CORS
+    "https://api.audioteca.rac1.cat/a-la-carta/cerca?"
+    + "text=&programId=&sectionId=HOUR&"
+    + `from=${self.dateStr}&to=${self.dateStrTo}&pageNumber=0`;
+
+  // Add Link tag to hint the browser
+  let linkTag = document.createElement('link');
+  linkTag.rel = 'preload';
+  linkTag.href = self.url;
+  linkTag.crossOrigin = 'crossorigin';
+  linkTag.credentials = 'omit';
+  linkTag.as = 'fetch';
+  linkTag.type = 'text/html';
+  document.head.appendChild(linkTag);
+
   self = null;
 }({}, window)
     </script>
