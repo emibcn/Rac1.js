@@ -2,7 +2,7 @@ import React from 'react';
 import { PropTypes } from 'prop-types';
 import ReactGA from 'react-ga';
 
-class GAListenerProd extends React.Component {
+class GAListenerActive extends React.Component {
   static contextTypes = {
     router: PropTypes.object
   };
@@ -50,51 +50,24 @@ class GAListenerProd extends React.Component {
     }, 1);
   }
 
+  removeGA() {
+    this._ga = ReactGA.ga;
+    ReactGA.ga = null;
+    global.gtag = [];
+    global.dataLayer = [];
+  }
+
   render() {
     return this.props.children;
   }
 }
 
-GAListenerProd.defaultProps = {
+GAListenerActive.defaultProps = {
   language: 'en-en',
 };
 
-GAListenerProd.propTypes = {
+GAListenerActive.propTypes = {
   language: PropTypes.string.isRequired,
 };
 
-
-// Renders GA+children in production, only children for the rest
-class GAListener extends React.Component {
-  constructor(){
-    super();
-
-    // Get DoNotTrack user preference
-    const dnt = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
-    this.dnt = process.env.NODE_ENV !== 'production' || dnt === "1" || dnt === "yes";
-  }
-
-  render() {
-    const { children, trackOptIn, ...props } = this.props;
-
-    // Disable GA in dev and for people with DoNotTrack HTTP header
-    return this.dnt && trackOptIn ?
-      children : (
-      <GAListenerProd { ...props } >
-        { children }
-      </GAListenerProd>
-    )
-  }
-}
-
-GAListener.defaultProps = {
-  ...GAListenerProd.defaultProps,
-  trackOptIn: false,
-};
-
-GAListener.propTypes = {
-  ...GAListenerProd.propTypes,
-  trackOptIn: PropTypes.bool.isRequired,
-};
-
-export default GAListener;
+export default GAListenerActive;
