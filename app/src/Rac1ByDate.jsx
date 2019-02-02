@@ -42,6 +42,8 @@ class Rac1ByDate extends Component {
       completed: false,
       waitingUpdate: false,
       showAdvancedControls: false,
+      hasError: false,
+      error: {},
     };
 
     this.extraControls = [
@@ -76,21 +78,39 @@ class Rac1ByDate extends Component {
     }
   }
 
+  // Saves errors from backend into state so they
+  // can be reraised into ReactDOM tree and catched correctly
+  handleError(error) {
+    error.message = `Rac1ByDate: ${error.message}`;
+    this.setState({
+      hasError: true,
+      error: error,
+    });
+  }
+
   componentWillMount() {
 
     // Register history change event listener
-    this.unlisten = this.history.listen(this.handleHistoryChange.bind(this))
+    this.unlisten = this.history.listen(this.handleHistoryChange.bind(this));
 
     // Initiate backend library
     this.rac1 = new Rac1({
       date: this.state.date,
       onListUpdate: this.handleListUpdate.bind(this),
+      // Get errors from backend
+      onError: this.handleError.bind(this),
     });
   }
 
   componentWillUnmount() {
     // Unregister history change event listener
     this.unlisten();
+
+    // Unregister player event listeners
+    if ( this._player && this._player.removeEventListener ) {
+      this._player.removeEventListener('onPlay', this.handlePlayStatusChange.bind(this, true));
+      this._player.removeEventListener('onPause', this.handlePlayStatusChange.bind(this, false));
+    }
 
     // Abort backend fetches
     this.rac1.abort();
@@ -109,7 +129,15 @@ class Rac1ByDate extends Component {
       maxDate,
       isPlaying,
       showAdvancedControls,
+      hasError,
+      error,
     } = this.state;
+
+    // If we have a backend error, reraise into ReactDOM tree
+    if ( hasError ) {
+      throw Error(error);
+    }
+
     const dateText = date instanceof Date ?
       `${date.getDate()}/${1 + date.getMonth()}/${date.getFullYear()}`
       : '...';
