@@ -18,3 +18,10 @@ services:
       - "127.0.0.1:3000:3000"
     command: "yarn start"
 
+  rac1-static:
+    container_name: rac1-static
+    image: nginx
+    volumes:
+      - ./docs:/usr/share/nginx/html/Rac1.js/
+    ports:
+      - "127.0.0.1:4000:80"
