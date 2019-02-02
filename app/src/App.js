@@ -13,6 +13,7 @@ import available from "./i18n/available"
 
 import AppMenu from './AppMenu';
 import GAListener from './GAListener';
+import ErrorCatcher from './ErrorCatcher';
 import Rac1Directe from './Rac1Directe';
 import Rac1ByDate from './Rac1ByDate';
 
@@ -57,6 +58,7 @@ class App extends React.Component {
     const todayStr = `/${date.getFullYear()}/${1 + date.getMonth()}/${date.getDate()}/0/0`;
     const { newServiceWorkerDetected, language, trackOptIn } = this.state;
     const translations = available[language];
+    const withErrorCatcher = (origin, component) => <ErrorCatcher {...{ origin , key: origin }}>{ component }</ErrorCatcher>;
 
     return (
       <TranslatorProvider translations={ translations }>
@@ -74,21 +76,23 @@ class App extends React.Component {
             <GAListener language={ language } trackOptIn={ trackOptIn } >
 
               {/* Menu */}
-              <AppMenu
-                newServiceWorkerDetected={ newServiceWorkerDetected }
-                onLoadNewServiceWorkerAccept={ this.handleLoadNewServiceWorkerAccept.bind(this) }
-                language={ language }
-                onLanguageChange={ this.handleLanguageChange.bind(this) }
-                onTrackOptIn={ trackOptIn => this.setState({...this.state, trackOptIn }) }
-                trackOptIn={ trackOptIn }
-              />
+              <ErrorCatcher origin='AppMenu'>
+                <AppMenu
+                  newServiceWorkerDetected={ newServiceWorkerDetected }
+                  onLoadNewServiceWorkerAccept={ this.handleLoadNewServiceWorkerAccept.bind(this) }
+                  language={ language }
+                  onLanguageChange={ this.handleLanguageChange.bind(this) }
+                  onTrackOptIn={ trackOptIn => this.setState({...this.state, trackOptIn }) }
+                  trackOptIn={ trackOptIn }
+                />
+              </ErrorCatcher>
 
               {/* App Route */}
               <header className="App-header" id="page-wrap">
                 <Switch>
                   <Route
                     path="/live"
-                    render={ props => <Rac1Directe { ...props } /> } />
+                    render={ props => withErrorCatcher('Rac1Live', <Rac1Directe { ...props } />) } />
 
                   <Route path="/directe">
                     <Redirect to={{ pathname: "live" }} />
@@ -96,15 +100,15 @@ class App extends React.Component {
 
                   <Route
                     path="/:year/:month/:day/:hour/:minute"
-                    render={ props => <Rac1ByDate { ...props } /> } />
+                    render={ props => withErrorCatcher('Rac1ByDate 1', <Rac1ByDate { ...props } />) } />
 
                   <Route
                     path="/:year/:month/:day/:hour"
-                    render={ props => <Rac1ByDate { ...props } /> } />
+                    render={ props => withErrorCatcher('Rac1ByDate 2', <Rac1ByDate { ...props } />) } />
 
                   <Route
                     path="/:year/:month/:day"
-                    render={ props => <Rac1ByDate { ...props } /> } />
+                    render={ props => withErrorCatcher('Rac1ByDate 3', <Rac1ByDate { ...props } />) } />
 
                   {/* Set default date to today */}
                   <Redirect to={{ pathname: todayStr }} />
