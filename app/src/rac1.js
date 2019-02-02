@@ -97,6 +97,7 @@ class Rac1 {
   constructor(props) {
     const noop = () => {};
     this.onListUpdate = props.onListUpdate || noop;
+    this.onError = props.onError || noop;
     this.setDate(props.date);
   }
 
@@ -107,25 +108,25 @@ class Rac1 {
   // Raises exception on response error
   handleFetchErrors(response) {
     if ( !response.ok ) {
-      throw Error(response.statusText);
+      throw Error(`Rac1 backend: ${response.statusText}`);
     }
     return response;
   }
 
   // Catches the fetch error, original or 'self-raised'
   catchFetchErrors(callback) {
-    return (err) => {
+    return err => {
       if ( err.name === 'AbortError' ) {
         console.log(err.message);
         return Promise.reject(err);
       }
       else {
+        err.message = `Rac1 backend: ${err.message}`;
         if ( typeof callback === 'function' ) {
           callback(err);
         }
         else {
-          console.error(err.message);
-          throw Error(err);
+          this.onError(err);
         }
       }
     }
@@ -263,6 +264,7 @@ class Rac1 {
 
         const { uuidsPage, pages } = this.parsePage(dataRaw);
 
+
         // If it's the first page, call the rest
         if ( pageNumber === 0 ) {
 
@@ -325,10 +327,14 @@ class Rac1 {
       // Early catch backend error to retry with the next on list
       // Reraise error when no more backends available
       .catch( this.catchFetchErrors( err => {
-        console.log(`Failed: ${err}`);
+        console.error(err);
+
+        // If user aborted, reject promise silently
         if ( err.name !== 'AbortError' ) {
-          if ( backend === (this.antiCorsBackends.length - 1) ) {
-            console.log(`AntiCORS backend ${backend} failed. No more backends available.`);
+
+          // Deactivate AntiCORS feature
+          if ( true || backend === (this.antiCorsBackends.length - 1) ) {
+            //console.log(`AntiCORS backend ${backend} failed. No more backends available.`);
             throw Error(err);
           }
           else {
@@ -421,7 +427,6 @@ class Rac1 {
         return podcast;
       })
   }
-
 }
 
 export default Rac1;
