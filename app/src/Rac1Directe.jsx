@@ -35,6 +35,12 @@ class Rac1Directe extends Component {
   }
 
   componentWillUnmount() {
+    // Unregister player event listeners
+    if ( this._player && this._player.removeEventListener ) {
+      this._player.removeEventListener('onPlay', this.handlePlayStatusChange.bind(this, true));
+      this._player.removeEventListener('onPause', this.handlePlayStatusChange.bind(this, false));
+    }
+
     // Reset initial title
     document.title = this.initialTitle;
   }
