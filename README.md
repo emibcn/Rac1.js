@@ -21,6 +21,11 @@ Inspired by [my command line Python app Rac1.py](https://github.com/emibcn/Rac1.
 - Use [rc-switch](https://github.com/react-component/switch) for user tracking opt-in/opt-out, ~with user's `DoNotTrack` value as default~ deactivated by default until a legal modal is added to show GDPR (GRPD) cookies message.
 - Use GoogleAnalytics with [React GA](https://github.com/react-ga/react-ga) ([integrated as a React component and a HOC](https://github.com/emibcn/Rac1.js/blob/master/app/src/GAListener/)) for usage statistics, deactivated by default ~but respect user's [DNT](https://en.wikipedia.org/wiki/Do_Not_Track) and don't even load it if user agent reports DNT header, unless the user explicitly opts in to tracking. Also allow users without DNT to explicitly opt out from tracking~.
 - Send events to GoogleAnalytics (when active) combinig [React HOC](https://reactjs.org/docs/higher-order-components.html) and [React Context](https://reactjs.org/docs/context.html) at [GAListener](https://github.com/emibcn/Rac1.js/blob/master/app/src/GAListener/withGAEvent.js) submodule.
+- Use [React's Error Boundaries](https://reactjs.org/docs/error-boundaries.html) in [`ErrorCatcher` component](https://github.com/emibcn/Rac1.js/blob/master/app/src/ErrorCatcher.jsx) to:
+  - Catch errors created during ReactDOM rendering
+  - Send them to GoogleAnalytics (when active) to help improve the app
+  - Allow the user a possible option to recover from the error, which includes a possible app update
+- Catch backend errors and route them into ReactDOM, where they will be handled by the [`ErrorCatcher` component](https://github.com/emibcn/Rac1.js/blob/master/app/src/ErrorCatcher.jsx)
 - [Docker](https://docs.docker.com/) with [DockerCompose](https://docs.docker.com/compose/) to start a development container, with all the [Create React App](https://github.com/facebook/create-react-app) goodies
 - KeyPress event handling, via a non-visible `<input>` element which focus itself everytime `onBlur` is detected. You can use some of the `mplayer` default key bindings:
   - `LEFT`: seek backwards 10s
