@@ -21,6 +21,11 @@ export default {
     "No": "No",
   },
 
+  ErrorCatcher: {
+    "Something went wrong :(": "Something went wrong :(",
+    "Try reloading the app to recover from it": "Try reloading the app to recover from it",
+  },
+
   Rac1ByDate: {
     "Rac1 Radio Podcasts Player": "Rac1 Radio Podcasts Player",
   },
