@@ -2,7 +2,7 @@
 
 React app to listen to [Rac1 radio station](https://www.rac1.cat/) podcasts. Uses GitHub pages to publish it at **[Rac1 podcast player at Github Pages](https://emibcn.github.io/Rac1.js/)**. There you will find [this repo's `docs/`](https://github.com/emibcn/Rac1.js/tree/master/docs) contents, which are the results of executing `yarn build` on [this project's container](#development-container) using [this project's source application](https://github.com/emibcn/Rac1.js/tree/master/app).
 
-The [podcasts lister](https://github.com/emibcn/Rac1.js/blob/master/app/src/rac1.js) is a pure JS app, which does not depends on any other library, so you can re-use for other JS projects. It uses https://cors-anywhere.herokuapp.com/ to allow downloading 3rd party webs. In this case, the app downloads the [page with podcasts list](https://api.audioteca.rac1.cat/a-la-carta/cerca), which is served as `text/html` and violates [CORS specifications](https://en.wikipedia.org/wiki/Cross-origin_resource_sharing).
+The [podcasts lister](https://github.com/emibcn/Rac1.js/blob/master/app/src/rac1.js) is a pure JS app, which only depends on [abortcontroller-polyfill](https://github.com/mo/abortcontroller-polyfill) to help GoogleBot execute modern JS, so you can easily re-use it for other JS projects. ~It uses https://cors-anywhere.herokuapp.com/ to allow downloading 3rd party webs. In this case, the app downloads the [page with podcasts list](https://api.audioteca.rac1.cat/a-la-carta/cerca), which is served as `text/html` and violates [CORS specifications](https://en.wikipedia.org/wiki/Cross-origin_resource_sharing).~
 
 Inspired by [my command line Python app Rac1.py](https://github.com/emibcn/Rac1.py).
 
@@ -17,6 +17,7 @@ Inspired by [my command line Python app Rac1.py](https://github.com/emibcn/Rac1.
 - Use [react-translate](https://www.npmjs.com/package/react-translate) to translate components
 - Use [react-simple-storage](https://github.com/ryanjyost/react-simple-storage) to save and retrieve state to and from `localStorage`
 - Use [\<HashRouter\>](https://github.com/ReactTraining/react-router/blob/master/packages/react-router-dom/docs/api/HashRouter.md) to handle date and podcast selection, linking and history ([Github Pages doesn't -easily- allows](https://itnext.io/so-you-want-to-host-your-single-age-react-app-on-github-pages-a826ab01e48) [\<BrowserRouter\>](https://github.com/ReactTraining/react-router/blob/master/packages/react-router-dom/docs/api/BrowserRouter.md))
+- Use the [Service Worker](https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API) provided by [Create React App](https://github.com/facebook/create-react-app), adding an [epilog](https://github.com/emibcn/Rac1.js/blob/master/app/src/sw-epilog.js) to allow communicating with it to [force an update from within the app](https://github.com/emibcn/Rac1.js/blob/master/app/src/index.js).
 - Use [rc-switch](https://github.com/react-component/switch) for user tracking opt-in/opt-out, ~with user's `DoNotTrack` value as default~ deactivated by default until a legal modal is added to show GDPR (GRPD) cookies message.
 - Use GoogleAnalytics with [React GA](https://github.com/react-ga/react-ga) ([integrated as a React component and a HOC](https://github.com/emibcn/Rac1.js/blob/master/app/src/GAListener/)) for usage statistics, deactivated by default ~but respect user's [DNT](https://en.wikipedia.org/wiki/Do_Not_Track) and don't even load it if user agent reports DNT header, unless the user explicitly opts in to tracking. Also allow users without DNT to explicitly opt out from tracking~.
 - Send events to GoogleAnalytics (when active) combinig [React HOC](https://reactjs.org/docs/higher-order-components.html) and [React Context](https://reactjs.org/docs/context.html) at [GAListener](https://github.com/emibcn/Rac1.js/blob/master/app/src/GAListener/withGAEvent.js) submodule.
@@ -52,8 +53,10 @@ Inspired by [my command line Python app Rac1.py](https://github.com/emibcn/Rac1.
 # TODO
 - Improve UX: layout, styles, info shown, responsible, controls, ¿bootstrap4?
 - Add info/help/about section
+- Use [Streams API](https://developer.mozilla.org/en-US/docs/Web/API/Streams_API) to control audio downloading and playing (and editing?)
+- Add a section to allow easily play podcasts filtered by program
 - Filters via `localStorage`, to easily jump unwanted podcasts
-- Better internal state handling for player status: `currentPosition`, ...
+- Better internal state handling for player status: `currentPosition`, [`play`](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/play)...
 - Consider using Redux
 - Add tests
 
@@ -70,7 +73,7 @@ cd Rac1.js
 ```
 
 ## Development container
-Using the provided `docker-compose.yml` file, it is possible to build and execute a live environment which can host the application in development mode using [WebpackDevServer](https://webpack.js.org/configuration/dev-server/) configured by [Create React App](https://github.com/facebook/create-react-app) (CRA), what helps a lot while actively modifying the files.
+Using the provided `docker-compose.yml` file, it is possible to build and execute a live environment which can host the application in development mode using [WebpackDevServer](https://webpack.js.org/configuration/dev-server/) configured by [Create React App](https://github.com/facebook/create-react-app) (CRA), what helps a lot while actively modifying the files. It is also possible to serve the static version of the app using vanilla NGinx locally.
 
 Of course, you can opt-out and install [NodeJS](https://nodejs.org/en/), [NPM](https://www.npmjs.com/) and [`yarn`](https://yarnpkg.com/lang/en/) by yourself. Also, you can [eject](https://github.com/facebook/create-react-app/blob/master/packages/react-scripts/template/README.md#npm-run-eject) CRA.
 
@@ -81,11 +84,13 @@ It depends on which system you use. Go to [Docker documentation](https://docs.do
 Go to [Docker Compose](https://docs.docker.com/compose/install/) and follow instructions, depending on your use case.
 
 ### Build + Run
+This will build the containers images, download system and NodeJS dependencies and launch NodeJS development server at port 3000 and NGinx static server at port 4000:
 ```
 docker-compose up -d
 ```
 
 ### Build
+This will build the containers images:
 ```
 docker-compose build
 ```
@@ -132,20 +137,32 @@ Or, in one line:
 ```
 me@mypc:~/Rac1.js$ docker-compose exec rac1 yarn add react-dom-router
 [...]
-me@mypc:~/Rac1.js$ 
+me@mypc:~/Rac1.js$
 ```
 
 If you need root permisions:
 ```
 me@mypc:~/Rac1.js$ docker-compose exec -u root rac1 bash
-root@8cf780c7b2bb:~/app$ apt-get update; apt-get install git
+root@8cf780c7b2bb:~/app$ apt-get update; apt-get install git; apt-get clean
 ```
 
 Or:
 ```
-docker-compose exec -u root rac1 bash -c 'apt-get update; apt-get install git'
+docker-compose exec -u root rac1 bash -c 'apt-get update; apt-get install git; apt-get clean'
 ```
 
+### Build static app
+In order to publish the app, it's needed to build it. This will do some modern JS magic ([Babel, WebPack, ...](https://github.com/facebook/create-react-app#user-content-whats-included)) and create a static version of the app, which can be served as static assets. To do so, it's needed to execute `yarn build` on the app's dir:
+```
+me@mypc:~/Rac1.js$ docker-compose exec rac1 yarn build
+yarn run v1.9.4
+$ react-scripts build && yarn sw-epilog && yarn pubgh
+Creating an optimized production build...
+[...]
+Done in 58.15s.
+me@mypc:~/Rac1.js$
+```
+
+
 # Access the app
-Open your browser and point it to http://127.0.0.1:3000 , or visit the public version
-at https://emibcn.github.io/Rac1.js/ .
+Open your browser and point it to the development version at [http://127.0.0.1:3000](http://127.0.0.1:3000) or the static version at [http://127.0.0.1:4000/Rac1.js/](http://127.0.0.1:4000/Rac1.js/), or visit the public version at https://emibcn.github.io/Rac1.js/ .
