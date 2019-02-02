@@ -131,10 +131,6 @@ class Rac1 {
     }
   }
 
-  // Cached/compiled regexps for parsing HTML
-  dataAttrsFind  = / class="(audioteca-item|pagination-link)" /;
-  dataAttrsClean = /.* (data-[^=]*)="([^"]*)".*/;
-
   setDate(date) {
     if ( this.date !== date ) {
       this._previous_uuids = [];
@@ -346,23 +342,36 @@ class Rac1 {
       }))
   }
 
+  // Cached/compiled regexps & strings for parsing HTML
+  dataAttrsFind  = / class="(audioteca-item|pagination-link)" /;
+  dataAttrsClean = /.* (data-(audio-id|audioteca-search-page))="([^"]*)".*/;
+  searchData = ['data-audio-id','data-audioteca-search-page'];
+
   // Parses a page raw HTML to obtain audio UUIDs and the list of pages
   // (dataRawHTML) => {uuidsPage: Array(String), pages: Array(Number)}
   parsePage(dataRaw) {
-    const searchData = ['data-audio-id','data-audioteca-search-page'];
     const data = dataRaw
       .split('\n')
+
+      // Filter by class, eliminating sidebar unwanted info
       .filter( line => this.dataAttrsFind.test(line) )
-      .map( v => v.replace(this.dataAttrsClean, '$1=$2') )
-      .map( line => line.split('=') )
-      .filter( v => searchData.includes(v[0]) );
+
+      // Get relevant data-* attributes
+      .map( v => v.replace(this.dataAttrsClean, '$1=$3') )
+
+      // Convert to an array of 2 strings separating attr name and it's value
+      .map( line => line.split('=') );
 
     return {
+
+      // Filter audio UUID's
       uuidsPage: data
-        .filter( v => v[0] === 'data-audio-id' )
+        .filter( v => v[0] === this.searchData[0] )
         .map( v => v[1] ),
+
+      // Filter page numbers
       pages: data
-        .filter( v => v[0] === 'data-audioteca-search-page' )
+        .filter( v => v[0] === this.searchData[1] )
         .map( v => Number(v[1]) ),
     };
   }
