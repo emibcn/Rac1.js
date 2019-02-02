@@ -7,6 +7,7 @@ import GAListenerActive from './GAListenerActive';
 
 // Renders GA+children in production, only children for the rest
 class GAListener extends React.Component {
+
   sendEvent(origin, help, status) {
     const event = {
       category: origin,
