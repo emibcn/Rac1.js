@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Link } from "react-router-dom";
+import { Link } from 'react-router-dom';
 
-import { translate } from "react-translate"
+import { translate } from 'react-translate'
 import Switch from 'rc-switch';
 import 'rc-switch/assets/index.css';
 
