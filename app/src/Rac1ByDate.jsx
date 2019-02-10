@@ -160,7 +160,7 @@ class Rac1ByDate extends Component {
           getPlayer={ this.player.bind(this) }
           volume={ volume }
           muted={ muted }
-          allowFocus={ el => el.className.match( /date-?picker|rc-slider-handle/ ) }
+          allowFocus={ el => el.className.match( /date-?picker|rc-slider-handle|ReactModal/ ) }
           onPlayNext={ this.playNext.bind(this) }
           onPlayPrev={ this.playPrev.bind(this) }
           onSetVolume={ volume => this.setState({ ...this.state, volume }) }
@@ -291,10 +291,10 @@ class Rac1ByDate extends Component {
     // Only PUSH or REPLACE if something have to change
     if ( this.history.location.pathname !== newPath ) {
       if ( !replace ) {
-        this.history.push(newPath);
+        this.history.push(newPath + this.history.location.hash);
       }
       else {
-        this.history.replace(newPath);
+        this.history.replace(newPath + this.history.location.hash);
       }
     }
   }
