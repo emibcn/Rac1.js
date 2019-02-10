@@ -13,7 +13,9 @@ import {
 
 import './ModalRouter.css';
 
-Modal.setAppElement('#root')
+if ( process.env.NODE_ENV !== 'test' ) {
+  Modal.setAppElement('#root')
+}
 
 class CloseModal extends React.PureComponent {
   constructor(props) {
