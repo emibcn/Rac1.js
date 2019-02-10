@@ -5,17 +5,21 @@ import {
   Route,
   Switch,
   Redirect,
-} from "react-router-dom";
+} from 'react-router-dom';
 
-import Storage from "react-simple-storage";
-import { TranslatorProvider } from "react-translate"
-import available from "./i18n/available"
+import Storage from 'react-simple-storage';
+import { TranslatorProvider } from 'react-translate';
+import available from './i18n/available';
 
 import AppMenu from './AppMenu';
+import ModalRouter from './ModalRouter';
 import GAListener from './GAListener';
 import ErrorCatcher from './ErrorCatcher';
 import Rac1Directe from './Rac1Directe';
 import Rac1ByDate from './Rac1ByDate';
+import Cookies from './Cookies';
+import About from './About';
+import Help from './Help';
 
 import './App.css';
 
@@ -27,7 +31,7 @@ class App extends React.Component {
     // Get DoNotTrack user preference
     // Deactivate tracking by default until legal modal is added to the app
     const dnt = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
-    this.dnt = process.env.NODE_ENV !== 'production' || dnt === "1" || dnt === "yes" || true;
+    this.dnt = process.env.NODE_ENV !== 'production' || dnt === '1' || dnt === 'yes' || true;
 
     this.registration = false;
     this.state = {
@@ -63,17 +67,40 @@ class App extends React.Component {
     return (
       <TranslatorProvider translations={ translations }>
         <Router>
-          <div className="App" id="router-container">
-
-            {/* Persistent state saver into localStorage */}
-            <Storage
-              parent={ this }
-              prefix="App"
-              blacklist={ ['newServiceWorkerDetected'] }
-            />
-
+          <div className='App' id='router-container'>
             {/* GoogleAnalytics event provider and route change detector */}
             <GAListener language={ language } trackOptIn={ trackOptIn } >
+
+              {/* Modal routes hash paths ;) */}
+              <ModalRouter>
+                <Route
+                  exact
+                  path='about'
+                  render={ props => withErrorCatcher('About', <About />) }
+                />
+                <Route
+                  exact
+                  path='help'
+                  render={ props => withErrorCatcher('Help', <Help />) }
+                />
+                <Route
+                  exact
+                  path='cookies'
+                  render={ props => withErrorCatcher('Cookies',
+                    <Cookies
+                      { ...{ trackOptIn } }
+                      onTrackOptIn={ track =>
+                        this.setState({...this.state, trackOptIn: track })
+                      } /> )}
+                />
+              </ModalRouter>
+
+              {/* Persistent state saver into localStorage */}
+              <Storage
+                parent={ this }
+                prefix='App'
+                blacklist={ ['newServiceWorkerDetected'] }
+              />
 
               {/* Menu */}
               <ErrorCatcher origin='AppMenu'>
@@ -82,36 +109,51 @@ class App extends React.Component {
                   onLoadNewServiceWorkerAccept={ this.handleLoadNewServiceWorkerAccept.bind(this) }
                   language={ language }
                   onLanguageChange={ this.handleLanguageChange.bind(this) }
-                  onTrackOptIn={ trackOptIn => this.setState({...this.state, trackOptIn }) }
                   trackOptIn={ trackOptIn }
                 />
               </ErrorCatcher>
 
               {/* App Route */}
-              <header className="App-header" id="page-wrap">
+              <header className='App-header' id='page-wrap'>
                 <Switch>
                   <Route
-                    path="/live"
+                    exact
+                    path={ '/live' }
                     render={ props => withErrorCatcher('Rac1Live', <Rac1Directe { ...props } />) } />
 
-                  <Route path="/directe">
-                    <Redirect to={{ pathname: "live" }} />
+                  <Route
+                    exact
+                    path={ '/(directe|directo)' }
+                  >
+                    <Redirect to={{ pathname: 'live' }} />
                   </Route>
 
                   <Route
-                    path="/:year/:month/:day/:hour/:minute"
+                    path={ '/:year(\\d{4})/:month(\\d{1,2})/:day(\\d{1,2})/:hour(\\d{1,2})/:minute(\\d{1,2})' }
                     render={ props => withErrorCatcher('Rac1ByDate 1', <Rac1ByDate { ...props } />) } />
 
                   <Route
-                    path="/:year/:month/:day/:hour"
+                    path={ '/:year(\\d{4})/:month(\\d{1,2})/:day(\\d{1,2})/:hour(\\d{1,2})' }
                     render={ props => withErrorCatcher('Rac1ByDate 2', <Rac1ByDate { ...props } />) } />
 
                   <Route
-                    path="/:year/:month/:day"
+                    path={ '/:year(\\d{4})/:month(\\d{1,2})/:day(\\d{1,2})' }
                     render={ props => withErrorCatcher('Rac1ByDate 3', <Rac1ByDate { ...props } />) } />
 
                   {/* Set default date to today */}
-                  <Redirect to={{ pathname: todayStr }} />
+                  <Route
+                    exact
+                    path={ ':all(.*)' }
+                    render={ ({ match, ...props }) => {
+                      return <Redirect
+                        push
+                        to={{
+                          pathname: todayStr,
+                          hash: props.location.hash.replace('#',''),
+                        }}
+                      />
+                    }}
+                  />
                 </Switch>
               </header>
             </GAListener>

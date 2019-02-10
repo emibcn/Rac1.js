@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 
 import { translate } from 'react-translate'
 import Switch from 'rc-switch';
@@ -11,6 +11,9 @@ import {
   faCalendarAlt as faByDate,
   faBroadcastTower as faLive,
   faArrowAltCircleUp as faUpgrade,
+  faInfoCircle as faAbout,
+  faQuestionCircle as faHelp,
+  faBalanceScale as faCookies,
   faLanguage,
   faCaretRight,
   faCaretDown,
@@ -48,14 +51,68 @@ class AppMenu extends React.Component {
           backgroundRepeat: 'no-repeat',
           backgroundPosition: 'center .5em',
         }}>
-        <Link className='bm-item' onClick={ this.handleClick.bind(this) } to="/">
+        <NavLink
+          className='bm-item'
+          onClick={ this.handleClick.bind(this) }
+          isActive={ (match, location) => location.pathname.match(/\/\d{4}(\/\d{1,2}){2,4}(#.*)?$/) }
+          to="/"
+          title={ t("Play podcasts filtered by date and ordered chronologically") }
+        >
           <FontAwesomeIcon icon={ faByDate } style={{ marginRight: '.5em' }} />
           <span>{ t("By date") }</span>
-        </Link>
-        <Link className='bm-item' onClick={ this.handleClick.bind(this) } to="/live" >
+        </NavLink>
+        <NavLink
+          className='bm-item'
+          onClick={ this.handleClick.bind(this) }
+          to="/live"
+          title={ t("Play live stream") }
+        >
           <FontAwesomeIcon icon={ faLive } style={{ marginRight: '.5em' }} />
           <span>{ t("Live") }</span>
-        </Link>
+        </NavLink>
+        <NavLink
+          className='bm-item'
+          onClick={ this.handleClickModal.bind(this) }
+          to="#about"
+          isActive={ (match, location) => location.hash === '#about' }
+          title={ t("Information about this app and its author") }
+        >
+          <FontAwesomeIcon icon={ faAbout } style={{ marginRight: '.5em' }} />
+          <span>{ t("About") }</span>
+        </NavLink>
+        <NavLink
+          className='bm-item'
+          onClick={ this.handleClickModal.bind(this) }
+          to="#help"
+          isActive={ (match, location) => location.hash === '#help' }
+          title={ t("Help using this app") }
+        >
+          <FontAwesomeIcon icon={ faHelp } style={{ marginRight: '.5em' }} />
+          <span>{ t("Help") }</span>
+        </NavLink>
+        <NavLink
+          className='bm-item'
+          onClick={ this.handleClickModal.bind(this) }
+          to="#cookies"
+          isActive={ (match, location) => location.hash === '#cookies' }
+          title={ t("Allow tracking user interactions for usage analysis") }
+        >
+          <span style={{
+            display: 'flex',
+            alignItems: 'center',
+          }}>
+            <FontAwesomeIcon icon={ faCookies } style={{ marginRight: '.5em' }} />
+            <span style={{ marginRight: '.5em' }} >{ t("Privacy policy") }</span>
+            <Switch
+              onChange={ () => {} }
+              disabled={ false }
+              checkedChildren={ t('Yes') }
+              unCheckedChildren={ t('No') }
+              checked={ trackOptIn }
+              style={{ minWidth: '3.5em' }}
+            />
+          </span>
+        </NavLink>
         { newServiceWorkerDetected ? (
             <a
               href='/'
@@ -105,26 +162,6 @@ class AppMenu extends React.Component {
             }
           </ul>
         ) : null }
-        <span style={{
-          display: 'flex',
-          alignItems: 'center',
-        }}>
-          <Switch
-            onChange={ this.props.onTrackOptIn }
-            disabled={ false }
-            checkedChildren={ t('Yes') }
-            unCheckedChildren={ t('No') }
-            checked={ trackOptIn }
-          />
-          <a
-            href='/'
-            className='bm-item'
-            title={ t("Allow tracking user interactions for usage analysis") }
-            onClick={ this.handleClickOptTrackIn.bind(this) }
-            >
-            { t('Allow tracking') }
-          </a>
-        </span>
         { children }
       </div>
     )
@@ -172,6 +209,11 @@ class AppMenu extends React.Component {
     this.props.sendEvent('Menu', 'Click link', `${e.currentTarget.text}`);
   }
 
+  handleClickModal(e) {
+    this.handleMenuStateChange(false);
+    this.props.sendEvent('Menu', 'Click modal', `${e.currentTarget.text}`);
+  }
+
   handleLanguageSectionClick(e) {
     const { isLanguageOpen } = this.state;
     e.preventDefault();
@@ -194,20 +236,12 @@ class AppMenu extends React.Component {
     this.props.onLoadNewServiceWorkerAccept();
     this.props.sendEvent('Menu', 'Update!');
   }
-
-  handleClickOptTrackIn(e) {
-    e.preventDefault();
-    this.props.onTrackOptIn(!this.props.trackOptIn)
-    this.props.sendEvent('Menu', 'Change tracking preference', `Current tracking preference: ${!this.props.trackOptIn}`);
-    window.location.reload();
-  }
 }
 
 AppMenu.defaultProps = {
   onLoadNewServiceWorkerAccept: () => {},
   newServiceWorkerDetected: false,
   onLanguageChange: language => {},
-  onTrackOptIn: optIn => {},
   trackOptIn: false,
   sendEvent: (origin, help, status) => {},
 };
@@ -216,7 +250,6 @@ AppMenu.propTypes = {
   onLoadNewServiceWorkerAccept: PropTypes.func.isRequired,
   newServiceWorkerDetected: PropTypes.bool.isRequired,
   onLanguageChange: PropTypes.func.isRequired,
-  onTrackOptIn: PropTypes.func.isRequired,
   trackOptIn: PropTypes.bool.isRequired,
   sendEvent: PropTypes.func.isRequired,
 };

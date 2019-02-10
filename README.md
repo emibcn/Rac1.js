@@ -13,13 +13,15 @@ Inspired by [my command line Python app Rac1.py](https://github.com/emibcn/Rac1.
 - Use [Fontawesome free icons](https://fontawesome.com/)
 - Use [react-burger-menu](https://github.com/negomi/react-burger-menu) to display off-canvas menu
 - Use [react-responsive](https://github.com/contra/react-responsive) to differentiate display depending on media sizes (design still in construction)
-- Use [react-component/slider](https://github.com/react-component/slider) for volume control (and possibly others in the future!)
 - Use [react-translate](https://www.npmjs.com/package/react-translate) to translate components
 - Use [react-simple-storage](https://github.com/ryanjyost/react-simple-storage) to save and retrieve state to and from `localStorage`
 - Use [\<HashRouter\>](https://github.com/ReactTraining/react-router/blob/master/packages/react-router-dom/docs/api/HashRouter.md) to handle date and podcast selection, linking and history ([Github Pages doesn't -easily- allows](https://itnext.io/so-you-want-to-host-your-single-age-react-app-on-github-pages-a826ab01e48) [\<BrowserRouter\>](https://github.com/ReactTraining/react-router/blob/master/packages/react-router-dom/docs/api/BrowserRouter.md))
 - Use the [Service Worker](https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API) provided by [Create React App](https://github.com/facebook/create-react-app), adding an [epilog](https://github.com/emibcn/Rac1.js/blob/master/app/src/sw-epilog.js) to allow communicating with it to [force an update from within the app](https://github.com/emibcn/Rac1.js/blob/master/app/src/index.js).
-- Use [rc-switch](https://github.com/react-component/switch) for user tracking opt-in/opt-out, ~with user's `DoNotTrack` value as default~ deactivated by default until a legal modal is added to show GDPR (GRPD) cookies message.
-- Use GoogleAnalytics with [React GA](https://github.com/react-ga/react-ga) ([integrated as a React component and a HOC](https://github.com/emibcn/Rac1.js/blob/master/app/src/GAListener/)) for usage statistics, deactivated by default ~but respect user's [DNT](https://en.wikipedia.org/wiki/Do_Not_Track) and don't even load it if user agent reports DNT header, unless the user explicitly opts in to tracking. Also allow users without DNT to explicitly opt out from tracking~.
+- Use [react-modal](https://github.com/reactjs/react-modal) for showing some pages inside a modal (using [React Portals](https://reactjs.org/docs/portals.html)), while player may still be playing in the background.
+- Use [raw.macro](https://github.com/pveyes/raw.macro) to load raw HTML into bundle (for the [Privacy Policy](https://github.com/emibcn/Rac1.js/blob/master/app/src/legal.html)).
+- Use [react-component/slider](https://github.com/react-component/slider) for volume control (and possibly others in the future!)
+- Use [react-component/switch](https://github.com/react-component/switch) for user tracking opt-in/opt-out, with user's `DoNotTrack` value as default.
+- Use GoogleAnalytics with [React GA](https://github.com/react-ga/react-ga) ([integrated as a React component and a HOC](https://github.com/emibcn/Rac1.js/blob/master/app/src/GAListener/)) for usage statistics, but respect user's [DNT](https://en.wikipedia.org/wiki/Do_Not_Track) and don't even load it if user agent reports DNT header, unless the user explicitly opts in to tracking. Also allow users without DNT to explicitly opt out from tracking.
 - Send events to GoogleAnalytics (when active) combinig [React HOC](https://reactjs.org/docs/higher-order-components.html) and [React Context](https://reactjs.org/docs/context.html) at [GAListener](https://github.com/emibcn/Rac1.js/blob/master/app/src/GAListener/withGAEvent.js) submodule.
 - Use [React's Error Boundaries](https://reactjs.org/docs/error-boundaries.html) in [`ErrorCatcher` component](https://github.com/emibcn/Rac1.js/blob/master/app/src/ErrorCatcher.jsx) to:
   - Catch errors created during ReactDOM rendering
@@ -38,6 +40,7 @@ Inspired by [my command line Python app Rac1.py](https://github.com/emibcn/Rac1.
   - `SPACE`/`P`: (Un)Pause
   - `M`: (Un)Mute
   - `ENTER`: Jump to next podcast
+  - `SGIFT` + `ENTER`: Jump to previous podcast
   - `R`: Update the list of podcasts
 - Good UI controls for use with mobile devices (big buttons, disabled key bindings)
 - Almost [WCAG](https://www.w3.org/WAI/standards-guidelines/wcag/) accessible
