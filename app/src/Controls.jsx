@@ -27,6 +27,9 @@ class Controls extends React.Component {
       text: 'Prev',
       help: 'Play previous podcast',
       action: () => this.props.onPlayPrev(),
+      keys: [
+        {key: 'Enter', shiftKey: true}
+      ],
       group: 'basic',
     },
     {
