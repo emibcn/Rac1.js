@@ -24,7 +24,7 @@ class Rac1ByDate extends Component {
       )
   }
 
-  constructor(props, history) {
+  constructor(props) {
     super();
 
     this.history = props.history;

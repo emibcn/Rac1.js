@@ -35,23 +35,24 @@ class ModalRouterInner extends React.PureComponent {
   constructor(props) {
     super();
 
-    // Register history change event listener
-    this.history = props.history;
-    this.unlisten = this.history.listen(this.handleHistoryChange.bind(this));
-
     // Set initial state
+    this.history = props.history;
     this.state = {
       ...this.getPathState(props.location),
       autoForce: false,
+      forced: props.force,
     };
+
+    // Register history change event listener
+    this.unlisten = this.history.listen(this.handleHistoryChange.bind(this));
   }
 
   getPathState(location) {
-    const path = location.hash.replace(/#(.*)$/, '$1');
+    const path = location.hash.replace(/[^#]*#(.*)$/, '$1');
     return {
       modalIsOpen: !!path.length && path !== 'close',
       path,
-      previous: this.state ? this.state.path : false,
+      initialPath: this.state ? this.state.initialPath : path,
     };
   }
 
@@ -63,20 +64,28 @@ class ModalRouterInner extends React.PureComponent {
     }
   }
 
+  // Force user to different URLs
   componentDidUpdate(prevProps, prevState) {
+
+    // Remember old URL when forcing
+    if ( this.props.force !== false &&
+         this.props.force !== prevProps.force &&
+         this.state.forced !== this.props.force ) {
+      this.setState({ forced: this.props.force });
+    }
+
     // Clear autoForce after it has been forced
     if ( this.state.autoForce === this.state.path ) {
       this.setState({ autoForce: false });
     }
 
-    // Remember current path when forcing to force after this
-    if ( prevProps.force !== false &&
-         this.state.path === this.props.force &&
-         prevState.previous === false &&
-         this.state.previous === prevState.path &&
-         this.state.previous !== this.state.autoForce &&
-         this.state.autoForce === false) {
-      this.setState({ autoForce: this.state.previous });
+    // Force old modal after forcing another (do auto force)
+    if ( prevState.path === this.state.forced &&
+         prevState.path !== this.state.path &&
+         this.state.initialPath !== false &&
+         this.state.initialPath.length > 1 &&
+         this.state.autoForce !== this.state.initialPath ) {
+      this.setState({ autoForce: this.state.initialPath });
     }
   }
 
@@ -103,17 +112,23 @@ class ModalRouterInner extends React.PureComponent {
   }
 
   render() {
-    const { children, force } = this.props;
-    const { autoForce } = this.state;
+    const { children, initializing, force } = this.props;
+    const { autoForce, path, forced } = this.state;
+
+    if ( initializing ) {
+      return null;
+    }
 
     // Redirect to forced URL
-    if ( force !== false && force !== this.state.path ) {
+    if ( force !== false && force !== path ) {
       return <Redirect push to={{ hash: force }} />;
     }
 
     // If previously have been forced when showing a modal,
     // force to go back there once the forced has been visited
-    if ( autoForce !== false && autoForce !== this.state.path && autoForce !== this.state.previous ) {
+    if (  autoForce !== false &&
+          autoForce !== path &&
+          forced !== path ) {
       return <Redirect push to={{ hash: autoForce }} />;
     }
 
@@ -167,7 +182,7 @@ class ModalRouterInner extends React.PureComponent {
         >
           <FontAwesomeIcon icon={ faClose } />
         </button>
-        <Switch location={ { pathname: this.state.path } } >
+        <Switch location={ { pathname: path } } >
 
           { children }
 
