@@ -1,48 +1,15 @@
-export default {
-  locale: "es-es",
-
-  AppMenu: {
-    "By date": "Por fecha",
-    "Live": "En directo",
-    "Update!": "¡Actualiza!",
-    "New version available!": "¡Nueva versión disponible!",
-    "Language": "Idioma",
-    "Change application language": "Cambiar el idioma de la aplicación",
-    ...['Català', 'Castellano', 'English']
-      .reduce( (res, lang) => {
-        return {
-          ...res,
-          [`Change language to ${lang}`]: `Cambiar idioma a ${lang}`,
-        }
-      }, {}),
-    "Allow tracking": "Seguimiento",
-    "Allow tracking user interactions for usage analysis": "Permitir el seguimiento de las acciones del usuario con fines de análisis de uso",
-    "Yes": "Sí",
-    "No": "No",
-  },
-
-  ErrorCatcher: {
-    "Something went wrong :(": "Alguna cosa ha fallado :(",
-    "Try reloading the app to recover from it": "Intenta recargar la aplicación para continuar",
-  },
-
-  Rac1ByDate: {
-    "Rac1 Radio Podcasts Player": "Reproductor de podcasts de Rac1",
-  },
-
-  Rac1Directe: {
-    "Live": "En directo",
-    "Rac1 live": "Rac1 en Directo",
-    "Rac1 Radio Podcasts Player": "Reproductor de podcasts de Rac1",
-  },
-
-  ReloadButton: {
-    "Reload": "Recarga",
-  },
-
-  Button: {
+const actions = {
     "Key": "Tecla",
-    "Keys": "Teclas",
+    "Keys": "Tecles",
+    "SHIFT": "MAYÚS",
+    "PageUp": "Página arriba",
+    "PageDown": "Página abajo",
+    "ArrowUp": "Flecha arriba",
+    "ArrowDown": "Flecha abajo",
+    "ArrowRight": "Flecha derecha",
+    "ArrowLeft": "Flecha izquierda",
+    "Space": "Espacio",
+    "Enter": "Enter",
     "Prev": "Ant.",
     "Next": "Sig.",
     "More": "Más",
@@ -51,12 +18,14 @@ export default {
     "Pause": "Pausa",
     "Mute": "Silenciar",
     "Unmute": "Act. sonido",
+    "Adjust volume": "Ajustar el volumen",
     "Remove last": "Eliminar últ",
     "Remove last podcast from playlist": "Eliminar el último podcast de la lista de reproducción",
     "Play previous podcast": "Reproducir el podcast anterior",
     "Play next podcast": "Reproducir el podcast seguinte",
     "Toggle mute status": "Canviar el estado del silencio",
     "Toggle Play/Pause": "Canviar Reproducir/Pausa",
+    "Update the list of podcasts": "Actualizar la lista de podcasts",
     "Show more controls": "Mostrar más controles",
     "Show less controls": "Mostrar menos controles",
     ...[
@@ -72,5 +41,82 @@ export default {
           [`Go forward ${ item.orig }`  ]: `Avanzar ${ item.trans }`,
         }
       }, {}),
+};
+
+const common = {
+    "Rac1 Radio Podcasts Player": "Reproductor de podcasts de Rac1",
+    "Live": "En directo",
+    "About": "Acerca de...",
+    "Help": "Ayuda",
+    "Privacy policy": "Política de privacidad",
+    "Yes": "Sí",
+    "No": "No",
+    "or": "o",
+};
+
+const tracking = {
+  "Allow tracking": "Seguimiento",
+  "Allow tracking user interactions for usage analysis": "Permitir el seguimiento de las acciones del usuario con fines de análisis de uso",
+};
+
+export default {
+  locale: "es-es",
+
+  AppMenu: {
+    ...common,
+    ...actions,
+    ...tracking,
+    "By date": "Por fecha",
+    "Update!": "¡Actualiza!",
+    "New version available!": "¡Nueva versión disponible!",
+    "Language": "Idioma",
+    "Change application language": "Cambiar el idioma de la aplicación",
+    ...['Català', 'Castellano', 'English']
+      .reduce( (res, lang) => {
+        return {
+          ...res,
+          [`Change language to ${lang}`]: `Cambiar idioma a ${lang}`,
+        }
+      }, {}),
+  },
+
+  ErrorCatcher: {
+    "Something went wrong :(": "Alguna cosa ha fallado :(",
+    "Try reloading the app to recover from it": "Intenta recargar la aplicación para continuar",
+  },
+
+  Rac1ByDate: {
+    ...common,
+  },
+
+  Rac1Directe: {
+    ...common,
+    "Rac1 live": "Rac1 en Directo",
+  },
+
+  ReloadButton: {
+    "Reload": "Recarga",
+  },
+
+  Button: {
+    ...actions,
+  },
+
+  About: {
+    ...common,
+  },
+
+  Help: {
+    ...common,
+    ...actions,
+    "Key bindings:": "Asociaciones del teclado:",
+    "Good UI controls for use with mobile devices: big buttons, disabled key bindings.": "Buenos controles de interfaz para usar con dispositivos móviles: grandes botones, asociacions de teclado deshabilitadas.",
+  },
+
+  Cookies: {
+    ...common,
+    ...tracking,
+    "This site uses cookies and other tracking technologies to assist with navigation and your ability to provide feedback, analyse your use of our products and services, assist with our promotional and marketing efforts, and provide content from third parties.": "Este sitio utiliza cookies y otras tecnologías de seguimiento para ayudar con la navegación y su capacidad de proporcionar comentarios, analizar el uso de nuestros productos y servicios, ayudar con nuestros esfuerzos de promoción y marketing, y proporcionar contenido de terceros.",
+    "We need to reload the page when you change this option in order to ensure it is taken completely into account.": "Necesitamos volver a cargar la página cuando cambie esta opción para garantizar que se tenga en cuenta por completo.",
   },
 }
