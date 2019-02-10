@@ -87,6 +87,10 @@ a.bm-item:link,
 a.bm-item:visited {
   color: #b8b7ad;
 }
+a.bm-item.active {
+  outline-style: dotted;
+  outline-width: 1px;
+}
 
 
 /* Styling of overlay */
