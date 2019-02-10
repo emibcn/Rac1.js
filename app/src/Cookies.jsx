@@ -16,6 +16,12 @@ import raw from "raw.macro";
 const legal = raw("./legal.html");
 
 class Cookies extends React.Component {
+  componentDidMount() {
+    if ( !this.props.trackingSeen ) {
+      this.props.onTrackingSeen(true);
+    }
+  }
+
   render() {
     const { t, trackOptIn } = this.props;
     return (
@@ -71,9 +77,12 @@ class Cookies extends React.Component {
 
 Cookies.defaultProps = {
   onTrackOptIn: optIn => {},
+  onTrackingSeen: optIn => {},
 };
 
 Cookies.propTypes = {
+  onTrackingSeen: PropTypes.func.isRequired,
+  trackingSeen: PropTypes.bool.isRequired,
   onTrackOptIn: PropTypes.func.isRequired,
   trackOptIn: PropTypes.bool.isRequired,
 };

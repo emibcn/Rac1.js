@@ -2,6 +2,7 @@ import React from 'react';
 import {
   Route,
   Switch,
+  Redirect,
 } from 'react-router-dom';
 import Modal from 'react-modal';
 
@@ -14,7 +15,7 @@ import './ModalRouter.css';
 
 Modal.setAppElement('#root')
 
-class CloseModal extends React.Component {
+class CloseModal extends React.PureComponent {
   constructor(props) {
     super();
 
@@ -29,7 +30,7 @@ class CloseModal extends React.Component {
   }
 };
 
-class ModalRouterInner extends React.Component {
+class ModalRouterInner extends React.PureComponent {
 
   constructor(props) {
     super();
@@ -39,7 +40,10 @@ class ModalRouterInner extends React.Component {
     this.unlisten = this.history.listen(this.handleHistoryChange.bind(this));
 
     // Set initial state
-    this.state = this.getPathState(props.location);
+    this.state = {
+      ...this.getPathState(props.location),
+      autoForce: false,
+    };
   }
 
   getPathState(location) {
@@ -47,6 +51,7 @@ class ModalRouterInner extends React.Component {
     return {
       modalIsOpen: !!path.length && path !== 'close',
       path,
+      previous: this.state ? this.state.path : false,
     };
   }
 
@@ -55,6 +60,23 @@ class ModalRouterInner extends React.Component {
     this.unlisten();
     if ( this.timer ) {
       global.clearTimeout( this.timer );
+    }
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    // Clear autoForce after it has been forced
+    if ( this.state.autoForce === this.state.path ) {
+      this.setState({ autoForce: false });
+    }
+
+    // Remember current path when forcing to force after this
+    if ( prevProps.force !== false &&
+         this.state.path === this.props.force &&
+         prevState.previous === false &&
+         this.state.previous === prevState.path &&
+         this.state.previous !== this.state.autoForce &&
+         this.state.autoForce === false) {
+      this.setState({ autoForce: this.state.previous });
     }
   }
 
@@ -81,7 +103,20 @@ class ModalRouterInner extends React.Component {
   }
 
   render() {
-    const { children } = this.props;
+    const { children, force } = this.props;
+    const { autoForce } = this.state;
+
+    // Redirect to forced URL
+    if ( force !== false && force !== this.state.path ) {
+      return <Redirect push to={{ hash: force }} />;
+    }
+
+    // If previously have been forced when showing a modal,
+    // force to go back there once the forced has been visited
+    if ( autoForce !== false && autoForce !== this.state.path && autoForce !== this.state.previous ) {
+      return <Redirect push to={{ hash: autoForce }} />;
+    }
+
     return (
       <Modal
         isOpen={ this.state.modalIsOpen }
@@ -136,7 +171,7 @@ class ModalRouterInner extends React.Component {
 
           { children }
 
-          {/* Close modal */}
+          {/* Close modal if nothing is shown */}
           <Route render={ props => <CloseModal { ...props } /> } />
         </Switch>
       </Modal>
@@ -144,13 +179,13 @@ class ModalRouterInner extends React.Component {
   }
 }
 
-class ModalRouter extends React.Component {
+class ModalRouter extends React.PureComponent {
   render() {
-    const { children } = this.props;
+    const { children, ...rest } = this.props;
     return (
       <Route
         path=':path(.*)'
-        render={ props => <ModalRouterInner { ...{ children, ...props } } /> }
+        render={ props => <ModalRouterInner { ...{ children, ...rest, ...props } } /> }
       />
     );
   }
