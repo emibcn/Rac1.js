@@ -21,7 +21,7 @@ Inspired by [my command line Python app Rac1.py](https://github.com/emibcn/Rac1.
 - Use [raw.macro](https://github.com/pveyes/raw.macro) to load raw HTML into bundle (for the [Privacy Policy](https://github.com/emibcn/Rac1.js/blob/master/app/src/legal.html)).
 - Use [react-component/slider](https://github.com/react-component/slider) for volume control (and possibly others in the future!)
 - Use [react-component/switch](https://github.com/react-component/switch) for user tracking opt-in/opt-out, with user's `DoNotTrack` value as default.
-- Use GoogleAnalytics with [React GA](https://github.com/react-ga/react-ga) ([integrated as a React component and a HOC](https://github.com/emibcn/Rac1.js/blob/master/app/src/GAListener/)) for usage statistics, but respect user's [DNT](https://en.wikipedia.org/wiki/Do_Not_Track) and don't even load it if user agent reports DNT header, unless the user explicitly opts in to tracking. Also allow users without DNT to explicitly opt out from tracking.
+- Use GoogleAnalytics with [React GA](https://github.com/react-ga/react-ga) ([integrated as a React component and a HOC](https://github.com/emibcn/Rac1.js/blob/master/app/src/GAListener/)) for usage statistics. Respect user's [DNT](https://en.wikipedia.org/wiki/Do_Not_Track) and don't even load it if user agent reports DNT header or a bot user agent is detected, unless the user explicitly opts in to tracking. Show modal with privacy policy on first visit. Also allow users without DNT to explicitly opt out from tracking.
 - Send events to GoogleAnalytics (when active) combinig [React HOC](https://reactjs.org/docs/higher-order-components.html) and [React Context](https://reactjs.org/docs/context.html) at [GAListener](https://github.com/emibcn/Rac1.js/blob/master/app/src/GAListener/withGAEvent.js) submodule.
 - Use [React's Error Boundaries](https://reactjs.org/docs/error-boundaries.html) in [`ErrorCatcher` component](https://github.com/emibcn/Rac1.js/blob/master/app/src/ErrorCatcher.jsx) to:
   - Catch errors created during ReactDOM rendering
@@ -40,7 +40,7 @@ Inspired by [my command line Python app Rac1.py](https://github.com/emibcn/Rac1.
   - `SPACE`/`P`: (Un)Pause
   - `M`: (Un)Mute
   - `ENTER`: Jump to next podcast
-  - `SGIFT` + `ENTER`: Jump to previous podcast
+  - `SHIFT` + `ENTER`: Jump to previous podcast
   - `R`: Update the list of podcasts
 - Good UI controls for use with mobile devices (big buttons, disabled key bindings)
 - Almost [WCAG](https://www.w3.org/WAI/standards-guidelines/wcag/) accessible

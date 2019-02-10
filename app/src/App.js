@@ -20,6 +20,7 @@ import Rac1ByDate from './Rac1ByDate';
 import Cookies from './Cookies';
 import About from './About';
 import Help from './Help';
+import botCheck from './botCheck';
 
 import './App.css';
 
@@ -29,15 +30,20 @@ class App extends React.Component {
     super();
 
     // Get DoNotTrack user preference
-    // Deactivate tracking by default until legal modal is added to the app
+    // Deactivate tracking by default to users with DNT and to all bots
+    this.isBot = botCheck();
     const dnt = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
-    this.dnt = process.env.NODE_ENV !== 'production' || dnt === '1' || dnt === 'yes' || true;
+    this.dnt = process.env.NODE_ENV === 'test' || dnt === '1' || dnt === 'yes' || this.isBot;
 
     this.registration = false;
     this.state = {
+      initializing: true,
       newServiceWorkerDetected: false,
       language: available.hasOwnProperty(navigator.language) ? navigator.language : 'en-en',
+      trackingSeen: false,
       trackOptIn: !this.dnt,
+      isBot: this.isBot,
+      dnt: this.dnt,
     };
   }
 
@@ -60,7 +66,7 @@ class App extends React.Component {
   render() {
     const date = new Date();
     const todayStr = `/${date.getFullYear()}/${1 + date.getMonth()}/${date.getDate()}/0/0`;
-    const { newServiceWorkerDetected, language, trackOptIn } = this.state;
+    const { newServiceWorkerDetected, language, trackOptIn, trackingSeen, initializing } = this.state;
     const translations = available[language];
     const withErrorCatcher = (origin, component) => <ErrorCatcher {...{ origin , key: origin }}>{ component }</ErrorCatcher>;
 
@@ -68,11 +74,28 @@ class App extends React.Component {
       <TranslatorProvider translations={ translations }>
         <Router>
           <div className='App' id='router-container'>
+            {/* Persistent state saver into localStorage */}
+            <Storage
+              parent={ this }
+              prefix='App'
+              blacklist={ ['newServiceWorkerDetected'] }
+              onParentStateHydrated={ () => this.setState({initializing: false}) }
+            />
+
             {/* GoogleAnalytics event provider and route change detector */}
             <GAListener language={ language } trackOptIn={ trackOptIn } >
 
-              {/* Modal routes hash paths ;) */}
-              <ModalRouter>
+              {/*
+                  Modal routes hash paths ;)
+                  Force initial modal to 'cookies' if all these conditions are true:
+                  - Cookies modal not seen yet
+                  - App completely initialized
+                  - User is not a Bot
+                  - User does not have DoNotTrack activated (consider bots as if they have DNT)
+              */}
+              <ModalRouter
+                force={ !trackingSeen && !initializing && !this.isBot ? 'cookies' : false }
+              >
                 <Route
                   exact
                   path='about'
@@ -88,19 +111,16 @@ class App extends React.Component {
                   path='cookies'
                   render={ props => withErrorCatcher('Cookies',
                     <Cookies
-                      { ...{ trackOptIn } }
+                      { ...{ trackOptIn, trackingSeen } }
+                      onTrackingSeen={ seen =>
+                        this.setState({...this.state, trackingSeen: seen })
+                      }
                       onTrackOptIn={ track =>
                         this.setState({...this.state, trackOptIn: track })
                       } /> )}
                 />
-              </ModalRouter>
 
-              {/* Persistent state saver into localStorage */}
-              <Storage
-                parent={ this }
-                prefix='App'
-                blacklist={ ['newServiceWorkerDetected'] }
-              />
+              </ModalRouter>
 
               {/* Menu */}
               <ErrorCatcher origin='AppMenu'>
