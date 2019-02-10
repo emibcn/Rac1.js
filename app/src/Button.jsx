@@ -15,8 +15,10 @@ class ButtonLegacy extends React.PureComponent {
     const keys = [
       ...new Set(
         this.props.keys
-          .map( key => key === ' ' ? 'Space' : key )
-          .map( key => key.length === 1 ? key.toUpperCase() : key )
+          .map( key => typeof key === 'string' ? { key } : key )
+          .map( key => key.key === ' ' ? {...key, key: 'Space' } : key )
+          .map( key => { return { ...key, key: key.key.length === 1 ? key.key.toUpperCase() : t(key.key) } } )
+          .map( key => ( key.shiftKey ? ` ${ t('SHIFT') } + ` : '' ) + key.key )
       )];
     return ` | ${ t(`Key${ keys.length > 1 ? 's' : '' }`) }: ${ keys.join(', ') }`
   }
