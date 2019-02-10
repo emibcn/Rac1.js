@@ -35,6 +35,13 @@ class App extends React.Component {
     const dnt = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
     this.dnt = process.env.NODE_ENV === 'test' || dnt === '1' || dnt === 'yes' || this.isBot;
 
+    // Fix bad browser encoding HASH
+    const decoded = decodeURIComponent(global.location.hash);
+    if ( decoded !==  '' && decoded !== global.location.hash ) {
+      const hash = decoded.replace(/[^#]*(#.*)$/, '$1');
+      global.location.replace(hash);
+    }
+
     this.registration = false;
     this.state = {
       initializing: true,
@@ -79,7 +86,7 @@ class App extends React.Component {
               parent={ this }
               prefix='App'
               blacklist={ ['newServiceWorkerDetected'] }
-              onParentStateHydrated={ () => this.setState({initializing: false}) }
+              onParentStateHydrated={ () => this.setState({ initializing: false }) }
             />
 
             {/* GoogleAnalytics event provider and route change detector */}
@@ -94,6 +101,7 @@ class App extends React.Component {
                   - User does not have DoNotTrack activated (consider bots as if they have DNT)
               */}
               <ModalRouter
+                initializing={ initializing }
                 force={ !trackingSeen && !initializing && !this.isBot ? 'cookies' : false }
               >
                 <Route
