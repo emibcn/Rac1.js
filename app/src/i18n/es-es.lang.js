@@ -104,6 +104,14 @@ export default {
 
   About: {
     ...common,
+    "Play Rac1 catalan radio station podcasts or live emission.": "Reproducir los podcasts o la emisión en directo de la estación de radio Rac1",
+    "I made this app for fun and for learning how to use the React library.": "He hecho esta aplicación por diversión y para aprender a usar la libreria React.",
+    "This app is served using GitHub Pages.": "Esta página se sirve usando GitHub Pages.",
+    "Want more information?": "¿Quieres más información?",
+    "The source code is publicly available.": "El código fuente está disponible públicamente.",
+    "There, you can find more information about how it has been done, licence and credits.": "Allí encontrarás más información sobre como se ha hecho, licències y créditos.",
+    "Found a bug? Have a petition?": "¿Has encontrado un error? ¿Tienes una petición?",
+    "Create an issue at GitHub.": "Crea una incidencia en GitHub",
   },
 
   Help: {
