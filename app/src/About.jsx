@@ -19,7 +19,7 @@ class About extends React.Component {
         <div id='modal_description' style={{ textAlign: 'left' }}>
           <p>{ t("Play Rac1 catalan radio station podcasts or live emission.") }</p>
           <p>
-            { t("I made this app for fun and for learning how to use the React library.") }
+            <span>{ t("I made this app for fun and for learning how to use the React library.") } </span>
             { t("This app is served using GitHub Pages.") }
           </p>
           <h3>{ t("Want more information?") }</h3>
