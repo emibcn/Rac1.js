@@ -23,7 +23,7 @@ const updateSW = (registration) => {
 
       preventDevToolsReloadLoop = true;
       console.log('Controller loaded');
-      window.location.reload();
+      global.location.reload();
     });
 
     // Send a message to the new serviceWorker to activate itself
