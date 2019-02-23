@@ -60,7 +60,6 @@ Inspired by [my command line Python app Rac1.py](https://github.com/emibcn/Rac1.
 
 # TODO
 - Improve UX: layout, styles, info shown, responsible, controls, ¿bootstrap4?
-- Add info/help/about section
 - Use [Streams API](https://developer.mozilla.org/en-US/docs/Web/API/Streams_API) to control audio downloading and playing (and editing?)
 - Add a section to allow easily play podcasts filtered by program
 - Filters via `localStorage`, to easily jump unwanted podcasts
