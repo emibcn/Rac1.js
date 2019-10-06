@@ -1,4 +1,4 @@
-import 'babel-polyfill'; // For Google bot
+import 'react-app-polyfill/stable';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';

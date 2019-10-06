@@ -88,10 +88,10 @@ class Rac1ByDate extends Component {
     });
   }
 
-  componentWillMount() {
+  componentDidMount() {
 
     // Register history change event listener
-    this.unlisten = this.history.listen(this.handleHistoryChange.bind(this));
+    this.unlisten = this.history.listen( this.handleHistoryChange.bind(this) );
 
     // Initiate backend library
     this.rac1 = new Rac1({
