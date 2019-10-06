@@ -36,7 +36,9 @@ const AppHelmet = function(props) {
     <Helmet
       titleTemplate={ `${ t("Rac1 Radio Podcasts Player") } | %s` }
       defaultTitle={ t("Rac1 Radio Podcasts Player") }
-    />
+    >
+      <html lang={ props.language } />
+    </Helmet>
   );
 }
 
@@ -157,7 +159,7 @@ class App extends React.Component {
                 />
               </ErrorCatcher>
 
-              <AppHelmet />
+              <AppHelmet language={ language } />
 
               <header className='App-header' id='page-wrap'>
 
