@@ -4,7 +4,7 @@ services:
 
   rac1:
     container_name: rac1
-    image: node:8-slim
+    image: node:12-slim
     user: "node"
     working_dir: /home/node/app
     environment:
