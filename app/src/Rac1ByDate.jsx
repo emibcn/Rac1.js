@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 
-import { translate } from "react-translate"
+import { translate } from 'react-translate';
+import { Helmet } from 'react-helmet';
 import ReactAudioPlayer from 'react-audio-player';
 import MediaQuery from 'react-responsive';
 
@@ -28,7 +29,6 @@ class Rac1ByDate extends Component {
     super();
 
     this.history = props.history;
-    this.initialTitle = document.title;
 
     // Initial state
     this.state = {
@@ -114,9 +114,6 @@ class Rac1ByDate extends Component {
 
     // Abort backend fetches
     this.rac1.abort();
-
-    // Reset initial title
-    document.title = this.initialTitle;
   }
 
   render() {
@@ -216,39 +213,44 @@ class Rac1ByDate extends Component {
         </Playlist>;
 
     return (
-      <MediaQuery minWidth={ 1024 }>
-        { matches => {
-          if ( matches ) {
-            return (
-              <div style={{
-                display: 'flex',
-                alignItems: 'stretch',
-              }}>
+      <>
+        <Helmet>
+          <title>{ title }</title>
+        </Helmet>
+        <MediaQuery minWidth={ 1024 }>
+          { matches => {
+            if ( matches ) {
+              return (
                 <div style={{
                   display: 'flex',
-                  flexDirection: 'column',
                   alignItems: 'stretch',
-                  justifyContent: 'space-evenly',
                 }}>
+                  <div style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'stretch',
+                    justifyContent: 'space-evenly',
+                  }}>
+                    <h3>{ title }</h3>
+                    { controls }
+                    { player }
+                  </div>
+                  { playlist }
+                </div>
+              );
+            } else {
+              return (
+                <>
                   <h3>{ title }</h3>
                   { controls }
                   { player }
-                </div>
-                { playlist }
-              </div>
-            );
-          } else {
-            return (
-              <React.Fragment>
-                <h3>{ title }</h3>
-                { controls }
-                { player }
-                { playlist }
-              </React.Fragment>
-            );
-          }
-        }}
-      </MediaQuery>
+                  { playlist }
+                </>
+              );
+            }
+          }}
+        </MediaQuery>
+      </>
     );
   }
 

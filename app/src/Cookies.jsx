@@ -25,7 +25,7 @@ class Cookies extends React.Component {
   render() {
     const { t, trackOptIn } = this.props;
     return (
-      <React.Fragment>
+      <>
         <h1 id='modal_heading'>
           <FontAwesomeIcon icon={ faCookies } style={{ marginRight: '.5em' }} />
           { t("Privacy policy") }
@@ -54,6 +54,9 @@ class Cookies extends React.Component {
             className='bm-item'
             title={ t("Allow tracking user interactions for usage analysis") }
             onClick={ this.handleClickTrackOptIn.bind(this) }
+            style={{/* Fix WCAG contrast */
+              color: '#4e4e48',
+            }}
             >
             { t('Allow tracking') }
           </a>
@@ -61,7 +64,7 @@ class Cookies extends React.Component {
         <p><i>
           { t("We need to reload the page when you change this option in order to ensure it is taken completely into account.") }
         </i></p>
-      </React.Fragment>
+      </>
     )
   }
 

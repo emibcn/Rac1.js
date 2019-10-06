@@ -30,3 +30,9 @@
     transform: rotate(360deg);
   }
 }
+
+/* Fix WCAG contrast */
+.rc-switch {
+  border-color: #666;
+  background-color: #666;
+}
