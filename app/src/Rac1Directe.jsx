@@ -1,21 +1,18 @@
 import React, { Component } from 'react';
 
-import { translate } from "react-translate"
+import { translate } from 'react-translate';
+import { Helmet } from 'react-helmet';
 import ReactAudioPlayer from 'react-audio-player';
 
 import Controls from './Controls';
 
 class Rac1Directe extends Component {
-  // Initial state
-  state = {
-    volume: 1,
-  };
 
   player() {
     return this._player.audioEl;
   }
 
-  constructor(props, history) {
+  constructor(props) {
     super();
 
     this.history = props.history;
@@ -28,21 +25,12 @@ class Rac1Directe extends Component {
     };
   }
 
-  componentDidMount() {
-    const { t } = this.props;
-    this.initialTitle = document.title;
-    document.title = `${ t(this.initialTitle) } - ${ t("Live") }`;
-  }
-
   componentWillUnmount() {
     // Unregister player event listeners
     if ( this._player && this._player.removeEventListener ) {
       this._player.removeEventListener('onPlay', this.handlePlayStatusChange.bind(this, true));
       this._player.removeEventListener('onPause', this.handlePlayStatusChange.bind(this, false));
     }
-
-    // Reset initial title
-    document.title = this.initialTitle;
   }
 
   render() {
@@ -53,7 +41,10 @@ class Rac1Directe extends Component {
     const title = t('Rac1 live');
 
     return (
-      <React.Fragment>
+      <>
+        <Helmet>
+          <title>{ t("Live") }</title>
+        </Helmet>
         <h3>{ title }</h3>
         <Controls
           getPlayer={ this.player.bind(this) }
@@ -84,7 +75,7 @@ class Rac1Directe extends Component {
             muted: e.currentTarget.muted,
           }) }
         />
-      </React.Fragment>
+      </>
     );
   }
 

@@ -62,6 +62,10 @@ const tracking = {
 export default {
   locale: "es-es",
 
+  App: {
+    ...common,
+  },
+
   AppMenu: {
     ...common,
     ...actions,

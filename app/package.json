@@ -20,6 +20,7 @@
     "react-date-picker": "^7.8.2",
     "react-dom": "^16.10.2",
     "react-ga": "^2.7.0",
+    "react-helmet": "^5.2.1",
     "react-hot-loader": "4.8.4",
     "react-modal": "^3.10.1",
     "react-responsive": "^8.0.1",
