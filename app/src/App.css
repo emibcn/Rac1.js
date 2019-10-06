@@ -36,3 +36,8 @@
   border-color: #666;
   background-color: #666;
 }
+
+.rc-switch-checked {
+  border-color: #47842d;
+  background-color: #47842d;
+}
