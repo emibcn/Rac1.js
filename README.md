@@ -9,11 +9,12 @@ Inspired by [my command line Python app Rac1.py](https://github.com/emibcn/Rac1.
 ## Features
 - [ReactJS](https://reactjs.org/) based browser [Single Page Application](https://en.wikipedia.org/wiki/Single-page_application)
 - `<audio>` HTML tag, via [react-audio-player](https://github.com/justinmc/react-audio-player)
-- Nice [DatePicker](https://www.npmjs.com/package/react-date-picker) to allow listening to any day's podcasts
+- Nice [DatePicker](https://github.com/wojtekmaj/react-date-picker) to allow listening to any day's podcasts
 - Use [Fontawesome free icons](https://fontawesome.com/)
 - Use [react-burger-menu](https://github.com/negomi/react-burger-menu) to display off-canvas menu
 - Use [react-responsive](https://github.com/contra/react-responsive) to differentiate display depending on media sizes (design still in construction)
-- Use [react-translate](https://www.npmjs.com/package/react-translate) to translate components
+- Use [react-translate](https://github.com/bloodyowl/react-translate) to translate components
+- Use [react-helmet](https://github.com/nfl/react-helmet) to handle changes to HTML document title (in the future, others, like `meta` tags)
 - Use [react-simple-storage](https://github.com/ryanjyost/react-simple-storage) to save and retrieve state to and from `localStorage`
 - Use [\<HashRouter\>](https://github.com/ReactTraining/react-router/blob/master/packages/react-router-dom/docs/api/HashRouter.md) to handle date and podcast selection, linking and history ([Github Pages doesn't -easily- allows](https://itnext.io/so-you-want-to-host-your-single-age-react-app-on-github-pages-a826ab01e48) [\<BrowserRouter\>](https://github.com/ReactTraining/react-router/blob/master/packages/react-router-dom/docs/api/BrowserRouter.md))
 - Use the [Service Worker](https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API) provided by [Create React App](https://github.com/facebook/create-react-app), adding an [epilog](https://github.com/emibcn/Rac1.js/blob/master/app/src/sw-epilog.js) to allow communicating with it to [force an update from within the app](https://github.com/emibcn/Rac1.js/blob/master/app/src/index.js).

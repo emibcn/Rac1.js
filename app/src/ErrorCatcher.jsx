@@ -59,7 +59,7 @@ class ErrorCatcher extends React.PureComponent {
 
       // Show error to user
       return (
-        <React.Fragment>
+        <>
           <h1>{ t('Something went wrong :(') }</h1>
           <button
             onClick={ this.reloadApp.bind(this) }
@@ -77,7 +77,7 @@ class ErrorCatcher extends React.PureComponent {
               { errorStack }
             </details>
           </div>
-        </React.Fragment>
+        </>
       );
     }
 

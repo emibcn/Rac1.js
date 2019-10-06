@@ -11,7 +11,7 @@ class About extends React.Component {
   render() {
     const { t } = this.props;
     return (
-      <React.Fragment>
+      <>
         <h1 id='modal_heading'>
           <FontAwesomeIcon icon={ faAbout } style={{ marginRight: '.5em' }} />
           { t("About") }
@@ -28,7 +28,7 @@ class About extends React.Component {
           <p><a target='_blank' rel="noopener noreferrer" href='https://github.com/emibcn/Rac1.js/issues'>{ t("Create an issue at GitHub.") }</a></p>
 
         </div>
-      </React.Fragment>
+      </>
     )
   }
 }

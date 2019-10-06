@@ -15,7 +15,7 @@ class Help extends React.Component {
   render() {
     const { t } = this.props;
     return (
-      <React.Fragment>
+      <>
         <h1 id='modal_heading'>
           <FontAwesomeIcon icon={ faHelp } style={{ marginRight: '.5em' }} />
           { t("Help") }
@@ -38,7 +38,7 @@ class Help extends React.Component {
           </ul>
           <p>{ t("Good UI controls for use with mobile devices: big buttons, disabled key bindings.") }</p>
         </div>
-      </React.Fragment>
+      </>
     )
   }
 }

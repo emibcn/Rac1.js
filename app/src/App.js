@@ -8,7 +8,8 @@ import {
 } from 'react-router-dom';
 
 import Storage from 'react-simple-storage';
-import { TranslatorProvider } from 'react-translate';
+import { TranslatorProvider, useTranslate } from 'react-translate';
+import { Helmet } from 'react-helmet';
 import available from './i18n/available';
 
 import AppMenu from './AppMenu';
@@ -23,6 +24,21 @@ import Help from './Help';
 import botCheck from './botCheck';
 
 import './App.css';
+
+// Template function for catching errors from components
+const withErrorCatcher = (origin, component) => <ErrorCatcher {...{ origin , key: origin }}>{ component }</ErrorCatcher>;
+
+// App Helmet: Controls HTML <head> elements with SideEffect
+// - Set a default title and title template, translated
+const AppHelmet = function(props) {
+  const t = useTranslate("App");
+  return (
+    <Helmet
+      titleTemplate={ `${ t("Rac1 Radio Podcasts Player") } | %s` }
+      defaultTitle={ t("Rac1 Radio Podcasts Player") }
+    />
+  );
+}
 
 class App extends React.Component {
 
@@ -75,7 +91,7 @@ class App extends React.Component {
     const todayStr = `/${date.getFullYear()}/${1 + date.getMonth()}/${date.getDate()}/0/0`;
     const { newServiceWorkerDetected, language, trackOptIn, trackingSeen, initializing } = this.state;
     const translations = available[language];
-    const withErrorCatcher = (origin, component) => <ErrorCatcher {...{ origin , key: origin }}>{ component }</ErrorCatcher>;
+
 
     return (
       <TranslatorProvider translations={ translations }>
@@ -141,8 +157,11 @@ class App extends React.Component {
                 />
               </ErrorCatcher>
 
-              {/* App Route */}
+              <AppHelmet />
+
               <header className='App-header' id='page-wrap'>
+
+                {/* App Route */}
                 <Switch>
                   <Route
                     exact
