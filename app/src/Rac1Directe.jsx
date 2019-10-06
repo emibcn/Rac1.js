@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 import { translate } from 'react-translate';
-import { Helmet } from 'react-helmet';
+import { Helmet } from 'react-helmet-async';
 import ReactAudioPlayer from 'react-audio-player';
 
 import Controls from './Controls';

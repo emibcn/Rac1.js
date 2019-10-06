@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 import { translate } from 'react-translate';
-import { Helmet } from 'react-helmet';
+import { Helmet } from 'react-helmet-async';
 import ReactAudioPlayer from 'react-audio-player';
 import MediaQuery from 'react-responsive';
 
@@ -149,7 +149,7 @@ class Rac1ByDate extends Component {
         ? podcasts[current].path : '';
     const title = podcasts !== undefined && podcasts.length > 0 ?
       ( 'audio' in podcasts[current] ?
-          `${podcasts[current].titleFull}` :
+          podcasts[current].titleFull :
           dateText )
       : dateText;
 
