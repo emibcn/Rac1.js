@@ -9,6 +9,9 @@ app/node_modules
 app/.pnp
 app/.pnp.js
 
+# Built pages
+docs/
+
 # testing
 app/coverage
 
