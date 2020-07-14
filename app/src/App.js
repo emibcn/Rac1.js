@@ -58,6 +58,9 @@ class App extends React.Component {
       global.location.replace(hash);
     }
 
+    // Save App element to handle modal
+    this.appElement = React.createRef();
+
     this.registration = false;
     this.state = {
       initializing: true,
@@ -119,6 +122,7 @@ class App extends React.Component {
               <ModalRouter
                 initializing={ initializing }
                 force={ !trackingSeen && !initializing && !this.isBot ? 'cookies' : false }
+                appElement={ this.appElement.current }
               >
                 <Route
                   exact
@@ -159,7 +163,10 @@ class App extends React.Component {
 
               <AppHelmet />
 
-              <header className='App-header' id='page-wrap'>
+              <header
+                ref={ this.appElement }
+                className='App-header'
+                id='page-wrap'>
 
                 {/* App Route */}
                 <Switch>

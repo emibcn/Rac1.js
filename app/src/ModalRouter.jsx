@@ -114,7 +114,7 @@ class ModalRouterInner extends React.PureComponent {
   }
 
   render() {
-    const { children, initializing, force } = this.props;
+    const { children, initializing, force, appElement } = this.props;
     const { autoForce, path, forced } = this.state;
 
     if ( initializing ) {
@@ -136,6 +136,7 @@ class ModalRouterInner extends React.PureComponent {
 
     return (
       <Modal
+        appElement={ appElement }
         isOpen={ this.state.modalIsOpen }
         onAfterOpen={ this.openModal.bind(this) }
         onRequestClose={ this.closeModal.bind(this) }
