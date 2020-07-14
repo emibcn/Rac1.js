@@ -149,7 +149,7 @@ class Rac1ByDate extends Component {
         ? podcasts[current].path : '';
     const title = podcasts !== undefined && podcasts.length > 0 ?
       ( 'audio' in podcasts[current] ?
-          `${podcasts[current].titleFull}` :
+          podcasts[current].titleFull :
           dateText )
       : dateText;
 
@@ -409,7 +409,6 @@ class Rac1ByDate extends Component {
 
   playPodcast(index) {
     const { date, currentUUID } = this.state;
-    const { t } = this.props;
     const podcast = this.state.podcasts[index];
 
     // Force push&replace if it's not exact match with date, and update date in state

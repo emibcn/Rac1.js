@@ -362,7 +362,7 @@ class Controls extends React.Component {
     );
   }
 
-  player = () => this.props.getPlayer();
+  player = () => this.props.getPlayer().current;
 
   setMuted(muted) {
     this.player().muted = muted;
