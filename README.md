@@ -1,7 +1,7 @@
 ![Node.js CI](https://github.com/emibcn/Rac1.js/workflows/Node.js%20CI/badge.svg)
 [![Build Status](https://travis-ci.com/emibcn/Rac1.js.svg?branch=master)](https://travis-ci.com/emibcn/Rac1.js)
 
-React app to listen to [Rac1 radio station](https://www.rac1.cat/) podcasts. Uses GitHub pages to publish it at **[Rac1 podcast player at Github Pages](https://emibcn.github.io/Rac1.js/)**. There you will find [this repo's `docs/`](https://github.com/emibcn/Rac1.js/tree/master/docs) contents, which are the results of executing `yarn build` on [this project's container](#development-container) using [this project's source application](https://github.com/emibcn/Rac1.js/tree/master/app).
+React app to listen to [Rac1 radio station](https://www.rac1.cat/) podcasts. Uses GitHub pages to publish it at **[Rac1 podcast player at Github Pages](https://emibcn.github.io/Rac1.js/)**. There you will find [this repo's `gh-pages` branch](https://github.com/emibcn/Rac1.js/tree/gh-pages) contents, which are the results of executing `yarn build` on [this project's GitHub workflow/Actions](https://github.com/emibcn/Rac1.js/actions) using [this project's source application](https://github.com/emibcn/Rac1.js/tree/master/app).
 
 The [podcasts lister](https://github.com/emibcn/Rac1.js/blob/master/app/src/rac1.js) is a pure JS app, which only depends on [abortcontroller-polyfill](https://github.com/mo/abortcontroller-polyfill) to help GoogleBot execute modern JS, so you can easily re-use it for other JS projects. ~It uses https://cors-anywhere.herokuapp.com/ to allow downloading 3rd party webs. In this case, the app downloads the [page with podcasts list](https://api.audioteca.rac1.cat/a-la-carta/cerca), which is served as `text/html` and violates [CORS specifications](https://en.wikipedia.org/wiki/Cross-origin_resource_sharing).~
 
@@ -64,7 +64,9 @@ Inspired by [my command line Python app Rac1.py](https://github.com/emibcn/Rac1.
 - Improve UX: layout, styles, info shown, responsible, controls, ¿bootstrap4?
 - Use [Streams API](https://developer.mozilla.org/en-US/docs/Web/API/Streams_API) to control audio downloading and playing (and editing?)
 - Add a section to allow easily play podcasts filtered by program
+- Show currently playing program metadata: Name, description, image, etc
 - Filters via `localStorage`, to easily jump unwanted podcasts
+- Save volume to `localStorage` and use in all players.
 - Better internal state handling for player status: `currentPosition`, [`play`](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/play)...
 - Consider using Redux
 - Add tests
