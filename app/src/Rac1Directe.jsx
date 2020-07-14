@@ -21,7 +21,7 @@ class Rac1Directe extends Component {
     this.state = {
       volume: 1,
       muted: false,
-      isPlaying: false,
+      isPlaying: true,
     };
   }
 
@@ -36,7 +36,7 @@ class Rac1Directe extends Component {
   render() {
     const { volume, muted, isPlaying } = this.state;
     const { t } = this.props;
-    const currentPath = 'http://rac1.radiocat.net/;*.nsv';
+    const currentPath = 'https://streaming.rac1.cat/';
     const autoplay = true;
     const title = t('Rac1 live');
 
