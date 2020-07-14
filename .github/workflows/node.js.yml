@@ -37,7 +37,7 @@ jobs:
       run: |
         cd app
         yarn install
-        yarn test
+        yarn test --coverage
 
     # Coverage badges will be updated on any branch except protected
     # branches 'develop' and 'master' and on a pull requests
@@ -47,7 +47,7 @@ jobs:
         # The GITHUB_TOKEN secret.
         github_token:  ${{ secrets.GITHUB_TOKEN }}
         coverage-summary-path: app/coverage/coverage-final.json
-        badges-directory: badges/
+        badges-directory: .github/badges/
 
     - name: Coverage monitor
       uses: slavcodev/coverage-monitor-action@1.1.0
