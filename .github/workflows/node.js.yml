@@ -16,10 +16,12 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [10.x, 12.x, 14.x]
+        node-version: [12.x]
 
     steps:
+
     - uses: actions/checkout@v2
+
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v1
       with:
@@ -37,6 +39,28 @@ jobs:
         yarn install
         yarn test
 
+    - name: Coverage monitor
+      uses: slavcodev/coverage-monitor-action@1.1.0
+      with:
+        # The GITHUB_TOKEN secret.
+        github_token:  ${{ secrets.GITHUB_TOKEN }}
+        # Path to Clover XML file.
+        clover_file: app/coverage/clover.xml
+        # Whether check the coverage thresholds.
+        check: true
+        # Whether comment the coverage report.
+        comment: true
+        # Mark the build as unstable when coverage is less than this threshold.
+        threshold_alert: 50
+        # Warning when coverage is less than this threshold.
+        threshold_warning: 90
+        # A string label to differentiate this status from the status of other systems.
+        status_context: Coverage Report
+        # A string label to differentiate the comment posted by this action.
+        comment_context: Coverage Report
+        # A mode for comments, supported: `replace`, `update` or `insert`.
+        comment_mode: replace
+
 
   publish:
 
@@ -47,7 +71,9 @@ jobs:
         node-version: [12.x]
 
     steps:
+
     - uses: actions/checkout@v2
+
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v1
       with:
@@ -64,6 +90,7 @@ jobs:
         cd app
         yarn install
         yarn build
+
     - name: Deploy to GitHub Pages
       if: success()
       uses: crazy-max/ghaction-github-pages@v2
