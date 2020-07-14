@@ -421,7 +421,6 @@ class Rac1ByDate extends Component {
     }
 
     replace = currentUUID === '';
-    document.title = `${ t(this.initialTitle) }: ${podcast.titleFull}`;
     this.setState({
       ...this.state,
       currentUUID: podcast.uuid,
