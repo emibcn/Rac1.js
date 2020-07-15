@@ -37,13 +37,13 @@ jobs:
       run: |
         cd app
         yarn install
-        yarn test --coverage
+        yarn test -- --coverage
 
     # Coverage badges will be updated on any branch except protected
     # branches 'develop' and 'master' and on a pull requests
     - run: mkdir -p .github/badges/
     - name: Test coverage badges
-      uses:  demyanets/angular-coverage-badges-action@v1
+      uses:  emibcn/clover-coverage-badges-action@v1
       with:
         # The GITHUB_TOKEN secret.
         github_token:  ${{ secrets.GITHUB_TOKEN }}
