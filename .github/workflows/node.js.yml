@@ -47,7 +47,7 @@ jobs:
       with:
         # The GITHUB_TOKEN secret.
         github_token:  ${{ secrets.GITHUB_TOKEN }}
-        coverage-summary-path: app/coverage/coverage-final.json
+        coverage-summary-path: app/coverage/clover.xml
         badges-directory: .github/badges/
 
     #- name: Coverage monitor
