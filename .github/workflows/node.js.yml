@@ -43,7 +43,7 @@ jobs:
     # branches 'develop' and 'master' and on a pull requests
     - run: mkdir -p .github/badges/
     - name: Test coverage badges
-      uses: emibcn/clover-coverage-badges-action@v2.2
+      uses: emibcn/clover-coverage-badges-action@v2.3
       with:
         # The GITHUB_TOKEN secret.
         github_token:  ${{ secrets.GITHUB_TOKEN }}
