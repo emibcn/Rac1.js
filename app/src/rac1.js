@@ -12,87 +12,8 @@ class Rac1 {
   _previous_uuids = [];
 
   // Abort controller
+  // Used to stop pending fetches when user changes the date
   controller = new AbortController();
-
-  // Anti-CORS backends
-  antiCorsBackends = [
-    { // Direct access to server
-      url: url => `${url}`,
-      parser: async response => {
-        return await response.text();
-      },
-      extraOptions: {
-        "Content-Type": "application/json; charset=utf-8",
-      },
-    },
-    {
-      url: url => `https://cors-anywhere.herokuapp.com/${url}`,
-      parser: response => response.text(),
-      extraOptions: {
-        credentials: 'same-origin',
-      },
-    },
-    {
-      url: url => `https://api.allorigins.ml/get?url=${encodeURIComponent(url)}`,
-      parser: async response => {
-        const json = await response.json();
-        if ( json.status.http_code === 200 ) {
-          return json.contents;
-        }
-        else {
-          throw Error(json);
-        }
-      },
-    },
-    { // https://github.com/messier31/cors-proxy-server
-      url: url => `https://secret-ocean-49799.herokuapp.com/${url}`,
-      parser: async response => {
-        return await response.text();
-      },
-      extraOptions: {
-        "Content-Type": "application/json; charset=utf-8",
-      },
-    },
-    /*
-    {
-      url: url => `http://www.whateverorigin.org/get?url=${encodeURIComponent(url)}`,
-      parser: async response => {
-        const text = await response.text();
-        console.log({text: JSON.parse(JSON.stringify(text))});
-        const json = JSON.parse(text);
-        console.log({json});
-        if ( json.status.http_code === 200 ) {
-          return json.contents;
-        }
-        else {
-          throw Error(json);
-        }
-      },
-      extraOptions: {
-        "Content-Type": "application/json; charset=utf-8",
-        headers: {
-          "Accept": "application/jsonp",
-          "Content-Type": "application/json; charset=utf-8",
-          "Access-Control-Request-Method": "GET",
-          "Access-Control-Request-Headers": "content-type,script-charset",
-        },
-      },
-    },
-    {
-      url: url => `https://crossorigin.me/${url}`,
-      parser: async response => await response.text(),
-      extraOptions: {
-        "Content-Type": "application/json; charset=utf-8",
-      },
-    },
-    {
-      url: url => `http://alloworigin.com/get?compress=1&url=${encodeURIComponent(url)}`,
-      parser: response => response.text(),
-      extraOptions: {
-      },
-    },
-    */
-  ];
 
   constructor(props) {
     const noop = () => {};
@@ -107,28 +28,22 @@ class Rac1 {
 
   // Raises exception on response error
   handleFetchErrors(response) {
+    // Raise succeeded non-ok responses
     if ( !response.ok ) {
-      throw Error(`Rac1 backend: ${response.statusText}`);
+      return Promise.reject( Error(`Rac1 backend: ${response.statusText}`) );
     }
     return response;
   }
 
-  // Catches the fetch error, original or 'self-raised'
-  catchFetchErrors(callback) {
-    return err => {
-      if ( err.name === 'AbortError' ) {
-        console.log(err.message);
-        return Promise.reject(err);
-      }
-      else {
-        err.message = `Rac1 backend: ${err.message}`;
-        if ( typeof callback === 'function' ) {
-          callback(err);
-        }
-        else {
-          this.onError(err);
-        }
-      }
+  // Catches fetch errors, original or 'self-raised', and throws to `onError` prop
+  // Filters out non-error "Connection aborted"
+  catchFetchErrors(err) {
+    if ( err.name === 'AbortError' ) {
+      console.log('Connection aborted', err);
+    }
+    else {
+      err.message = `Rac1 backend: ${err.message}`;
+      this.onError(err);
     }
   }
 
@@ -152,16 +67,16 @@ class Rac1 {
     return this.getPodcastsUUIDs(pageNumber)
 
       // Download podcast data if needed
-      .then( this.getPodcasts.bind(this, pageNumber) )
+      .then( podcasts => this.getMissingPodcasts(pageNumber, podcasts) )
 
       // Trigger event for list updated
-      .then( this.handleListUpdate.bind(this, pageNumber) )
+      .then( podcasts => this.handleListUpdate() )
 
       // Catch Exceptions
-      .catch( this.catchFetchErrors() )
+      .catch( this.catchFetchErrors.bind(this) )
   }
 
-  getPodcasts(pageNumber, podcasts) {
+  getMissingPodcasts(pageNumber, podcasts) {
     return podcasts
       .map( podcast => {
 
@@ -169,11 +84,12 @@ class Rac1 {
         if ( podcast.uuid !== '...' && !(podcast.uuid in this._podcastsData) ) {
 
           // Download podcast data and then trigger
-          // event when updated
+          // update event when updated
           this.getPodcastData(podcast.uuid)
-            .then( this.handlePodcastUpdate.bind(this, pageNumber) )
-            .catch( this.catchFetchErrors() )
+            .then( podcast => this.handlePodcastUpdate(pageNumber, podcast) )
+            .catch( this.catchFetchErrors.bind(this) )
         }
+
         return podcast;
       })
   }
@@ -188,9 +104,12 @@ class Rac1 {
     // Helper functions
     const dateToString = d => `${d.getFullYear()}/${d.getMonth()+1}/${d.getDate()}`;
     const compareDates = (d1, d2) => dateToString(d1) === dateToString(d2);
-    const filterByDates = podcast => {
-      return !("date" in podcast) || compareDates( podcast.date, this.date )
-    };
+    const filterByDates = podcast => !("date" in podcast) || compareDates( podcast.date, this.date );
+
+    if ( !('forEach' in this.pages) ) {
+      console.log("pages has not `forEach`!", this.pages, JSON.parse(JSON.stringify({pages: this.pages})));
+      return
+    }
 
     // Create a virtual list of all podcasts correctly ordered
     this.pages.forEach( page => {
@@ -209,11 +128,7 @@ class Rac1 {
         pageUuids
 
           // Filter out already added podcasts
-          .filter( podcastPage => {
-            const found = newList.filter(
-              podcast => podcast.uuid === podcastPage.uuid );
-            return found.length === 0;
-          })
+          .filter( podcastPage => newList.find( podcast => podcast.uuid === podcastPage.uuid ) === undefined )
 
           // Filter out podcasts from other dates
           .filter( filterByDates )
@@ -245,27 +160,31 @@ class Rac1 {
   // Saves the new podcast to the pages cache and fires onPodcastUpdate
   // (pageNumber, podcastNew) => null
   handlePodcastUpdate(pageNumber, podcastNew) {
-    podcastNew.page = pageNumber;
-    this._pages_uuids[pageNumber].forEach( (podcast,index) => {
-      if ( podcast.uuid === podcastNew.uuid ) {
-        this._pages_uuids[pageNumber][index] = podcastNew;
-      }
-    });
+    try {
+      podcastNew.page = pageNumber;
 
-    // Trigger update event
-    this.handleListUpdate(podcastNew);
+      this._pages_uuids[pageNumber].forEach( (podcast,index) => {
+        if ( podcast.uuid === podcastNew.uuid ) {
+          this._pages_uuids[pageNumber][index] = podcastNew;
+        }
+      });
+
+      // Trigger update event
+      this.handleListUpdate();
+    } catch (err) {
+      console.log("Podcast data arrived after pages clean. Discarding data.");
+    }
   }
 
-  // Gets all the podcasts UUIDs of a date
+  // Gets all the podcasts UUIDs of a page
+  // and, if pageNumer is 0, calls to do the same for the rest of pages
   // (pageNumber) => Promise(Array(String(UUID)))
   getPodcastsUUIDs(pageNumber=0) {
     return this.getPage(pageNumber)
-      .then( dataRaw => {
+      .then( dataRaw => this.parsePage(dataRaw) )
+      .then( ({ uuidsPage, pages }) => {
 
-        const { uuidsPage, pages } = this.parsePage(dataRaw);
-
-
-        // If it's the first page, call the rest
+        // If it's the first page, call to process the rest of pages, if any
         if ( pageNumber === 0 ) {
 
           // Save the list of pages, in reverse order
@@ -278,10 +197,10 @@ class Rac1 {
           this.pages.forEach( page => (page !== 0) && this.updateList( page ) );
         }
 
-        // Save in reversed order and along with the page number
+        // Save in reversed order, along with the page number
         this._pages_uuids[pageNumber] = uuidsPage
           .reverse()
-          .map( uuid => { return {uuid, page: pageNumber} } );
+          .map( uuid => ({uuid, page: pageNumber}) );
 
         return this._pages_uuids[pageNumber];
       });
@@ -289,7 +208,7 @@ class Rac1 {
 
   // Gets a page with HTML containning a list of podcasts from the server
   // (pageNumber) => Promise(String)
-  getPage(pageNumber=0, backend=0) {
+  getPage(pageNumber=0) {
 
     // Format day and month to 2 digits 0 padded strings
     const pad2 = num => ( num < 10 ? '0' : '' ) + num;
@@ -312,40 +231,16 @@ class Rac1 {
     }
 
     return fetch(
-      this.antiCorsBackends[backend].url( // Anti CORS
       "https://api.audioteca.rac1.cat/a-la-carta/cerca?"
       + "text=&programId=&sectionId=HOUR&"
-      + `from=${date}&to=${dateNext}&pageNumber=${pageNumber}`),
+      + `from=${date}&to=${dateNext}&pageNumber=${pageNumber}`,
       {
-        ...this.antiCorsBackends[backend].extraOptions,
+        "Content-Type": "application/json; charset=utf-8",
         signal: this.controller.signal,
       })
       .then( this.handleFetchErrors )
 
-      .then( this.antiCorsBackends[backend].parser )
-
-      // Early catch backend error to retry with the next on list
-      // Reraise error when no more backends available
-      .catch( this.catchFetchErrors( err => {
-        console.error(err);
-
-        // If user aborted, reject promise silently
-        if ( err.name !== 'AbortError' ) {
-
-          // Deactivate AntiCORS feature
-          if ( true || backend === (this.antiCorsBackends.length - 1) ) {
-            //console.log(`AntiCORS backend ${backend} failed. No more backends available.`);
-            throw Error(err);
-          }
-          else {
-            console.log(`AntiCORS backend ${backend} failed. Trying next.`);
-            return this.getPage(pageNumber, backend + 1)
-          }
-        }
-        else {
-          Promise.reject(err);
-        }
-      }))
+      .then( response => response.text() )
   }
 
   // Cached/compiled regexps & strings for parsing HTML
