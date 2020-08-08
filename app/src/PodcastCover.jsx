@@ -7,6 +7,7 @@ import MediaQuery from 'react-responsive';
 class PodcastCover extends PureComponent {
   render() {
     const {
+      minWidth,
       imageUrl,
       programUrl,
       title,
@@ -16,7 +17,7 @@ class PodcastCover extends PureComponent {
     } = this.props;
 
     return (
-      <MediaQuery minWidth={ 1440 }>
+      <MediaQuery minWidth={ minWidth }>
         { matches => (
            <article
              style={{
@@ -64,6 +65,7 @@ class PodcastCover extends PureComponent {
 
 PodcastCover.defaultProps = {
   onClick: (e) => {},
+  minWidth: 1440,
 };
 
 PodcastCover.propTypes = {
@@ -73,6 +75,7 @@ PodcastCover.propTypes = {
   author: PropTypes.string.isRequired,
   schedule: PropTypes.string.isRequired,
   onClick: PropTypes.func.isRequired,
+  minWidth: PropTypes.number.isRequired,
 };
 
 export default translate('PodcastCover')(PodcastCover);

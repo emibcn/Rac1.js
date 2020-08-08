@@ -1,5 +1,3 @@
-import 'abortcontroller-polyfill'; // For GoogleBot
-
 const baseURL = 'https://api.audioteca.rac1.cat';
 
 class Rac1 {
@@ -54,6 +52,7 @@ class Rac1 {
   setDate(date) {
     if ( this.date !== date ) {
       this._previous_uuids = [];
+      this.abort();
     }
     this.date = date;
     this.updateList();
