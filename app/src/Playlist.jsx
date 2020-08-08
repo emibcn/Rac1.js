@@ -49,7 +49,7 @@ class Playlist extends React.PureComponent {
         color: '#333',
         backgroundColor: 'white',
         padding: '2em',
-        borderRadius: '1vw',
+        borderRadius: '10px',
         textAlign: 'left',
         fontSize: 'large'
       }}>

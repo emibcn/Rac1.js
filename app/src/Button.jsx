@@ -111,7 +111,6 @@ class ButtonsGroup extends React.PureComponent {
       <div style={{
         display: 'flex',
         justifyContent: 'space-between',
-        width: '100%',
       }}>
         { buttons.map( (control, index) => {
             return <Button
