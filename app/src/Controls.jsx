@@ -282,7 +282,7 @@ class Controls extends React.Component {
         { buttons['basic'].length ? (
           <div style={{
             display: 'flex',
-            alignItems: 'center',
+            alignItems: 'flex-end',
           }}>
             <ButtonsGroup
               buttons={ buttons['basic'] }

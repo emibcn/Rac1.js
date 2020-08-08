@@ -11,7 +11,7 @@ import PodcastsList from './PodcastsList';
 import Podcast from './Podcast';
 import PodcastCover from './PodcastCover';
 
-import Rac1 from './rac1';
+import { Rac1 } from './rac1';
 
 class Rac1ByDate extends Component {
 
@@ -219,7 +219,7 @@ class Rac1ByDate extends Component {
     const cover =
       currentPodcast !== undefined ? (
         <PodcastCover
-          imageUrl={ `${currentPodcast.audio.section.program.images.person}?v${currentPodcast.audio.section.program.imageVersion}` }
+          imageUrl={ currentPodcast.audio.section.program.images.person }
           programUrl={ currentPodcast.audio.section.program.url }
           title={ currentPodcast.title }
           author={ currentPodcast.author }
