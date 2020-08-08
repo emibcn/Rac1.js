@@ -1,5 +1,7 @@
 import 'abortcontroller-polyfill'; // For GoogleBot
 
+const baseURL = 'https://api.audioteca.rac1.cat';
+
 class Rac1 {
 
   // Cache for UUID => podcast
@@ -22,8 +24,10 @@ class Rac1 {
     this.setDate(props.date);
   }
 
+  // Abort the abort controller and clean it up creating a new one for next fetches
   abort() {
     this.controller.abort();
+    this.controller = new AbortController();
   }
 
   // Raises exception on response error
@@ -105,11 +109,6 @@ class Rac1 {
     const dateToString = d => `${d.getFullYear()}/${d.getMonth()+1}/${d.getDate()}`;
     const compareDates = (d1, d2) => dateToString(d1) === dateToString(d2);
     const filterByDates = podcast => !("date" in podcast) || compareDates( podcast.date, this.date );
-
-    if ( !('forEach' in this.pages) ) {
-      console.log("pages has not `forEach`!", this.pages, JSON.parse(JSON.stringify({pages: this.pages})));
-      return
-    }
 
     // Create a virtual list of all podcasts correctly ordered
     this.pages.forEach( page => {
@@ -231,7 +230,7 @@ class Rac1 {
     }
 
     return fetch(
-      "https://api.audioteca.rac1.cat/a-la-carta/cerca?"
+      `${baseURL}/a-la-carta/cerca?`
       + "text=&programId=&sectionId=HOUR&"
       + `from=${date}&to=${dateNext}&pageNumber=${pageNumber}`,
       {
@@ -289,7 +288,7 @@ class Rac1 {
     }
 
     return fetch(
-      `https://api.audioteca.rac1.cat/piece/audio?id=${uuid}`,
+      `${baseURL}/piece/audio?id=${uuid}`,
       { signal: this.controller.signal }
     )
       .then( this.handleFetchErrors )
@@ -312,6 +311,14 @@ class Rac1 {
         podcast.minute    = Number(podcast.audio.time.split(':')[1]);
         podcast.title     = podcast.appTabletTitle.replace(/ \d\d\/.*/, '');
         podcast.titleFull = podcast.appTabletTitle;
+        podcast.author    = podcast.audio.section.program.subtitle.replace(/^amb /, '');
+        Object.keys( podcast.audio.section.program.images )
+          .forEach( kind =>
+            podcast.audio.section.program.images[kind] =
+              `${baseURL}/`
+              + podcast.audio.section.program.images[kind]
+              + `?v${podcast.audio.section.program.imageVersion}`
+           );
 
         // Prevent a redirect of 400ms :/
         podcast.path = podcast.path.replace(/\/get\//, '/file/').replace(/\/(\d)\//, '/$1/-/')
