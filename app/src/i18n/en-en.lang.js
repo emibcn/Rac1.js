@@ -123,6 +123,10 @@ export default {
     "Good UI controls for use with mobile devices: big buttons, disabled key bindings.": "Good UI controls for use with mobile devices: big buttons, disabled key bindings.",
   },
 
+  PodcastCover: {
+    'Author': "Author"
+  },
+
   Cookies: {
     ...common,
     ...tracking,

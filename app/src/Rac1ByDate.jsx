@@ -9,6 +9,7 @@ import Controls from './Controls';
 import Playlist from './Playlist';
 import PodcastsList from './PodcastsList';
 import Podcast from './Podcast';
+import PodcastCover from './PodcastCover';
 
 import Rac1 from './rac1';
 
@@ -142,14 +143,18 @@ class Rac1ByDate extends Component {
     // Find current podcast (selected by uuid instead of just position)
     const current = this.findCurrentPodcast();
     const autoplay = current > 0;
-    const currentPath =
+    const currentPodcast =
       podcasts !== undefined
         && podcasts.length > current
         && 'path' in podcasts[current]
-        ? podcasts[current].path : '';
-    const title = podcasts !== undefined && podcasts.length > 0 ?
-      ( 'audio' in podcasts[current] ?
-          podcasts[current].titleFull :
+        ? podcasts[current] : undefined;
+    const currentPath =
+      currentPodcast !== undefined
+        ? currentPodcast.path : '';
+    const title =
+      currentPodcast !== undefined ?
+      ( 'audio' in currentPodcast ?
+          currentPodcast.titleFull :
           dateText )
       : dateText;
 
@@ -211,6 +216,16 @@ class Rac1ByDate extends Component {
             )}
           </PodcastsList>
         </Playlist>;
+    const cover =
+      currentPodcast !== undefined ? (
+        <PodcastCover
+          imageUrl={ `${currentPodcast.audio.section.program.images.person}?v${currentPodcast.audio.section.program.imageVersion}` }
+          programUrl={ currentPodcast.audio.section.program.url }
+          title={ currentPodcast.title }
+          author={ currentPodcast.author }
+          schedule={ currentPodcast.audio.section.program.schedule }
+        />
+      ) : null;
 
     return (
       <>
@@ -222,10 +237,13 @@ class Rac1ByDate extends Component {
             if ( matches ) {
               return (
                 <div style={{
+                  padding: '.5em',
                   display: 'flex',
                   alignItems: 'stretch',
+                  justifyContent: 'space-evenly',
                 }}>
                   <div style={{
+                    padding: '1%',
                     display: 'flex',
                     flexDirection: 'column',
                     alignItems: 'stretch',
@@ -236,16 +254,23 @@ class Rac1ByDate extends Component {
                     { player }
                   </div>
                   { playlist }
+                  <div style={{ width: '.5em' }} />
+                  { cover }
                 </div>
               );
             } else {
               return (
-                <>
+                <div style={{
+                  padding: '.5em',
+                }}>
                   <h3>{ title }</h3>
                   { controls }
                   { player }
+                  <div style={{ height: '.5em' }} />
                   { playlist }
-                </>
+                  <div style={{ height: '.5em' }} />
+                  { cover }
+                </div>
               );
             }
           }}

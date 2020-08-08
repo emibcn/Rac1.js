@@ -124,6 +124,10 @@ export default {
     "Good UI controls for use with mobile devices: big buttons, disabled key bindings.": "Bons controls d'interfície per a ús amb dispositius mòbils: grans butons, associacions de teclat deshabilitades.",
   },
 
+  PodcastCover: {
+    'Author': "Autor"
+  },
+
   Cookies: {
     ...common,
     ...tracking,
