@@ -246,12 +246,12 @@ class Rac1ByDate extends Component {
                     padding: '1%',
                     display: 'flex',
                     flexDirection: 'column',
-                    alignItems: 'stretch',
+                    alignItems: 'center',
                     justifyContent: 'space-evenly',
                   }}>
                     <h3>{ title }</h3>
-                    { controls }
-                    { player }
+                    <div>{ controls }</div>
+                    <div style={{ width: '100%' }}>{ player }</div>
                   </div>
                   { playlist }
                   <div style={{ width: '.5em' }} />
@@ -262,9 +262,15 @@ class Rac1ByDate extends Component {
               return (
                 <div style={{
                   padding: '.5em',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'stretch',
                 }}>
                   <h3>{ title }</h3>
-                  { controls }
+                  <div style={{
+                    display: 'flex',
+                    justifyContent: 'center'
+                  }}>{ controls }</div>
                   { player }
                   <div style={{ height: '.5em' }} />
                   { playlist }
