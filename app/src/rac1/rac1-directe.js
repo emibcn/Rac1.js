@@ -1,7 +1,7 @@
 const baseURL = 'https://api.audioteca.rac1.cat';
 
 class Rac1Live {
-  podcastUrl = 'http://rac1.radiocat.net/;*.nsv';
+  podcastUrl = 'https://streaming.rac1.cat/;*.nsv';
 
   _podcastData = {};
 
