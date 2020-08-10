@@ -12,6 +12,7 @@ import Podcast from './Podcast';
 import PodcastCover from './PodcastCover';
 
 import { Rac1 } from './rac1';
+import Throtle from './Throtle';
 
 class Rac1ByDate extends Component {
 
@@ -54,6 +55,8 @@ class Rac1ByDate extends Component {
         keys: [ 'r', 'R' ],
       },
     ];
+
+    this.throtle = new Throtle();
 
     // Debugging on development
     if ( process.env.NODE_ENV === 'development' ) {
@@ -115,6 +118,9 @@ class Rac1ByDate extends Component {
 
     // Abort backend fetches
     this.rac1.abort();
+
+    // Stop throtle mechanism
+    this.throtle.clear();
   }
 
   render() {
@@ -165,12 +171,12 @@ class Rac1ByDate extends Component {
           allowFocus={ el => el.className.match( /date-?picker|rc-slider-handle|ReactModal/ ) }
           onPlayNext={ this.playNext.bind(this) }
           onPlayPrev={ this.playPrev.bind(this) }
-          onSetVolume={ volume => this.setState({ ...this.state, volume }) }
-          onSetMuted={ muted => this.setState({ ...this.state, muted }) }
+          onSetVolume={ volume => this.setState({ volume }) }
+          onSetMuted={ muted => this.setState({ muted }) }
           showAdvanced={ showAdvancedControls }
           volumeAsAdvanced={ true }
           onShowAdvancedChange={ show => {
-            this.setState({ ...this.state, showAdvancedControls: show });
+            this.setState({ showAdvancedControls: show });
             return `${show ? 'Show' : 'Hide'} advanced buttons`
           }}
           isPlaying={ isPlaying }
@@ -192,7 +198,6 @@ class Rac1ByDate extends Component {
           onPlay={ this.handlePlayStatusChange.bind(this, true) }
           onPause={ this.handlePlayStatusChange.bind(this, false) }
           onVolumeChanged={ e => this.setState({
-            ...this.state,
             volume: e.currentTarget.volume,
             muted: e.currentTarget.muted,
           }) }
@@ -310,7 +315,6 @@ class Rac1ByDate extends Component {
       date.getMinutes() !== dateNew.getMinutes() ) {
       // Save new date to state
       this.setState({
-        ...this.state,
         currentUUID: '',
         dateNew,
       });
@@ -334,22 +338,23 @@ class Rac1ByDate extends Component {
 
   handlePlayStatusChange(isPlaying) {
     this.setState({
-      ...this.state,
       isPlaying,
     });
   }
 
-  handleListUpdate(newList, completed) {
+  handleListUpdate(podcasts, completed) {
     // Stop waiting if completed
     const { waitingUpdate, currentUUID, date } = this.state;
     const waitingUpdateNext = waitingUpdate && completed ? false : waitingUpdate;
 
-    this.setState({
-      ...this.state,
-      podcasts: newList,
-      completed,
-      waitingUpdate: waitingUpdateNext,
-      maxDate: new Date(),
+    // Only update the podcasts lists if start, completed or every 500ms
+    this.throtle.run(completed, 1000, () => {
+      this.setState({
+        podcasts,
+        completed,
+        waitingUpdate: waitingUpdateNext,
+        maxDate: new Date(),
+      });
     });
 
     // If there is no podcast selected on update completed, select one
@@ -368,7 +373,6 @@ class Rac1ByDate extends Component {
 
       // Save new date to state
       this.setState({
-        ...this.state,
         currentUUID: '',
         date,
       });
@@ -377,6 +381,12 @@ class Rac1ByDate extends Component {
       if ( date !== null ) {
         // Push new date to URL and history
         this.historyPush(date);
+
+        // Abort backend fetches
+        this.rac1.abort();
+
+        // Stop throtle mechanism
+        this.throtle.clear();
 
         // Call in background to prevent list update's state overwrite
         setTimeout(() => this.rac1.setDate(date), 50);
@@ -387,7 +397,6 @@ class Rac1ByDate extends Component {
   // Removes last podcast from list
   handlePodcastsLastRemove() {
     this.setState({
-      ...this.state,
       podcasts: [...this.state.podcasts].slice(0,-1),
     });
   }
@@ -398,7 +407,6 @@ class Rac1ByDate extends Component {
     // If there is not already an incomplete update
     if ( this.state.completed ) {
       this.setState({
-        ...this.state,
         completed: false,
       });
 
@@ -452,7 +460,6 @@ class Rac1ByDate extends Component {
 
     replace = currentUUID === '';
     this.setState({
-      ...this.state,
       currentUUID: podcast.uuid,
       date,
     });
@@ -485,7 +492,6 @@ class Rac1ByDate extends Component {
         if ( !this.state.waitingUpdate ) {
           this.handleClickReload();
           this.setState({
-            ...this.state,
             waitingUpdate: true,
           });
           return "Updating podcasts list"
