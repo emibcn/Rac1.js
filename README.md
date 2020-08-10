@@ -46,6 +46,7 @@ Inspired by [my command line Python app Rac1.py](https://github.com/emibcn/Rac1.
   - `SHIFT` + `ENTER`: Jump to previous podcast
   - `R`: Update the list of podcasts
 - Good UI controls for use with mobile devices (big buttons, disabled key bindings)
+- Use [MediaSession](https://developers.google.com/web/updates/2017/02/media-session) to [show podcast data and more controls](https://github.com/emibcn/Rac1.js/blob/master/app/src/MediaSession.jsx) on mobile (and some desktops) notifications and lock screens.
 - Almost [WCAG](https://www.w3.org/WAI/standards-guidelines/wcag/) accessible
 - Very fast:
   - Use `<meta rel="preconnect">` to pre-initiate external HTTPS connections early
@@ -56,6 +57,8 @@ Inspired by [my command line Python app Rac1.py](https://github.com/emibcn/Rac1.
   - Use [React.PureComponent](https://reactjs.org/docs/react-api.html) where possible
 - Asynchronuosly `fetch` podcast list and pages list HTML page, parse it with RegExp and download remaining pages
 - Asynchronuosly `fetch` podcasts JSON data
+- Asynchronuosly `fetch` live podcast data (in HTML) and parse it
+- Show currently playing program metadata: Name, author, schedule, image
 - Always with a coherently time ordered list of available podcasts
 - Auto play next podcast when currently played finishes (as a normal playlist)
 - Ability to update podcasts list
@@ -65,7 +68,6 @@ Inspired by [my command line Python app Rac1.py](https://github.com/emibcn/Rac1.
 - Improve UX: layout, styles, info shown, responsible, controls, ¿bootstrap4?
 - Use [Streams API](https://developer.mozilla.org/en-US/docs/Web/API/Streams_API) to control audio downloading and playing (and editing?)
 - Add a section to allow easily play podcasts filtered by program
-- Show currently playing program metadata: Name, description, image, etc
 - Filters via `localStorage`, to easily jump unwanted podcasts
 - Save volume to `localStorage` and use in all players.
 - Better internal state handling for player status: `currentPosition`, [`play`](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/play)...
