@@ -7,6 +7,7 @@ import ReactAudioPlayer from 'react-audio-player';
 import { Rac1Live } from './rac1';
 import Controls from './Controls';
 import PodcastCover from './PodcastCover';
+import MediaSession from './MediaSession';
 
 class Rac1Directe extends Component {
 
@@ -33,15 +34,16 @@ class Rac1Directe extends Component {
   }
 
   onUpdate(podcast) {
-    console.log('Updated!');
     this.setState({ podcast });
   }
 
   componentWillUnmount() {
     // Unregister player event listeners
-    if ( this._player && this._player.removeEventListener ) {
-      this._player.removeEventListener('onPlay', this.handlePlayStatusChange.bind(this, true));
-      this._player.removeEventListener('onPause', this.handlePlayStatusChange.bind(this, false));
+    const player = this.player().current;
+    if ( player && player.removeEventListener ) {
+      console.log("Remove audio event listeners");
+      player.removeEventListener('play', this.handlePlayStatusChangeTrue);
+      player.removeEventListener('pause', this.handlePlayStatusChangeFalse);
     }
 
     // Abort backend fetches
@@ -60,6 +62,12 @@ class Rac1Directe extends Component {
         <Helmet>
           <title>{ t("Live") }</title>
         </Helmet>
+        <MediaSession
+           title={ `${podcast.title} | ${title}` }
+           artist={ podcast.author }
+           album={ podcast.schedule }
+           image={ podcast.image }
+        />
         <div
           style={{
             display: 'flex',
@@ -97,8 +105,8 @@ class Rac1Directe extends Component {
               preload={ (autoplay ? 'auto' : 'metadata') }
               volume={ volume }
               muted={ muted }
-              onPlay={ this.handlePlayStatusChange.bind(this, true) }
-              onPause={ this.handlePlayStatusChange.bind(this, false) }
+              onPlay={ this.handlePlayStatusChangeTrue }
+              onPause={ this.handlePlayStatusChangeFalse }
               onVolumeChanged={ e => this.setState({
                 ...this.state,
                 volume: e.currentTarget.volume,
@@ -124,10 +132,12 @@ class Rac1Directe extends Component {
 
   handlePlayStatusChange(isPlaying) {
     this.setState({
-      ...this.state,
       isPlaying,
     });
   }
+  
+  handlePlayStatusChangeTrue = this.handlePlayStatusChange.bind(this, true);
+  handlePlayStatusChangeFalse = this.handlePlayStatusChange.bind(this, false);
 }
 
 export default translate('Rac1Directe')(Rac1Directe);
