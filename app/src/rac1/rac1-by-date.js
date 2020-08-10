@@ -101,7 +101,7 @@ class Rac1 {
   // and fires event onListUpdate with that
   // () => null
   handleListUpdate() {
-    let newList = [ ...this._previous_uuids.filter(w => w.uuid !== '...') ];
+    let newList = [ ...this._previous_uuids.filter(podcast => podcast.uuid !== '...') ];
     let completed = true;
 
     // Helper functions

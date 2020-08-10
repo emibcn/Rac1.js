@@ -10,6 +10,7 @@ import Playlist from './Playlist';
 import PodcastsList from './PodcastsList';
 import Podcast from './Podcast';
 import PodcastCover from './PodcastCover';
+import MediaSession from './MediaSession';
 
 import { Rac1 } from './rac1';
 import Throtle from './Throtle';
@@ -57,6 +58,12 @@ class Rac1ByDate extends Component {
     ];
 
     this.throtle = new Throtle();
+    this.mediaSessionActions = {
+      onPlayPrev: this.playPrev.bind(this),
+      onPlayNext: this.playNext.bind(this),
+      onSeekBackward: this.seekBackward.bind(this),
+      onSeekForward: this.seekForward.bind(this),
+    };
 
     // Debugging on development
     if ( process.env.NODE_ENV === 'development' ) {
@@ -111,9 +118,10 @@ class Rac1ByDate extends Component {
     this.unlisten();
 
     // Unregister player event listeners
-    if ( this._player && this._player.removeEventListener ) {
-      this._player.removeEventListener('onPlay', this.handlePlayStatusChange.bind(this, true));
-      this._player.removeEventListener('onPause', this.handlePlayStatusChange.bind(this, false));
+    const player = this.player().current;
+    if ( player && player.removeEventListener ) {
+      player.removeEventListener('play', this.handlePlayStatusChangeTrue);
+      player.removeEventListener('pause', this.handlePlayStatusChangeFalse);
     }
 
     // Abort backend fetches
@@ -195,8 +203,8 @@ class Rac1ByDate extends Component {
           onEnded={ this.playNext.bind(this) }
           volume={ volume }
           muted={ muted }
-          onPlay={ this.handlePlayStatusChange.bind(this, true) }
-          onPause={ this.handlePlayStatusChange.bind(this, false) }
+          onPlay={ this.handlePlayStatusChangeTrue }
+          onPause={ this.handlePlayStatusChangeFalse }
           onVolumeChanged={ e => this.setState({
             volume: e.currentTarget.volume,
             muted: e.currentTarget.muted,
@@ -237,6 +245,13 @@ class Rac1ByDate extends Component {
         <Helmet>
           <title>{ title }</title>
         </Helmet>
+        <MediaSession
+           title={ title }
+           artist={ currentPodcast === undefined ? undefined : currentPodcast.author }
+           album={ currentPodcast === undefined ? undefined : currentPodcast.audio.section.program.schedule }
+           image={ currentPodcast === undefined ? undefined : currentPodcast.audio.section.program.images.person }
+           { ...this.mediaSessionActions }
+        />
         <MediaQuery minWidth={ 1024 }>
           { matches => {
             if ( matches ) {
@@ -341,6 +356,9 @@ class Rac1ByDate extends Component {
       isPlaying,
     });
   }
+
+  handlePlayStatusChangeTrue = this.handlePlayStatusChange.bind(this, true);
+  handlePlayStatusChangeFalse = this.handlePlayStatusChange.bind(this, false);
 
   handleListUpdate(podcasts, completed) {
     // Stop waiting if completed
@@ -498,6 +516,14 @@ class Rac1ByDate extends Component {
         }
       }
     }
+  }
+
+  seekBackward() {
+    this.player().current.currentTime -= 10
+  }
+
+  seekForward() {
+    this.player().current.currentTime += 10
   }
 
   player() {

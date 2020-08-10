@@ -76,6 +76,8 @@ class Rac1Live {
           this.launchTimer(5 * 60 * 1000); // Check update in 5 minutes
         }
       })
+
+      .catch( this.catchFetchErrors.bind(this) )
   }
 
   dataAttrsFind  = /\s(data-ajax-href=|class="(program-header-title-link|program-listed-author|story-image))/;
@@ -83,7 +85,6 @@ class Rac1Live {
   dataTagContent = /<?[^<>]*>([^<]*)<\/[^>]*>/;
   dataTagContents = /\s*<?[^<>]*>amb ([^<]*?)<\/[^>]*>\s*<?[^<>]*>([^<]*?)<\/[^>]*>/g;
   dataFilenameClean = /^.*[^/.].png$/;
-  searchData = ['src','alt'];
 
   parseData(dataRaw) {
     const data = dataRaw
