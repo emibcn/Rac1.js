@@ -2,14 +2,27 @@
 [![Build Status](https://travis-ci.com/emibcn/Rac1.js.svg?branch=master)](https://travis-ci.com/emibcn/Rac1.js)
 [![coverage](https://raw.githubusercontent.com/emibcn/Rac1.js/master/.github/badges/coverage.svg)](https://raw.githubusercontent.com/emibcn/Rac1.js/master/.github/badges/coverage.svg)
 
-React app to listen to [Rac1 radio station](https://www.rac1.cat/) podcasts. Uses GitHub pages to publish it at **[Rac1 podcast player at Github Pages](https://emibcn.github.io/Rac1.js/)**. There you will find [this repo's `gh-pages` branch](https://github.com/emibcn/Rac1.js/tree/gh-pages) contents, which are the results of executing `yarn build` on [this project's GitHub workflow/Actions](https://github.com/emibcn/Rac1.js/actions) using [this project's source application](https://github.com/emibcn/Rac1.js/tree/master/app).
+Web APP to listen to [Rac1 radio station](https://www.rac1.cat/) podcasts. Uses React as JS frontend library and GitHub pages to publish it at **[Rac1 podcast player at Github Pages](https://emibcn.github.io/Rac1.js/)**. There, you will find [this repo's `gh-pages` branch](https://github.com/emibcn/Rac1.js/tree/gh-pages) contents, which are the results of executing `yarn build` on [this project's GitHub workflow/Actions](https://github.com/emibcn/Rac1.js/actions) using [this project's source application](https://github.com/emibcn/Rac1.js/tree/master/app) (See more in the [Install](https://github.com/emibcn/Rac1.js#install) section).
 
-The [podcasts lister](https://github.com/emibcn/Rac1.js/blob/master/app/src/rac1.js) is a pure JS app, which only depends on [abortcontroller-polyfill](https://github.com/mo/abortcontroller-polyfill) to help GoogleBot execute modern JS, so you can easily re-use it for other JS projects.
+The [podcasts lister](https://github.com/emibcn/Rac1.js/blob/master/app/src/rac1/) is a pure JS app, which only depends on [abortcontroller-polyfill](https://github.com/mo/abortcontroller-polyfill) to help GoogleBot execute modern JS, so you can easily re-use it for other JS projects.
 
-Inspired by [my command line Python app Rac1.py](https://github.com/emibcn/Rac1.py).
+## Motivation
+I made this app for 3 reasons:
+ - I needed a better way to listen to those podcasts (because the [official app](https://play.google.com/store/apps/details?id=com.grupogodo.rac1) is not useful to me) and I wanted it to be easily compatible with all my devices.
+ - Learn modern JavaScript (and some other modern stuff): I've been using JavaScript (mostly with JQuery) since a long time ago. Doing an app on my free time is a good way to me to learn a new language or refreshing it.
+ - This is an [open and free](https://github.com/emibcn/Rac1.js/blob/master/LICENSE) (open, _gratis_ and _libre_) app. It can serve as:
+   - Learning material (as I did). You may want to learn some of the libs and APIs used here.
+   - Share and re-use. You may want to use it as a starting point for your own app, or you may want to add parts of the code to your own app. Please, follow GPLv3.
+   - This source code and the working APP also serve as presentational card for my '20s frontend abilities. If you want to hire me, [send me a PM](https://twitter.com/emibcn).
 
-## Features
-- [ReactJS](https://reactjs.org/) based browser [Single Page Application](https://en.wikipedia.org/wiki/Single-page_application)
+Inspired by [my command line Python app Rac1.py](https://github.com/emibcn/Rac1.py), which was not enough for my Android phone ;P
+
+## See also
+- [Joan Domingo's](https://github.com/joan-domingo) [Podcasts-RAC1-Android](https://github.com/joan-domingo/Podcasts-RAC1-Android) android app
+- [emibcn's](https://github.com/emibcn) (me) [Rac1.py](https://github.com/emibcn/Rac1.py) command line app
+
+## Dependencies
+- [ReactJS](https://reactjs.org/) based browser [Single Page Application (SPA)](https://en.wikipedia.org/wiki/Single-page_application) and [Progressive Web Application (PWA)](https://en.wikipedia.org/wiki/Progressive_web_application)
 - `<audio>` HTML tag, via [react-audio-player](https://github.com/justinmc/react-audio-player)
 - Nice [DatePicker](https://github.com/wojtekmaj/react-date-picker) to allow listening to any day's podcasts
 - Use [Fontawesome free icons](https://fontawesome.com/)
@@ -30,9 +43,16 @@ Inspired by [my command line Python app Rac1.py](https://github.com/emibcn/Rac1.
   - Catch errors created during ReactDOM rendering
   - Send them to GoogleAnalytics (when active) to help improve the app
   - Allow the user a possible option to recover from the error, which includes a possible app update
-- Catch backend errors and route them into ReactDOM, where they will be handled by the [`ErrorCatcher` component](https://github.com/emibcn/Rac1.js/blob/master/app/src/ErrorCatcher.jsx)
+  - Catch backend errors and route them into ReactDOM, where they will be handled by the [`ErrorCatcher` component](https://github.com/emibcn/Rac1.js/blob/master/app/src/ErrorCatcher.jsx)
 - [Docker](https://docs.docker.com/) with [DockerCompose](https://docs.docker.com/compose/) to start a development container, with all the [Create React App](https://github.com/facebook/create-react-app) goodies
-- KeyPress event handling, via a non-visible `<input>` element which focus itself everytime `onBlur` is detected. You can use some of the `mplayer` default key bindings:
+
+## Features
+- Always with a coherently time ordered list of available podcasts
+- Auto play next podcast when currently played one finishes (as a normal playlist)
+- Ability to update podcasts list
+- Autoupdate podcasts list when trying to play next podcast after last one, and play the next one (if there is any) after the update finishes
+- Show currently playing program metadata: Name, author, schedule, image
+- `keyPress` event handling, via a non-visible `<input>` element which focus itself everytime `onBlur` is detected. You can use some of the `mplayer` default key bindings:
   - `LEFT`: seek backwards 10s
   - `UP`: seek backwards 1m
   - `PAGE UP`: seek backwards 10m
@@ -45,9 +65,9 @@ Inspired by [my command line Python app Rac1.py](https://github.com/emibcn/Rac1.
   - `ENTER`: Jump to next podcast
   - `SHIFT` + `ENTER`: Jump to previous podcast
   - `R`: Update the list of podcasts
-- Good UI controls for use with mobile devices (big buttons, disabled key bindings)
+- Good UI controls for use with mobile devices (big buttons, disabled key bindings).
 - Use [MediaSession](https://developers.google.com/web/updates/2017/02/media-session) to [show podcast data and more controls](https://github.com/emibcn/Rac1.js/blob/master/app/src/MediaSession.jsx) on mobile (and some desktops) notifications and lock screens.
-- Almost [WCAG](https://www.w3.org/WAI/standards-guidelines/wcag/) accessible
+- Almost [WCAG](https://www.w3.org/WAI/standards-guidelines/wcag/) accessible.
 - Very fast:
   - Use `<meta rel="preconnect">` to pre-initiate external HTTPS connections early
   - Use `<meta rel="prefetch">` to begin early download of external very slow server
@@ -58,13 +78,8 @@ Inspired by [my command line Python app Rac1.py](https://github.com/emibcn/Rac1.
 - Asynchronuosly `fetch` podcast list and pages list HTML page, parse it with RegExp and download remaining pages
 - Asynchronuosly `fetch` podcasts JSON data
 - Asynchronuosly `fetch` live podcast data (in HTML) and parse it
-- Show currently playing program metadata: Name, author, schedule, image
-- Always with a coherently time ordered list of available podcasts
-- Auto play next podcast when currently played finishes (as a normal playlist)
-- Ability to update podcasts list
-- Autoupdate podcasts list when trying to play next podcast after last one, and play the next one (if there is any) after the update finishes
 
-# TODO
+## TODO
 - Improve UX: layout, styles, info shown, responsible, controls, ¿bootstrap4?
 - Use [Streams API](https://developer.mozilla.org/en-US/docs/Web/API/Streams_API) to control audio downloading and playing (and editing?)
 - Add a section to allow easily play podcasts filtered by program
@@ -72,13 +87,11 @@ Inspired by [my command line Python app Rac1.py](https://github.com/emibcn/Rac1.
 - Save volume to `localStorage` and use in all players.
 - Better internal state handling for player status: `currentPosition`, [`play`](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/play)...
 - Consider using Redux
+- There is some issue with memory: 300MB+ for each extra date visited (leak, fragmentation or just JS?). Try to debug and fix it.
 - Add tests
 
-# See also
-- [Joan Domingo's](https://github.com/joan-domingo) [Podcasts-RAC1-Android](https://github.com/joan-domingo/Podcasts-RAC1-Android) android app
-- [emibcn's](https://github.com/emibcn) [Rac1.py](https://github.com/emibcn/Rac1.py) command line app
-
 # Install
+You can already use the app on it's [public location](https://emibcn.github.io/Rac1.js/). But you would like to run a local copy of it, or start the development local server to start developing some changes. Whatever is your case, you need to download the code and its dependencies, build it and serve it somehow. Here, I use `git` to download the code, `docker` and `docker-compose` to contain all the boilerplate out of my system and ensuring a consistent CI/CD, `npm` and `yarn` to manage the JS dependencies (and building and testing), the `create-react-app` (CRA) development server and NGinx for serving the static/built version.
 
 ## Download
 ```
@@ -176,7 +189,6 @@ Creating an optimized production build...
 Done in 58.15s.
 me@mypc:~/Rac1.js$
 ```
-
 
 # Access the app
 Open your browser and point it to the development version at [http://127.0.0.1:3000](http://127.0.0.1:3000) or the static version at [http://127.0.0.1:4000/Rac1.js/](http://127.0.0.1:4000/Rac1.js/), or visit the public version at https://emibcn.github.io/Rac1.js/ .
