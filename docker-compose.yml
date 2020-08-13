@@ -26,4 +26,4 @@ services:
     volumes:
       - ./docs:/usr/share/nginx/html/Rac1.js/
     ports:
-      - "127.0.0.1:4000:80"
+      - "0.0.0.0:4000:80"
