@@ -98,8 +98,8 @@ export default {
     "Rac1 live": "Rac1 en Directo",
   },
 
-  ReloadButton: {
-    "Reload": "Recarga",
+  UpdateButton: {
+    "Update": "Actualizar",
   },
 
   Button: {

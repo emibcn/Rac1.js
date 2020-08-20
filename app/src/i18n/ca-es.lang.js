@@ -97,8 +97,8 @@ export default {
     "Rac1 live": "Rac1 en Directe",
   },
 
-  ReloadButton: {
-    "Reload": "Recarrega",
+  UpdateButton: {
+    "Update": "Actualitza",
   },
 
   Button: {
