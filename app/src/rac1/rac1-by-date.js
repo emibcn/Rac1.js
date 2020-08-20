@@ -232,10 +232,7 @@ class Rac1 {
       `${baseURL}/a-la-carta/cerca?`
       + "text=&programId=&sectionId=HOUR&"
       + `from=${date}&to=${dateNext}&pageNumber=${pageNumber}`,
-      {
-        "Content-Type": "application/json; charset=utf-8",
-        signal: this.controller.signal,
-      })
+      { signal: this.controller.signal })
       .then( this.handleFetchErrors )
 
       .then( response => response.text() )
