@@ -101,7 +101,7 @@ class Rac1ByDate extends Component {
   }
 
   // Handle focus when key handler is active
-  controlsKeyHandlerFocus = null;
+  controlsKeyHandlerFocus = null; // Updated by React ref at this.refControls()
   _keyHandlerFocus(e) {
     if ( typeof this.controlsKeyHandlerFocus === 'function' ) {
       this.controlsKeyHandlerFocus(e)
@@ -350,9 +350,7 @@ class Rac1ByDate extends Component {
   // Play status may change from our Constrols button or from the <audio> tag
   // itself (or whatever associated, as from notifications screen controls)
   handlePlayStatusChange(isPlaying) {
-    this.setState({
-      isPlaying,
-    });
+    this.setState({ isPlaying });
   }
 
   handlePlayStatusChangeTrue = this.handlePlayStatusChange.bind(this, true);
@@ -554,9 +552,7 @@ class Rac1ByDate extends Component {
     }
   }
 
-  _getPlayer() {
-    return this._player.audioEl;
-  }
+  _getPlayer = () => this._player.audioEl
 
   // Removes last podcast from list (for testing purposes)
   _handlePodcastsLastRemove() {

@@ -11,10 +11,6 @@ import MediaSession from './MediaSession';
 
 class Rac1Directe extends Component {
 
-  player() {
-    return this._player.audioEl;
-  }
-
   constructor(props) {
     super();
 
@@ -22,6 +18,8 @@ class Rac1Directe extends Component {
 
     this.rac1 = new Rac1Live({
       onUpdate: this.onUpdate.bind(this),
+      // Get errors from backend
+      onError: this.handleError.bind(this),
     });
 
     // Initial state
@@ -30,6 +28,8 @@ class Rac1Directe extends Component {
       muted: false,
       isPlaying: true,
       podcast: false,
+      hasError: false,
+      error: {},
     };
   }
 
@@ -37,9 +37,19 @@ class Rac1Directe extends Component {
     this.setState({ podcast });
   }
 
+  // Saves errors from backend into state so they
+  // can be reraised into ReactDOM tree and catched correctly
+  handleError(error) {
+    error.message = `Rac1Directe: ${error.message}`;
+    this.setState({
+      hasError: true,
+      error: error,
+    });
+  }
+
   componentWillUnmount() {
     // Unregister player event listeners
-    const player = this.player().current;
+    const player = this.getPlayer().current;
     if ( player && player.removeEventListener ) {
       console.log("Remove audio event listeners");
       player.removeEventListener('play', this.handlePlayStatusChangeTrue);
@@ -51,11 +61,16 @@ class Rac1Directe extends Component {
   }
 
   render() {
-    const { volume, muted, isPlaying, podcast } = this.state;
+    const { volume, muted, isPlaying, podcast, hasError, error } = this.state;
     const { t } = this.props;
     const currentPath = podcast !== undefined ? podcast.path : '';
     const autoplay = true;
     const title = t('Rac1 live');
+
+    // If we have a backend error, reraise into ReactDOM tree
+    if ( hasError ) {
+      throw Error(error);
+    }
 
     return (
       <>
@@ -85,17 +100,17 @@ class Rac1Directe extends Component {
           }}>
             <h3>{ title }</h3>
             <Controls
-              getPlayer={ this.player.bind(this) }
+              getPlayer={ this.getPlayer }
               volume={ volume }
               muted={ muted }
-              allowFocus={ (el) => el.className.match( /rc-slider-handle/ ) }
+              allowFocus={ this.allowFocus }
               isPlaying={ isPlaying }
-              onSetVolume={ volume => this.setState({ volume }) }
-              onSetMuted={ muted => this.setState({ muted }) }
+              onSetVolume={ this.onSetVolume }
+              onSetMuted={ this.onSetMuted }
               hideButtons={['Prev', 'Next', '-10m', '-60s', '-10s', '+10m', '+60s', '+10s']}
             />
             <ReactAudioPlayer
-              ref={(element) => { this._player = element; }}
+              ref={ this.refPlayer }
               style={{ width: '100%' }}
               src={ currentPath }
               autoPlay={ autoplay }
@@ -107,10 +122,7 @@ class Rac1Directe extends Component {
               muted={ muted }
               onPlay={ this.handlePlayStatusChangeTrue }
               onPause={ this.handlePlayStatusChangeFalse }
-              onVolumeChanged={ e => this.setState({
-                volume: e.currentTarget.volume,
-                muted: e.currentTarget.muted,
-              }) }
+              onVolumeChanged={ this.onSetVolumeAndMuted }
             />
           </div>
           { podcast !== false ? (
@@ -130,13 +142,29 @@ class Rac1Directe extends Component {
   }
 
   handlePlayStatusChange(isPlaying) {
-    this.setState({
-      isPlaying,
-    });
+    this.setState({ isPlaying });
   }
-  
+
   handlePlayStatusChangeTrue = this.handlePlayStatusChange.bind(this, true);
   handlePlayStatusChangeFalse = this.handlePlayStatusChange.bind(this, false);
+
+  _refPlayer = el => { this._player = el }
+  _getPlayer = () => this._player.audioEl
+
+  refPlayer = this._refPlayer.bind(this)
+  getPlayer = this._getPlayer.bind(this)
+
+  allowFocus = el => el.className.match( /rc-slider-handle|ReactModal/ )
+  _onSetVolume = volume => this.setState({ volume })
+  _onSetMuted = muted => this.setState({ muted })
+  _onSetVolumeAndMuted = e => {
+    this.onSetVolume(e.currentTarget.volume);
+    this.onSetMuted(e.currentTarget.muted);
+  }
+  onSetVolume          = this._onSetVolume.bind(this)
+  onSetMuted           = this._onSetMuted.bind(this)
+  onSetVolumeAndMuted  = this._onSetVolumeAndMuted.bind(this)
+
 }
 
 export default translate('Rac1Directe')(Rac1Directe);
