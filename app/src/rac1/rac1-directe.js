@@ -83,7 +83,7 @@ class Rac1Live {
   dataAttrsFind  = /\s(data-ajax-href=|class="(program-header-title-link|program-listed-author|story-image))/;
   dataAttrsClean = /.*\s(src|alt|href|data-ajax-href)="([^"]*)".*/;
   dataTagContent = /<?[^<>]*>([^<]*)<\/[^>]*>/;
-  dataTagContents = /\s*<?[^<>]*>amb ([^<]*?)<\/[^>]*>\s*<?[^<>]*>([^<]*?)<\/[^>]*>/g;
+  dataTagContents = /\s*<?[^<>]*>(?:amb )?([^<]*?)<\/[^>]*>\s*<?[^<>]*>([^<]*?)<\/[^>]*>/g;
   dataFilenameClean = /^.*[^/.].png$/;
 
   parseData(dataRaw) {
@@ -96,11 +96,10 @@ class Rac1Live {
     // Compute data
     const programURL = data
         .find( line => line.includes('program-header-title-link') )
-        .replace(this.dataAttrsClean, '$1=$2')
-        .split('=')[1];
+        .replace(this.dataAttrsClean, '$2');
     const title = data
         .filter( line => !line.includes('program-next-link') )
-        .filter( line => line.includes('data-ajax-href') )[0]
+        .find( line => line.includes('data-ajax-href') )
         .replace(this.dataTagContent, '$1');
     const [ author, schedule ] =
       data
@@ -109,8 +108,7 @@ class Rac1Live {
         .split('\n');
     const image = data
         .find( line => line.includes('thumbnail') )
-        .replace(this.dataAttrsClean, '$1=$2')
-        .split('=')[1];
+        .replace(this.dataAttrsClean, '$2');
 
     return {
 
