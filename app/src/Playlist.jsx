@@ -10,6 +10,9 @@ import {
   faCalendarAlt as faCalendar,
 } from '@fortawesome/free-solid-svg-icons'
 
+import PodcastsList from './PodcastsList';
+import Podcast from './Podcast';
+
 const UpdateButton = translate("UpdateButton")( props => {
   const { t, ...restProps } = props;
   const text = t('Update');
@@ -28,7 +31,7 @@ const UpdateButton = translate("UpdateButton")( props => {
         fontWeight: 'bold',
         marginBottom: '-.25em'
       }}>
-        <FontAwesomeIcon icon={faRefresh} />
+        <FontAwesomeIcon icon={ faRefresh } />
       </div>
       <span style={{
         fontSize: 'calc(5px + 1vmin)',
@@ -42,7 +45,7 @@ const UpdateButton = translate("UpdateButton")( props => {
 
 class Playlist extends React.PureComponent {
   render() {
-    const { completedDownload, date, children, minDate, maxDate } = this.props;
+    const { completedDownload, date, podcasts, current, minDate, maxDate } = this.props;
 
     return (
       <div style={{
@@ -59,46 +62,60 @@ class Playlist extends React.PureComponent {
           alignItems: 'center',
         }}>
           <DatePicker
-            onChange={ this.handleDateChange.bind(this) }
-            onBlur={ this.handleDateBlur.bind(this) }
+            onChange={ this.handleDateChange }
+            onBlur={ this.handleDateBlur }
             minDate={ minDate }
             maxDate={ maxDate }
             required={ true }
             value={ date }
             clearIcon={ null }
-            calendarIcon={ <FontAwesomeIcon icon={faCalendar} /> }
+            calendarIcon={ <FontAwesomeIcon icon={ faCalendar } /> }
           />
           <UpdateButton
-            onClick={ this.props.onClickUpdate.bind(this) }
+            onClick={ this.props.onClickUpdate }
             disabled={ !completedDownload }
           />
         </div>
         <div style={{
           textAlign: 'center',
         }}>
-          { children }
+          <PodcastsList current={ current } >
+            { podcasts.map((podcast, index) =>
+              <Podcast
+                key={ podcast.uuid !== '...' ? podcast.uuid : `..._${index}` }
+                { ...podcast }
+                onClick={ this.props.onClickPodcast }
+              />
+            )}
+          </PodcastsList>
         </div>
       </div>
     );
   }
 
-  handleDateChange(date) {
+  _handleDateChange(date) {
     date.setHours(0);
     date.setMinutes(0);
     this.props.onDateChange(date);
   }
 
-  handleDateBlur(e) {
-    let focus = true;
-    if ( e && e.relatedTarget &&
-      e.relatedTarget.className.match(/(calendar|date-?picker)/) ) {
-      focus = false;
-    }
-
-    if ( focus ) {
+  // Trigger onDateBlur only if not originated by an element with one of those classNames:
+  // - calendar, date, date-picker
+  //
+  // Those are used to navigate within the date picker, so date picker is
+  // still beeing used and needing the focus
+  _handleDateBlur(e) {
+    if (!(
+          e && e.relatedTarget &&
+          e.relatedTarget.className.match(/(calendar|date-?picker)/)
+        )) {
       this.props.onDateBlur(e);
     }
   }
+
+  // Bind event handlers to `this`
+  handleDateChange = this._handleDateChange.bind(this)
+  handleDateBlur = this._handleDateBlur.bind(this)
 }
 
 
@@ -109,16 +126,20 @@ Playlist.defaultProps = {
   completedDownload: true,
   date: new Date(),
   maxDate: new Date(),
+  podcasts: [],
 };
 
 Playlist.propTypes = {
   onClickUpdate: PropTypes.func.isRequired,
+  onClickPodcast: PropTypes.func.isRequired,
   onDateBlur: PropTypes.func.isRequired,
   onDateChange: PropTypes.func.isRequired,
   completedDownload: PropTypes.bool.isRequired,
   date: PropTypes.instanceOf(Date).isRequired,
   minDate: PropTypes.instanceOf(Date).isRequired,
   maxDate: PropTypes.instanceOf(Date).isRequired,
+  podcasts: PropTypes.array.isRequired,
+  current: PropTypes.number.isRequired,
 };
 
 export default Playlist;

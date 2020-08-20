@@ -1,10 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+const pad2 = num => ( num < 10 ? '0' : '' ) + num;
+
 class Podcast extends React.PureComponent {
   render() {
-    const { path, uuid, hour, minute, title} = this.props;
-    const pad2 = num => ( num < 10 ? '0' : '' ) + num;
+    const { path, uuid, hour, minute, title } = this.props;
 
     return (
       <span>
@@ -15,7 +16,7 @@ class Podcast extends React.PureComponent {
             (
               <a
                 href={ path }
-                onClick={ this.handleClick.bind(this) }
+                onClick={ this.handleClick }
                 style={{ textDecoration: "none" }}
               >
                 { hour }h{ minute ? pad2(minute) : '' }: { title }
@@ -26,7 +27,11 @@ class Podcast extends React.PureComponent {
     )
   }
 
-  handleClick = (e) => this.props.onClick(e);
+  _handleClick(e) {
+    this.props.onClick(this.props.uuid, e);
+  }
+
+  handleClick = this._handleClick.bind(this)
 }
 
 Podcast.defaultProps = {
