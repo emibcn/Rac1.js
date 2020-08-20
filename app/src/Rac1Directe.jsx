@@ -90,8 +90,8 @@ class Rac1Directe extends Component {
               muted={ muted }
               allowFocus={ (el) => el.className.match( /rc-slider-handle/ ) }
               isPlaying={ isPlaying }
-              onSetVolume={ volume => this.setState({ ...this.state, volume }) }
-              onSetMuted={ muted => this.setState({ ...this.state, muted }) }
+              onSetVolume={ volume => this.setState({ volume }) }
+              onSetMuted={ muted => this.setState({ muted }) }
               hideButtons={['Prev', 'Next', '-10m', '-60s', '-10s', '+10m', '+60s', '+10s']}
             />
             <ReactAudioPlayer
@@ -108,7 +108,6 @@ class Rac1Directe extends Component {
               onPlay={ this.handlePlayStatusChangeTrue }
               onPause={ this.handlePlayStatusChangeFalse }
               onVolumeChanged={ e => this.setState({
-                ...this.state,
                 volume: e.currentTarget.volume,
                 muted: e.currentTarget.muted,
               }) }

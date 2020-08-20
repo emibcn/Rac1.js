@@ -84,7 +84,6 @@ class App extends React.Component {
   handleNewServiceWorker(event) {
     this.registration = event.detail.registration;
     this.setState({
-      ...this.state,
       newServiceWorkerDetected: true,
     });
   }
@@ -141,10 +140,10 @@ class App extends React.Component {
                     <Cookies
                       { ...{ trackOptIn, trackingSeen } }
                       onTrackingSeen={ seen =>
-                        this.setState({...this.state, trackingSeen: seen })
+                        this.setState({ trackingSeen: seen })
                       }
                       onTrackOptIn={ track =>
-                        this.setState({...this.state, trackOptIn: track })
+                        this.setState({ trackOptIn: track })
                       } /> )}
                 />
 
@@ -222,10 +221,7 @@ class App extends React.Component {
   }
 
   handleLanguageChange(language) {
-    this.setState({
-      ...this.state,
-      language,
-    });
+    this.setState({ language });
   }
 }
 
