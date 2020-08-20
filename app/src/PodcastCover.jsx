@@ -26,7 +26,7 @@ class PodcastCover extends PureComponent {
                flexWrap: matches ? 'nowrap' : 'wrap',
                justifyContent: 'center',
                backgroundColor: 'white',
-               color: '#777',
+               color: '#333',
                padding: '1em',
                borderRadius: '10px',
              }}>
