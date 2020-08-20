@@ -229,7 +229,6 @@ class Controls extends React.Component {
     }
 
     this.setState({
-      ...this.state,
       noKeys,
     });
   }

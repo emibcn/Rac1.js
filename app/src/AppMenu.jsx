@@ -217,10 +217,7 @@ class AppMenu extends React.Component {
   handleLanguageSectionClick(e) {
     const { isLanguageOpen } = this.state;
     e.preventDefault();
-    this.setState({
-      ...this.state,
-      isLanguageOpen: !isLanguageOpen
-    });
+    this.setState({ isLanguageOpen: !isLanguageOpen });
   }
 
   handleClickLanguage(language, e) {
