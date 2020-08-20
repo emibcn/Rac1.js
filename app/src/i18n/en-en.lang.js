@@ -96,8 +96,8 @@ export default {
     "Rac1 live": "Rac1 Live",
   },
 
-  ReloadButton: {
-    "Reload": "Reload",
+  UpdateButton: {
+    "Update": "Update",
   },
 
   Button: {

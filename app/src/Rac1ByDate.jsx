@@ -51,8 +51,8 @@ class Rac1ByDate extends Component {
 
     this.extraControls = [
       {
-        help: 'Reload playlist',
-        action: this.handleClickReload.bind(this),
+        help: 'Update playlist',
+        action: this.handleClickUpdate.bind(this),
         keys: [ 'r', 'R' ],
       },
     ];
@@ -215,7 +215,7 @@ class Rac1ByDate extends Component {
           minDate={ new Date(2015, 5, 1) /* 1st date with HOUR podcasts */ }
           maxDate={ maxDate }
           completedDownload={ completed }
-          onClickReload={ this.handleClickReload.bind(this) }
+          onClickUpdate={ this.handleClickUpdate.bind(this) }
           onDateBlur={ () => this.keyHandlerFocus() }
           onDateChange={ this.handleDateChange.bind(this) }
         >
@@ -420,7 +420,7 @@ class Rac1ByDate extends Component {
   }
 
   // Updates podcasts list from backend
-  handleClickReload() {
+  handleClickUpdate() {
 
     // If there is not already an incomplete update
     if ( this.state.completed ) {
@@ -508,7 +508,7 @@ class Rac1ByDate extends Component {
         // If we are not already waiting for update,
         // set  and trigger a list update
         if ( !this.state.waitingUpdate ) {
-          this.handleClickReload();
+          this.handleClickUpdate();
           this.setState({
             waitingUpdate: true,
           });

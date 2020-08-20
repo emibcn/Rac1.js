@@ -10,9 +10,9 @@ import {
   faCalendarAlt as faCalendar,
 } from '@fortawesome/free-solid-svg-icons'
 
-const ReloadButton = translate("ReloadButton")( props => {
+const UpdateButton = translate("UpdateButton")( props => {
   const { t, ...restProps } = props;
-  const text = t('Reload');
+  const text = t('Update');
   return (
     <button
       { ...restProps }
@@ -68,8 +68,8 @@ class Playlist extends React.PureComponent {
             clearIcon={ null }
             calendarIcon={ <FontAwesomeIcon icon={faCalendar} /> }
           />
-          <ReloadButton
-            onClick={ this.props.onClickReload.bind(this) }
+          <UpdateButton
+            onClick={ this.props.onClickUpdate.bind(this) }
             disabled={ !completedDownload }
           />
         </div>
@@ -103,7 +103,7 @@ class Playlist extends React.PureComponent {
 
 
 Playlist.defaultProps = {
-  onClickReload: (e) => {},
+  onClickUpdate: (e) => {},
   onDateBlur: (e) => {},
   onDateChange: (e) => {},
   completedDownload: true,
@@ -112,7 +112,7 @@ Playlist.defaultProps = {
 };
 
 Playlist.propTypes = {
-  onClickReload: PropTypes.func.isRequired,
+  onClickUpdate: PropTypes.func.isRequired,
   onDateBlur: PropTypes.func.isRequired,
   onDateChange: PropTypes.func.isRequired,
   completedDownload: PropTypes.bool.isRequired,
