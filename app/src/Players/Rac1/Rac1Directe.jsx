@@ -4,10 +4,10 @@ import { translate } from 'react-translate';
 import { Helmet } from 'react-helmet';
 import ReactAudioPlayer from 'react-audio-player';
 
-import { Rac1Live } from './backends';
-import Controls from './Controls';
-import PodcastCover from './PodcastCover';
-import MediaSession from './MediaSession';
+import { Rac1Live } from '../../Backends';
+import Controls from '../Base/Controls';
+import PodcastCover from '../Base/PodcastCover';
+import MediaSession from '../Base/MediaSession';
 
 class Rac1Directe extends Component {
 
