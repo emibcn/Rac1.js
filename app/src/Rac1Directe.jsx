@@ -4,7 +4,7 @@ import { translate } from 'react-translate';
 import { Helmet } from 'react-helmet';
 import ReactAudioPlayer from 'react-audio-player';
 
-import { Rac1Live } from './rac1';
+import { Rac1Live } from './backends';
 import Controls from './Controls';
 import PodcastCover from './PodcastCover';
 import MediaSession from './MediaSession';
