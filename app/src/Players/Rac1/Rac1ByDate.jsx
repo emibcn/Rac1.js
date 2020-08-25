@@ -5,13 +5,13 @@ import { Helmet } from 'react-helmet';
 import ReactAudioPlayer from 'react-audio-player';
 import MediaQuery from 'react-responsive';
 
-import Controls from './Controls';
-import Playlist from './Playlist';
-import PodcastCover from './PodcastCover';
-import MediaSession from './MediaSession';
+import Controls from '../Base/Controls';
+import Playlist from '../Base/Playlist';
+import PodcastCover from '../Base/PodcastCover';
+import MediaSession from '../Base/MediaSession';
 
-import { Rac1 } from './backends';
-import Throtle from './Throtle';
+import { Rac1 } from '../../Backends';
+import Throtle from '../../Throtle';
 
 // 1st date with HOUR podcasts
 const minDate = new Date(2015, 5, 1);

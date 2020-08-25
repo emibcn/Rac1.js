@@ -13,7 +13,7 @@ import {
 
 import { Button, ButtonsGroup } from './Button';
 import Volume from './Volume';
-import { withGAEvent } from './GAListener';
+import { withGAEvent } from '../../GAListener';
 
 class Controls extends React.Component {
 
