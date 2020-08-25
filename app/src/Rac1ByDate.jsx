@@ -10,7 +10,7 @@ import Playlist from './Playlist';
 import PodcastCover from './PodcastCover';
 import MediaSession from './MediaSession';
 
-import { Rac1 } from './rac1';
+import { Rac1 } from './backends';
 import Throtle from './Throtle';
 
 // 1st date with HOUR podcasts
@@ -116,7 +116,7 @@ class Rac1ByDate extends Component {
     // Initiate backend library
     this.rac1 = new Rac1({
       date: this.state.date,
-      onListUpdate: this.handleListUpdate,
+      onUpdate: this.handleListUpdate,
       // Get errors from backend
       onError: this.handleError.bind(this),
     });
