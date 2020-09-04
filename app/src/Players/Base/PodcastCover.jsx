@@ -8,7 +8,7 @@ class PodcastCover extends PureComponent {
   render() {
     const {
       minWidth,
-      imageUrl,
+      image,
       programUrl,
       title,
       author,
@@ -50,7 +50,7 @@ class PodcastCover extends PureComponent {
              }}>
                <figure style={{ position: 'relative' }} aria-label={ `${t("Author")}: ${author}` }>
                  <img
-                   src={ imageUrl }
+                   src={ image }
                    style={{ width: '100%' }}
                    alt={ `${t("Author")}: ${author}` }
                  />
@@ -69,7 +69,7 @@ PodcastCover.defaultProps = {
 };
 
 PodcastCover.propTypes = {
-  imageUrl: PropTypes.string.isRequired,
+  image: PropTypes.string.isRequired,
   programUrl: PropTypes.string.isRequired,
   title: PropTypes.string.isRequired,
   author: PropTypes.string.isRequired,

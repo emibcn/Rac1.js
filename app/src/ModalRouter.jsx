@@ -180,7 +180,7 @@ class ModalRouterInner extends React.PureComponent {
             cursor: 'pointer',
           }}
           title={ 'Close modal' }
-          aeia-label={ 'Close modal' }
+          aria-label={ 'Close modal' }
           onClick={ () => this.closeModal() }
         >
           <FontAwesomeIcon icon={ faClose } />

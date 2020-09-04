@@ -11,6 +11,7 @@ class Rac1Live extends Live {
   dataTagContent = /<?[^<>]*>([^<]*)<\/[^>]*>/;
   dataTagContents = /\s*<?[^<>]*>(?:amb )?([^<]*?)<\/[^>]*>\s*<?[^<>]*>([^<]*?)<\/[^>]*>/g;
   dataFilenameClean = /^.*[^/.].png$/;
+  dataScheduleFixScheduleHour = /(\d)\s+h\b/g;
 
   parseData(dataRaw) {
     const data = dataRaw
@@ -20,7 +21,7 @@ class Rac1Live extends Live {
         .filter( line => this.dataAttrsFind.test(line) );
 
     // Compute data
-    const programURL = data
+    const programUrl = data
         .find( line => line.includes('program-header-title-link') )
         .replace(this.dataAttrsClean, '$2');
     const title = data
@@ -30,7 +31,7 @@ class Rac1Live extends Live {
     const [ author, schedule ] =
       data
         .find( line => line.includes('program-listed-author') )
-        .replace(this.dataTagContents, (match, author, schedule) => `${author}\n${schedule}`)
+        .replace(this.dataTagContents, (match, author, schedule) => `${author}\n${schedule.replace(this.dataScheduleFixScheduleHour, '$1h')}`)
         .split('\n');
     const image = data
         .find( line => line.includes('thumbnail') )
@@ -42,7 +43,7 @@ class Rac1Live extends Live {
       path: this.podcastUrl,
 
       // Get previously computed values
-      programURL,
+      programUrl,
       title,
       author,
       schedule,
