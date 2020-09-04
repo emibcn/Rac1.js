@@ -48,7 +48,7 @@ class Live extends Common {
       .then( dataRaw => this.parseData(dataRaw) )
 
       .then( podcast => {
-        if ( podcast.programURL !== this.podcastData.programURL ) {
+        if ( podcast.programUrl !== this.podcastData.programUrl ) {
           this.podcastData = podcast;
           this.onUpdate( this.podcastData );
           this.launchTimer( this.updateTimeout );
@@ -65,7 +65,7 @@ class Live extends Common {
   parseData(dataRaw) {
     const [
       path,
-      programURL,
+      programUrl,
       title,
       author,
       schedule,
@@ -76,7 +76,7 @@ class Live extends Common {
 
     return {
       path,
-      programURL,
+      programUrl,
       title,
       author,
       schedule,

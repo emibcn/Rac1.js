@@ -250,6 +250,9 @@ class ByDate extends Common {
       titleFull: '',
       author: '',
       path: '',
+      programUrl: '',
+      schedule: '',
+      image: '',
     };
   }
 }

@@ -50,6 +50,7 @@ class Rac1ByDate extends Component {
       error: {},
     };
 
+    // Add keybinding for list updating
     this.extraControls = [
       {
         help: 'Update playlist',
@@ -58,7 +59,11 @@ class Rac1ByDate extends Component {
       },
     ];
 
+    // Used to throtle list updates
     this.throtle = new Throtle();
+
+    // Set actions for MediaSession (for controls on
+    // notification screen and similars)
     this.mediaSessionActions = {
       onPlayPrev: this.handlePlayPrev,
       onPlayNext: this.handlePlayNext,
@@ -228,11 +233,11 @@ class Rac1ByDate extends Component {
     const cover =
       currentPodcast !== undefined ? (
         <PodcastCover
-          imageUrl={ currentPodcast.audio.section.program.images.person }
-          programUrl={ currentPodcast.audio.section.program.url }
+          image={ currentPodcast.image }
+          programUrl={ currentPodcast.programUrl }
           title={ currentPodcast.title }
           author={ currentPodcast.author }
-          schedule={ currentPodcast.audio.section.program.schedule }
+          schedule={ currentPodcast.schedule }
         />
       ) : null;
 
@@ -243,9 +248,9 @@ class Rac1ByDate extends Component {
         </Helmet>
         <MediaSession
            title={ title }
-           artist={ currentPodcast === undefined ? undefined : currentPodcast.author }
-           album={ currentPodcast === undefined ? undefined : currentPodcast.audio.section.program.schedule }
-           image={ currentPodcast === undefined ? undefined : currentPodcast.audio.section.program.images.person }
+           artist={ currentPodcast && currentPodcast.author }
+           album={ currentPodcast && currentPodcast.schedule }
+           image={ currentPodcast && currentPodcast.image }
            { ...this.mediaSessionActions }
         />
         <MediaQuery minWidth={ 1024 }>

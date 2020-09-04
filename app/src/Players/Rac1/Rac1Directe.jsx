@@ -14,26 +14,28 @@ class Rac1Directe extends Component {
   constructor(props) {
     super();
 
-    this.history = props.history;
-
     this.rac1 = new Rac1Live({
-      onUpdate: this.onUpdate.bind(this),
+
+      // Get data from backend
+      onUpdate: this.handleUpdate.bind(this),
+
       // Get errors from backend
       onError: this.handleError.bind(this),
+
     });
 
     // Initial state
     this.state = {
       volume: 1,
       muted: false,
-      isPlaying: true,
+      isPlaying: false,
       podcast: false,
       hasError: false,
       error: {},
     };
   }
 
-  onUpdate(podcast) {
+  handleUpdate(podcast) {
     this.setState({ podcast });
   }
 
@@ -128,8 +130,8 @@ class Rac1Directe extends Component {
           { podcast !== false ? (
               <PodcastCover
                 minWidth={ 708 }
-                imageUrl={ podcast.image }
-                programUrl={ podcast.programURL }
+                image={ podcast.image }
+                programUrl={ podcast.programUrl }
                 title={ podcast.title }
                 author={ podcast.author }
                 schedule={ podcast.schedule }

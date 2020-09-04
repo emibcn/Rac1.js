@@ -36,6 +36,7 @@ class Rac1 extends ByDate {
   dataAttrsFind  = / class="(audioteca-item|pagination-link)" /;
   dataAttrsClean = /.* (data-(audio-id|audioteca-search-page))="([^"]*)".*/;
   searchData = ['data-audio-id','data-audioteca-search-page'];
+  dataScheduleFixScheduleHour = /(\d)\s+h\b/g;
 
   // Parses a page raw HTML to obtain audio UUIDs and the list of pages
   // (dataRawHTML) => {uuidsPage: Array(String), pages: Array(Number)}
@@ -78,14 +79,17 @@ class Rac1 extends ByDate {
       console.log("Podcast date in future. Fixing to: " + podcast.dateTime);
     }
 
-    // Add some data to the podcast
+    // Add some processed data to the podcast
     podcast.uuid      = uuid;
     podcast.date      = new Date(podcast.dateTime);
     podcast.hour      = Number(podcast.audio.time.split(':')[0]);
     podcast.minute    = Number(podcast.audio.time.split(':')[1]);
     podcast.title     = podcast.appTabletTitle.replace(/ \d\d\/.*/, '');
     podcast.titleFull = podcast.appTabletTitle;
+    podcast.programUrl= podcast.audio.section.program.url;
     podcast.author    = podcast.audio.section.program.subtitle.replace(/^amb /, '');
+    podcast.schedule  = podcast.audio.section.program.schedule.replace(this.dataScheduleFixScheduleHour, '$1h');
+
     Object.keys( podcast.audio.section.program.images )
       .forEach( kind =>
         podcast.audio.section.program.images[kind] =
@@ -93,6 +97,7 @@ class Rac1 extends ByDate {
           + podcast.audio.section.program.images[kind]
           + `?v${podcast.audio.section.program.imageVersion}`
        );
+    podcast.image = podcast.audio.section.program.images.person;
 
     // Prevent a redirect of 400ms :/
     podcast.path = podcast.path
