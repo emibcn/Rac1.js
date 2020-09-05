@@ -5,7 +5,6 @@ name: Node.js CI
 
 on:
   push:
-    branches: [ master ]
   pull_request:
     branches: [ master ]
 
@@ -46,34 +45,19 @@ jobs:
       uses: emibcn/clover-coverage-badges-action@v2.3
       with:
         # The GITHUB_TOKEN secret.
-        github_token:  ${{ secrets.GITHUB_TOKEN }}
+        github_token: ${{ secrets.GITHUB_TOKEN }}
         coverage-summary-path: app/coverage/clover.xml
         badges-directory: .github/badges/
 
-    #- name: Coverage monitor
-    #  uses: slavcodev/coverage-monitor-action@1.1.0
-    #  with:
-    #    # The GITHUB_TOKEN secret.
-    #    github_token:  ${{ secrets.GITHUB_TOKEN }}
-    #    # Path to Clover XML file.
-    #    clover_file: app/coverage/clover.xml
-    #    # Whether check the coverage thresholds.
-    #    check: true
-    #    # Whether comment the coverage report.
-    #    comment: true
-    #    # Mark the build as unstable when coverage is less than this threshold.
-    #    threshold_alert: 50
-    #    # Warning when coverage is less than this threshold.
-    #    threshold_warning: 90
-    #    # A string label to differentiate this status from the status of other systems.
-    #    status_context: Coverage Report
-    #    # A string label to differentiate the comment posted by this action.
-    #    comment_context: Coverage Report
-    #    # A mode for comments, supported: `replace`, `update` or `insert`.
-    #    comment_mode: replace
-
 
   publish:
+
+    # Only publish if all these conditions are met:
+    # - The previous step ended successfully
+    # - This is a push event
+    # - The push event is on branch 'master'
+    needs: test
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
 
     runs-on: ubuntu-latest
 
