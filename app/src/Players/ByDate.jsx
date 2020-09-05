@@ -3,17 +3,17 @@ import React, { Component } from 'react';
 import { translate } from 'react-translate';
 import MediaQuery from 'react-responsive';
 
-import { Rac1 } from '../../Backends';
-import Throtle from '../../Throtle';
+import { Rac1 } from '../Backends';
+import Throtle from '../Throtle';
 
-import AudioWrapper from '../Base/AudioWrapper';
-import Playlist from '../Base/Playlist';
-import PodcastCover from '../Base/PodcastCover';
+import AudioWrapper from './Base/AudioWrapper';
+import Playlist from './Base/Playlist';
+import PodcastCover from './Base/PodcastCover';
 
 // 1st date with HOUR podcasts
 const minDate = new Date(2015, 5, 1);
 
-class Rac1ByDate extends Component {
+class ByDate extends Component {
 
   getDateFromParams(props) {
     const date = props.match.params;
@@ -428,4 +428,4 @@ class Rac1ByDate extends Component {
   }
 }
 
-export default translate('Rac1ByDate')(Rac1ByDate);
+export default translate('ByDate')(ByDate);

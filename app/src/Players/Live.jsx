@@ -2,12 +2,12 @@ import React, { Component } from 'react';
 
 import { translate } from 'react-translate';
 
-import { Rac1Live } from '../../Backends';
+import { Rac1Live } from '../Backends';
 
-import AudioWrapper from '../Base/AudioWrapper';
-import PodcastCover from '../Base/PodcastCover';
+import AudioWrapper from './Base/AudioWrapper';
+import PodcastCover from './Base/PodcastCover';
 
-class Rac1Directe extends Component {
+class Live extends Component {
 
   constructor(props) {
     super();
@@ -39,7 +39,7 @@ class Rac1Directe extends Component {
   // Saves errors from backend into state so they
   // can be reraised into ReactDOM tree and catched correctly
   handleError = (error) => {
-    error.message = `Rac1Directe: ${error.message}`;
+    error.message = `Live: ${error.message}`;
     this.setState({
       hasError: true,
       error: error,
@@ -119,4 +119,4 @@ class Rac1Directe extends Component {
 
 }
 
-export default translate('Rac1Directe')(Rac1Directe);
+export default translate('Live')(Live);
