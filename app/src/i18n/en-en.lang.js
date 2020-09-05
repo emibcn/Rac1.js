@@ -87,11 +87,11 @@ export default {
     "Try reloading the app to recover from it": "Try reloading the app to recover from it",
   },
 
-  Rac1ByDate: {
+  ByDate: {
     ...common,
   },
 
-  Rac1Directe: {
+  Live: {
     ...common,
     "Rac1 live": "Rac1 Live",
   },

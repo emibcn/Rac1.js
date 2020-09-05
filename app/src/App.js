@@ -16,7 +16,7 @@ import AppMenu from './AppMenu';
 import ModalRouter from './ModalRouter';
 import GAListener from './GAListener';
 import ErrorCatcher from './ErrorCatcher';
-import { Rac1Directe, Rac1ByDate } from './Players';
+import { Live, ByDate } from './Players';
 import Cookies from './Cookies';
 import About from './About';
 import Help from './Help';
@@ -31,10 +31,11 @@ const withErrorCatcher = (origin, component) => <ErrorCatcher {...{ origin , key
 // - Set a default title and title template, translated
 const AppHelmet = function(props) {
   const t = useTranslate("App");
+  const title = t("Rac1 Radio Podcasts Player");
   return (
     <Helmet
-      titleTemplate={ `%s | ${ t("Rac1 Radio Podcasts Player") }` }
-      defaultTitle={ t("Rac1 Radio Podcasts Player") }
+      titleTemplate={ `%s | ${ title }` }
+      defaultTitle={ title }
     />
   );
 }
@@ -171,7 +172,7 @@ class App extends React.Component {
                   <Route
                     exact
                     path={ '/live' }
-                    render={ props => withErrorCatcher('Rac1Live', <Rac1Directe { ...props } />) } />
+                    render={ props => withErrorCatcher('Live', <Live { ...props } />) } />
 
                   <Route
                     exact
@@ -182,15 +183,15 @@ class App extends React.Component {
 
                   <Route
                     path={ '/:year(\\d{4})/:month(\\d{1,2})/:day(\\d{1,2})/:hour(\\d{1,2})/:minute(\\d{1,2})' }
-                    render={ props => withErrorCatcher('Rac1ByDate 1', <Rac1ByDate { ...props } />) } />
+                    render={ props => withErrorCatcher('ByDate 1', <ByDate { ...props } />) } />
 
                   <Route
                     path={ '/:year(\\d{4})/:month(\\d{1,2})/:day(\\d{1,2})/:hour(\\d{1,2})' }
-                    render={ props => withErrorCatcher('Rac1ByDate 2', <Rac1ByDate { ...props } />) } />
+                    render={ props => withErrorCatcher('ByDate 2', <ByDate { ...props } />) } />
 
                   <Route
                     path={ '/:year(\\d{4})/:month(\\d{1,2})/:day(\\d{1,2})' }
-                    render={ props => withErrorCatcher('Rac1ByDate 3', <Rac1ByDate { ...props } />) } />
+                    render={ props => withErrorCatcher('ByDate 3', <ByDate { ...props } />) } />
 
                   {/* Set default date to today */}
                   <Route

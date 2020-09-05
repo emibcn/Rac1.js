@@ -88,11 +88,11 @@ export default {
     "Try reloading the app to recover from it": "Intenta recarregar l'aplicació per a continuar",
   },
 
-  Rac1ByDate: {
+  ByDate: {
     ...common,
   },
 
-  Rac1Directe: {
+  Live: {
     ...common,
     "Rac1 live": "Rac1 en Directe",
   },
