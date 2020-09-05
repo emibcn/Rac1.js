@@ -4,7 +4,9 @@ import {
   Switch,
   Redirect,
 } from 'react-router-dom';
+
 import Modal from 'react-modal';
+import { translate } from 'react-translate'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
@@ -112,7 +114,7 @@ class ModalRouterInner extends React.PureComponent {
   }
 
   render() {
-    const { children, initializing, force, appElement } = this.props;
+    const { children, initializing, force, appElement, t } = this.props;
     const { autoForce, path, forced } = this.state;
 
     if ( initializing ) {
@@ -138,7 +140,7 @@ class ModalRouterInner extends React.PureComponent {
         isOpen={ this.state.modalIsOpen }
         onAfterOpen={ this.openModal }
         onRequestClose={ this.closeModal }
-        contentLabel='Dialog'
+        contentLabel={ t('Dialog') }
         closeTimeoutMS={ 200 }
         aria={{
           labelledby: 'modal_heading',
@@ -177,8 +179,8 @@ class ModalRouterInner extends React.PureComponent {
             fontSize: '20px',
             cursor: 'pointer',
           }}
-          title={ 'Close modal' }
-          aria-label={ 'Close modal' }
+          title={ t('Close modal') }
+          aria-label={ t('Close modal') }
           onClick={ this.closeModal }
         >
           <FontAwesomeIcon icon={ faClose } />
@@ -207,4 +209,4 @@ class ModalRouter extends React.PureComponent {
   }
 }
 
-export default ModalRouter;
+export default translate('ModalRouter')(ModalRouter);
