@@ -43,7 +43,7 @@ class Cookies extends React.Component {
           alignItems: 'center',
         }}>
           <Switch
-            onChange={ this.handleClickTrackOptIn.bind(this) }
+            onChange={ this.handleClickTrackOptIn }
             disabled={ false }
             checkedChildren={ t('Yes') }
             unCheckedChildren={ t('No') }
@@ -53,7 +53,7 @@ class Cookies extends React.Component {
             href='/'
             className='bm-item'
             title={ t("Allow tracking user interactions for usage analysis") }
-            onClick={ this.handleClickTrackOptIn.bind(this) }
+            onClick={ this.handleClickTrackOptIn }
             style={{/* Fix WCAG contrast */
               color: '#4e4e48',
             }}
@@ -68,7 +68,7 @@ class Cookies extends React.Component {
     )
   }
 
-  handleClickTrackOptIn(e) {
+  handleClickTrackOptIn = (e) => {
     if ( typeof e !== 'boolean' && 'preventDefault' in e ) {
       e.preventDefault();
     }

@@ -46,7 +46,7 @@ class ModalRouterInner extends React.PureComponent {
     };
 
     // Register history change event listener
-    this.unlisten = this.history.listen(this.handleHistoryChange.bind(this));
+    this.unlisten = this.history.listen(this.handleHistoryChange);
   }
 
   getPathState(location) {
@@ -91,11 +91,9 @@ class ModalRouterInner extends React.PureComponent {
     }
   }
 
-  openModal() {
-    this.setState({modalIsOpen: true})
-  }
+  openModal = () => this.setState({ modalIsOpen: true });
 
-  closeModal(propsClose={}) {
+  closeModal = (propsClose={}) => {
     if ( !('history' in propsClose) ||
          propsClose.history.location.hash !== '' ) {
 
@@ -108,7 +106,7 @@ class ModalRouterInner extends React.PureComponent {
     }
   }
 
-  handleHistoryChange(location, action) {
+  handleHistoryChange = (location, action) => {
     const state = this.getPathState(location);
     this.setState(state);
   }
@@ -138,8 +136,8 @@ class ModalRouterInner extends React.PureComponent {
       <Modal
         appElement={ appElement }
         isOpen={ this.state.modalIsOpen }
-        onAfterOpen={ this.openModal.bind(this) }
-        onRequestClose={ this.closeModal.bind(this) }
+        onAfterOpen={ this.openModal }
+        onRequestClose={ this.closeModal }
         contentLabel='Dialog'
         closeTimeoutMS={ 200 }
         aria={{
@@ -181,7 +179,7 @@ class ModalRouterInner extends React.PureComponent {
           }}
           title={ 'Close modal' }
           aria-label={ 'Close modal' }
-          onClick={ () => this.closeModal() }
+          onClick={ this.closeModal }
         >
           <FontAwesomeIcon icon={ faClose } />
         </button>

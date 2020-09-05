@@ -21,9 +21,13 @@ export function withGAEvent(Component) {
   }
 
   // Return wrapper respecting ref
-  return React.forwardRef( (props, ref) => {
+  const forwarded = React.forwardRef( (props, ref) => {
     return <GAEvent { ...props } forwardedRef={ ref } />
   });
+  forwarded.propTypes = Component.propTypes;
+  forwarded.defaultProps = Component.defaultProps;
+
+  return forwarded;
 }
 
 export default withGAEvent;
