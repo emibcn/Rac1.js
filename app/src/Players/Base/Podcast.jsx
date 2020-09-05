@@ -27,11 +27,7 @@ class Podcast extends React.PureComponent {
     )
   }
 
-  _handleClick(e) {
-    this.props.onClick(this.props.uuid, e);
-  }
-
-  handleClick = this._handleClick.bind(this)
+  handleClick = (e) => this.props.onClick(this.props.uuid, e);
 }
 
 Podcast.defaultProps = {

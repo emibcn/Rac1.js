@@ -105,25 +105,26 @@ ButtonLegacy.propTypes = {
 };
 
 class ButtonsGroup extends React.PureComponent {
+  keyHandlerFocusForced = (...args) => this.props.keyHandlerFocus(true, ...args);
+
   render() {
-    const { buttons, keyHandlerFocus, children } = this.props;
+    const { buttons, children } = this.props;
     return (
       <div style={{
         display: 'flex',
         justifyContent: 'space-between',
       }}>
-        { buttons.map( (control, index) => {
-            return <Button
+        { buttons.map( (control, index) => (
+            <Button
               key={ index }
-              onMouseUp={ e => keyHandlerFocus(e, true) }
-              action={ control.action.bind(this) }
+              onMouseUp={ this.keyHandlerFocusForced }
+              action={ control.action }
               help={ control.help }
-              text={ control.text }
-              icon={ control.icon }
+              text={ control.text instanceof Function ? control.text() : control.text }
+              icon={ control.icon instanceof Function ? control.icon() : control.icon }
               keys={ control.keys }
             />
-          })
-        }
+        ))}
         { children }
       </div>
     )
