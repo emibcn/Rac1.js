@@ -105,6 +105,11 @@ export default {
     ...actions,
   },
 
+  ModalRouter: {
+    "Close modal": "Tanca l'emergent",
+    "Dialog": "Emergent",
+  },
+
   About: {
     ...common,
     "Play Rac1 catalan radio station podcasts or live emission.": "Reprodueix els podcasts o l'emissió en directe de l'estació de ràdio Rac1",

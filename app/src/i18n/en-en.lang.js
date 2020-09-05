@@ -104,6 +104,11 @@ export default {
     ...actions,
   },
 
+  ModalRouter: {
+    "Close modal": "Close modal",
+    "Dialog": "Dialog",
+  },
+
   About: {
     ...common,
     "Play Rac1 catalan radio station podcasts or live emission.": "Play Rac1 catalan radio station podcasts or live emission.",

@@ -85,7 +85,7 @@ export default {
   },
 
   ErrorCatcher: {
-    "Something went wrong :(": "Alguna cosa ha fallado :(",
+    "Something went wrong :(": "Algo ha fallado :(",
     "Try reloading the app to recover from it": "Intenta recargar la aplicación para continuar",
   },
 
@@ -104,6 +104,11 @@ export default {
 
   Button: {
     ...actions,
+  },
+
+  ModalRouter: {
+    "Close modal": "Cerrar emergente",
+    "Dialog": "Emergente",
   },
 
   About: {
