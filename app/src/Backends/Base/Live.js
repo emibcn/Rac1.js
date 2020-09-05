@@ -55,7 +55,7 @@ class Live extends Common {
         }
       })
 
-      .catch( this.catchFetchErrors.bind(this) )
+      .catch( this.catchFetchErrors )
   }
 
   parseResponse = (response) => response.text()

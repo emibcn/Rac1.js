@@ -58,7 +58,7 @@ class Rac1 extends ByDate {
       // Filter audio UUID's
       uuidsPage: data
         .filter( v => v[0] === this.searchData[0] )
-        .map( v => v[1] ),
+        .map( v => v[1].trim(' \n\r\t') ),
 
       // Filter page numbers
       pages: data

@@ -2,7 +2,7 @@ import { Live } from '../Base';
 
 class Rac1Live extends Live {
 
-  name = 'Rac1 Live';
+  name = 'Rac1 live';
   updateUrl = 'https://api.audioteca.rac1.cat/directe';
   podcastUrl = 'https://streaming.rac1.cat/;*.nsv';
 
@@ -23,11 +23,13 @@ class Rac1Live extends Live {
     // Compute data
     const programUrl = data
         .find( line => line.includes('program-header-title-link') )
-        .replace(this.dataAttrsClean, '$2');
+        .replace(this.dataAttrsClean, '$2')
+        .replace(/a-la-carta/, 'programes');
     const title = data
         .filter( line => !line.includes('program-next-link') )
         .find( line => line.includes('data-ajax-href') )
-        .replace(this.dataTagContent, '$1');
+        .replace(this.dataTagContent, '$1')
+        .trim(" \n\t\r");
     const [ author, schedule ] =
       data
         .find( line => line.includes('program-listed-author') )
