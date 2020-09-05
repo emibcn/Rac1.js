@@ -8,7 +8,7 @@ import GAListenerActive from './GAListenerActive';
 // Renders GA+children in production, only children for the rest
 class GAListener extends React.Component {
 
-  sendEvent(origin, help, status) {
+  createEvent = (origin, help, status) => {
     const event = {
       category: origin,
       action: help,
@@ -20,21 +20,24 @@ class GAListener extends React.Component {
     }
 
     console.log(event);
-    ReactGA.event(event);
+
+    return event;
   }
+
+  sendEvent = (...args) => ReactGA.event( this.createEvent(...args) );
 
   render() {
     const { children, trackOptIn, ...props } = this.props;
 
     // Disable GA unless user has opt'ed in to tracking
     return trackOptIn ? (
-      <GAEventContext.Provider value={ this.sendEvent.bind(this) }>
+      <GAEventContext.Provider value={ this.sendEvent }>
         <GAListenerActive { ...props } >
           { children }
         </GAListenerActive>
       </GAEventContext.Provider>
     ) : (
-      <GAEventContext.Provider value={ () => {} }>
+      <GAEventContext.Provider value={ this.createEvent }>
         { children }
       </GAEventContext.Provider>
     )

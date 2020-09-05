@@ -13,7 +13,7 @@ import {
 
 import { Button, ButtonsGroup } from './Button';
 import Volume from './Volume';
-import { withGAEvent } from './GAListener';
+import { withGAEvent } from '../../GAListener';
 
 class Controls extends React.Component {
 
@@ -52,11 +52,11 @@ class Controls extends React.Component {
       icon: (
         <span style={{ whiteSpace: 'nowrap' }}>
           <FontAwesomeIcon
-            icon={faForward}
+            icon={ faForward }
             flip="horizontal"
             style={{ position: 'relative', left: '.25em' }} />
           <FontAwesomeIcon
-            icon={faForward}
+            icon={ faForward }
             flip="horizontal"
             style={{ position: 'relative', left: '-.25em' }} />
         </span>
@@ -109,10 +109,10 @@ class Controls extends React.Component {
       icon: (
         <span style={{ whiteSpace: 'nowrap' }}>
           <FontAwesomeIcon
-            icon={faForward}
+            icon={ faForward }
             style={{ position: 'relative', left: '.25em' }} />
           <FontAwesomeIcon
-            icon={faForward}
+            icon={ faForward }
             style={{ position: 'relative', left: '-.25em' }} />
         </span>
       ),
@@ -179,6 +179,14 @@ class Controls extends React.Component {
       },
       keys: [ 'm', 'M' ],
     },
+    {
+      text: () => this.props.showAdvanced ? 'Less' : 'More',
+      icon: () => <FontAwesomeIcon icon={ this.props.showAdvanced ? faEyeSlash : faEye } />,
+      help: 'Toggle advanced controls visibility',
+      action: () => this.props.onShowAdvancedChange(!this.props.showAdvanced),
+      keys: [ 'a', 'A' ],
+      group: 'do-advanced',
+    },
   ];
 
   constructor(props) {
@@ -203,6 +211,7 @@ class Controls extends React.Component {
   }
 
   keyHandlerFocus = () => {};
+  keyHandlerFocusForced = () => {};
   _keyHandlerFocus = (e, force) => {
     let doFocus = true;
 
@@ -224,7 +233,8 @@ class Controls extends React.Component {
     // Disable key handler on mobile devices (enable on the rest)
     if ( !(/Mobi|Android/i.test(navigator.userAgent)) ) {
       noKeys = false;
-      this.keyHandlerFocus = this._keyHandlerFocus;
+      this.keyHandlerFocus = this._keyHandlerFocus.bind(this);
+      this.keyHandlerFocusForced = this._keyHandlerFocus.bind(this, true)
       this.keyHandlerFocus();
     }
 
@@ -262,6 +272,20 @@ class Controls extends React.Component {
       })
   }
 
+  // Allow runnning actions from parent component
+  // Tip: Arrow functions are bound to this automatically
+  runAction = (text, origin='runAction') => {
+    return this.controls
+      // Filter controls without button attributes
+      .filter( control => 'text' in control )
+
+      // Find action
+      .find( control => ( control.text instanceof Function ? control.text() : control.text ) === text )
+
+      // Run it
+      .action(origin);
+  }
+
   render() {
     const { showAdvanced, volumeAsAdvanced, volume, muted } = this.props;
     const { noKeys } = this.state;
@@ -271,6 +295,18 @@ class Controls extends React.Component {
       res[group] = this.filterButtonsGroup(this.controls, group);
       return res;
     }, {});
+
+    if( buttons['advanced'].length ) {
+      buttons['basic'].push( ...this.filterButtonsGroup(this.controls, "do-advanced") );
+    }
+
+    const volumeComponent = <Volume
+        volume={ volume }
+        muted={ muted }
+        onSetVolume={ this.setVolume }
+        onSetMuted={ this.setMuted }
+        keyHandlerFocus={ this.keyHandlerFocus }
+      />;
 
     return (
       <div style={{
@@ -285,27 +321,9 @@ class Controls extends React.Component {
           }}>
             <ButtonsGroup
               buttons={ buttons['basic'] }
-              keyHandlerFocus={ this.keyHandlerFocus.bind(this) }
-            >
-              { buttons['advanced'].length ? (
-                <Button
-                  onMouseUp={ e => this.keyHandlerFocus(e, true) }
-                  action={ this.handleShowAdvancedChange.bind(this, !showAdvanced) }
-                  help={ `Show ${ showAdvanced ? 'less' : 'more' } controls` }
-                  text={ showAdvanced ? 'Less' : 'More' }
-                  icon={ <FontAwesomeIcon icon={ showAdvanced ? faEyeSlash : faEye } /> }
-                />
-              ) : null }
-            </ButtonsGroup>
-            { !volumeAsAdvanced ? (
-              <Volume
-                volume={ volume }
-                muted={ muted }
-                onSetVolume={ this.setVolume.bind(this) }
-                onSetMuted={ this.setMuted.bind(this) }
-                keyHandlerFocus={ this.keyHandlerFocus.bind(this) }
-              />
-            ) : null }
+              keyHandlerFocus={ this.keyHandlerFocus }
+            />
+            { !volumeAsAdvanced ? volumeComponent : null }
           </div>
         ) : null }
         <div style={{ display: 'flex' }}>
@@ -317,23 +335,15 @@ class Controls extends React.Component {
             }}>
               <ButtonsGroup
                 buttons={ this.filterButtonsGroup(buttons['advanced'], 'prev') }
-                keyHandlerFocus={ this.keyHandlerFocus.bind(this) }
+                keyHandlerFocus={ this.keyHandlerFocus }
               />
               <ButtonsGroup
                 buttons={ this.filterButtonsGroup(buttons['advanced'], 'next') }
-                keyHandlerFocus={ this.keyHandlerFocus.bind(this) }
+                keyHandlerFocus={ this.keyHandlerFocus }
               />
             </div>
           ) : null }
-          { showAdvanced && volumeAsAdvanced ? (
-            <Volume
-              volume={ volume }
-              muted={ muted }
-              onSetVolume={ this.setVolume.bind(this) }
-              onSetMuted={ this.setMuted.bind(this) }
-              keyHandlerFocus={ this.keyHandlerFocus.bind(this) }
-            />
-          ) : null }
+          { showAdvanced && volumeAsAdvanced ? volumeComponent : null }
         </div>
         { noKeys ? null : (
           <input
@@ -352,8 +362,8 @@ class Controls extends React.Component {
               cursor: 'default',
             }}
             ref={ element => { this._keyHandler = element } }
-            onKeyUp={ this.handleKey.bind(this) }
-            onBlur={ this.keyHandlerFocus.bind(this) }
+            onKeyUp={ this.handleKey }
+            onBlur={ this.keyHandlerFocus }
             aria-label="Key input handler"
           />
         )}
@@ -363,12 +373,12 @@ class Controls extends React.Component {
 
   player = () => this.props.getPlayer().current;
 
-  setMuted(muted) {
+  setMuted = (muted) => {
     this.player().muted = muted;
     this.props.onSetMuted(muted);
   }
 
-  setVolume(volume) {
+  setVolume = (volume) => {
     this.player().volume = volume;
     this.props.onSetVolume(volume);
   }
@@ -398,7 +408,7 @@ class Controls extends React.Component {
     this.props.sendEvent(origin, help, status);
   }
 
-  handleKey(e) {
+  handleKey = (e) => {
     let stopPropagation = false;
 
     // Handle controls keys
@@ -422,14 +432,6 @@ class Controls extends React.Component {
       e.stopPropagation();
       e.preventDefault();
     }
-  }
-
-  handleShowAdvancedChange(showAdvanced, origin, event) {
-    event.preventDefault();
-    this.sendEvent(
-      origin,
-      this.props.onShowAdvancedChange(showAdvanced),
-    );
   }
 }
 

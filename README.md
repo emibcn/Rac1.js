@@ -4,7 +4,7 @@
 
 Web APP to listen to [Rac1 radio station](https://www.rac1.cat/) podcasts. Uses React as JS frontend library and GitHub pages to publish it at **[Rac1 podcast player at Github Pages](https://emibcn.github.io/Rac1.js/)**. There, you will find [this repo's `gh-pages` branch](https://github.com/emibcn/Rac1.js/tree/gh-pages) contents, which are the results of executing `yarn build` on [this project's GitHub workflow/Actions](https://github.com/emibcn/Rac1.js/actions) using [this project's source application](https://github.com/emibcn/Rac1.js/tree/master/app) (See more in the [Install](https://github.com/emibcn/Rac1.js#install) section).
 
-The [podcasts lister](https://github.com/emibcn/Rac1.js/blob/master/app/src/rac1/) is a pure JS app, which only depends on [abortcontroller-polyfill](https://github.com/mo/abortcontroller-polyfill) to help GoogleBot execute modern JS, so you can easily re-use it for other JS projects.
+The [podcasts lister](https://github.com/emibcn/Rac1.js/blob/master/app/src/Backends/) is a pure JS lib, which only depends on [abortcontroller-polyfill](https://github.com/mo/abortcontroller-polyfill) to help GoogleBot execute modern JS, so you can easily re-use it for other JS projects.
 
 ## Motivation
 I made this app for 3 reasons:
@@ -66,14 +66,14 @@ Inspired by [my command line Python app Rac1.py](https://github.com/emibcn/Rac1.
   - `SHIFT` + `ENTER`: Jump to previous podcast
   - `R`: Update the list of podcasts
 - Good UI controls for use with mobile devices (big buttons, disabled key bindings).
-- Use [MediaSession](https://developers.google.com/web/updates/2017/02/media-session) to [show podcast data and more controls](https://github.com/emibcn/Rac1.js/blob/master/app/src/MediaSession.jsx) on mobile (and some desktops) notifications and lock screens.
+- Use [MediaSession](https://developers.google.com/web/updates/2017/02/media-session) to [show podcast data and more controls](https://github.com/emibcn/Rac1.js/blob/master/app/src/Players/Base/MediaSession.jsx) on mobile (and some desktops) notifications and lock screens.
 - Almost [WCAG](https://www.w3.org/WAI/standards-guidelines/wcag/) accessible.
 - Very fast:
   - Use `<meta rel="preconnect">` to pre-initiate external HTTPS connections early
   - Use `<meta rel="prefetch">` to begin early download of external very slow server
   - Use [ServiceWorker](https://github.com/emibcn/Rac1.js/blob/master/app/src/index.js) (SW) to predownload and maintain the assets in cache
   - Included [manifest](https://github.com/emibcn/Rac1.js/blob/master/app/public/manifest.json) and SW to allow adding the app icon to mobile desktop with splash screen
-  - Very fast [backend HTML parser](https://github.com/emibcn/Rac1.js/blob/master/app/src/rac1.js)
+  - Very fast [backend HTML parser](https://github.com/emibcn/Rac1.js/blob/master/app/src/Backends/)
   - Use [React.PureComponent](https://reactjs.org/docs/react-api.html) where possible
 - Asynchronuosly `fetch` podcast list and pages list HTML page, parse it with RegExp and download remaining pages
 - Asynchronuosly `fetch` podcasts JSON data

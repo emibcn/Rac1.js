@@ -1,22 +1,19 @@
 import React, { Component } from 'react';
 
 import { translate } from 'react-translate';
-import { Helmet } from 'react-helmet';
-import ReactAudioPlayer from 'react-audio-player';
 import MediaQuery from 'react-responsive';
 
-import Controls from './Controls';
-import Playlist from './Playlist';
-import PodcastCover from './PodcastCover';
-import MediaSession from './MediaSession';
+import { Rac1 } from '../Backends';
+import Throtle from '../Throtle';
 
-import { Rac1 } from './rac1';
-import Throtle from './Throtle';
+import AudioWrapper from './Base/AudioWrapper';
+import Playlist from './Base/Playlist';
+import PodcastCover from './Base/PodcastCover';
 
 // 1st date with HOUR podcasts
 const minDate = new Date(2015, 5, 1);
 
-class Rac1ByDate extends Component {
+class ByDate extends Component {
 
   getDateFromParams(props) {
     const date = props.match.params;
@@ -40,16 +37,13 @@ class Rac1ByDate extends Component {
       currentUUID: '',
       date: this.getDateFromParams(props),
       maxDate: new Date(),
-      volume: 1,
-      muted: false,
-      isPlaying: false,
       completed: false,
       waitingUpdate: false,
-      showAdvancedControls: false,
       hasError: false,
       error: {},
     };
 
+    // Add keybinding for list updating
     this.extraControls = [
       {
         help: 'Update playlist',
@@ -58,13 +52,8 @@ class Rac1ByDate extends Component {
       },
     ];
 
+    // Used to throtle list updates
     this.throtle = new Throtle();
-    this.mediaSessionActions = {
-      onPlayPrev: this.handlePlayPrev,
-      onPlayNext: this.handlePlayNext,
-      onSeekBackward: this.handleSeekBackward,
-      onSeekForward: this.handleSeekForward,
-    };
 
     // Debugging on development
     if ( process.env.NODE_ENV === 'development' ) {
@@ -92,7 +81,7 @@ class Rac1ByDate extends Component {
 
   // Saves errors from backend into state so they
   // can be reraised into ReactDOM tree and catched correctly
-  handleError(error) {
+  handleError = (error) => {
     error.message = `Rac1ByDate: ${error.message}`;
     this.setState({
       hasError: true,
@@ -102,23 +91,22 @@ class Rac1ByDate extends Component {
 
   // Handle focus when key handler is active
   controlsKeyHandlerFocus = null; // Updated by React ref at this.refControls()
-  _keyHandlerFocus(e) {
+  keyHandlerFocus = (e) => {
     if ( typeof this.controlsKeyHandlerFocus === 'function' ) {
-      this.controlsKeyHandlerFocus(e)
+      return this.controlsKeyHandlerFocus(e)
     }
   }
-  keyHandlerFocus = this._keyHandlerFocus.bind(this)
 
   componentDidMount() {
     // Register history change event listener
-    this.unlisten = this.history.listen( this.handleHistoryChange.bind(this) );
+    this.unlisten = this.history.listen( this.handleHistoryChange );
 
     // Initiate backend library
-    this.rac1 = new Rac1({
+    this.backend = new Rac1({
       date: this.state.date,
-      onListUpdate: this.handleListUpdate,
+      onUpdate: this.handleListUpdate,
       // Get errors from backend
-      onError: this.handleError.bind(this),
+      onError: this.handleError,
     });
   }
 
@@ -126,15 +114,8 @@ class Rac1ByDate extends Component {
     // Unregister history change event listener
     this.unlisten();
 
-    // Unregister player event listeners
-    const player = this.getPlayer().current;
-    if ( player && player.removeEventListener ) {
-      player.removeEventListener('play', this.handlePlayStatusChangeTrue);
-      player.removeEventListener('pause', this.handlePlayStatusChangeFalse);
-    }
-
     // Abort backend fetches
-    this.rac1.abort();
+    this.backend.abort();
 
     // Stop throtle mechanism
     this.throtle.clear();
@@ -143,13 +124,9 @@ class Rac1ByDate extends Component {
   render() {
     const {
       podcasts,
-      volume,
-      muted,
       completed,
       date,
       maxDate,
-      isPlaying,
-      showAdvancedControls,
       hasError,
       error,
     } = this.state;
@@ -175,133 +152,71 @@ class Rac1ByDate extends Component {
       currentPodcast !== undefined
         ? currentPodcast.path : '';
     const title =
-      currentPodcast !== undefined ?
-      ( 'audio' in currentPodcast ?
-          currentPodcast.titleFull :
-          dateText )
-      : dateText;
-
-    const controls = <Controls
-          getPlayer={ this.getPlayer }
-          volume={ volume }
-          muted={ muted }
-          allowFocus={ this.allowFocus }
-          onPlayNext={ this.handlePlayNext }
-          onPlayPrev={ this.handlePlayPrev }
-          onSetVolume={ this.onSetVolume }
-          onSetMuted={ this.onSetMuted }
-          showAdvanced={ showAdvancedControls }
-          volumeAsAdvanced={ true }
-          onShowAdvancedChange={ this.onShowAdvancedChange }
-          isPlaying={ isPlaying }
-          ref={ this.refControls }
-          extraControls={ this.extraControls }
-        />;
-    const player = <ReactAudioPlayer
-          ref={ this.refPlayer }
-          style={{ width: '100%' }}
-          src={ currentPath }
-          autoPlay={ autoplay }
-          title={ title }
-          controls
-          controlsList='nodownload'
-          preload={ (autoplay ? 'auto' : 'metadata') }
-          onEnded={ this.handlePlayNext }
-          volume={ volume }
-          muted={ muted }
-          onPlay={ this.handlePlayStatusChangeTrue }
-          onPause={ this.handlePlayStatusChangeFalse }
-          onVolumeChanged={ this.onSetVolumeAndMuted }
-        />;
-    const playlist = <Playlist
-          date={ date }
-          minDate={ minDate }
-          maxDate={ maxDate }
-          completedDownload={ completed }
-          podcasts={ podcasts }
-          current={ current }
-          onClickPodcast={ this.handleClickPodcast }
-          onClickUpdate={ this.handleClickUpdate }
-          onDateBlur={ this.keyHandlerFocus }
-          onDateChange={ this.handleDateChange }
-        />;
-    const cover =
-      currentPodcast !== undefined ? (
-        <PodcastCover
-          imageUrl={ currentPodcast.audio.section.program.images.person }
-          programUrl={ currentPodcast.audio.section.program.url }
-          title={ currentPodcast.title }
-          author={ currentPodcast.author }
-          schedule={ currentPodcast.audio.section.program.schedule }
-        />
-      ) : null;
+      !currentPodcast ||
+      !currentPodcast.titleFull
+        ? dateText
+        : currentPodcast.titleFull;
 
     return (
-      <>
-        <Helmet>
-          <title>{ title }</title>
-        </Helmet>
-        <MediaSession
-           title={ title }
-           artist={ currentPodcast === undefined ? undefined : currentPodcast.author }
-           album={ currentPodcast === undefined ? undefined : currentPodcast.audio.section.program.schedule }
-           image={ currentPodcast === undefined ? undefined : currentPodcast.audio.section.program.images.person }
-           { ...this.mediaSessionActions }
-        />
-        <MediaQuery minWidth={ 1024 }>
-          { matches => {
-            if ( matches ) {
-              return (
-                <div style={{
-                  padding: '.5em',
-                  display: 'flex',
-                  alignItems: 'stretch',
-                  justifyContent: 'space-evenly',
-                }}>
-                  <div style={{
-                    padding: '1%',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    justifyContent: 'space-evenly',
-                  }}>
-                    <h3>{ title }</h3>
-                    <div>{ controls }</div>
-                    <div style={{ width: '100%' }}>{ player }</div>
-                  </div>
-                  { playlist }
-                  <div style={{ width: '.5em' }} />
-                  { cover }
-                </div>
-              );
-            } else {
-              return (
-                <div style={{
-                  padding: '.5em',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'stretch',
-                }}>
-                  <h3>{ title }</h3>
-                  <div style={{
-                    display: 'flex',
-                    justifyContent: 'center'
-                  }}>{ controls }</div>
-                  { player }
-                  <div style={{ height: '.5em' }} />
-                  { playlist }
-                  <div style={{ height: '.5em' }} />
-                  { cover }
-                </div>
-              );
-            }
-          }}
-        </MediaQuery>
-      </>
+      <MediaQuery minWidth={ 1024 }>
+        { matches => (
+          <div style={{
+            padding: '.5em',
+            display: 'flex',
+            alignItems: 'stretch',
+            ...( matches ? {
+                justifyContent: 'space-evenly',
+              } : {
+                flexDirection: 'column',
+              }
+            )
+          }}>
+            <AudioWrapper
+              autoPlay={ autoplay }
+              title={ title }
+              titleHead={ title }
+              path={ currentPath }
+              allowFocus={ this.allowFocus }
+              onEnded={ this.handlePlayNext }
+              onPlayNext={ this.handlePlayNext }
+              onPlayPrev={ this.handlePlayPrev }
+              extraControls={ this.extraControls }
+              volumeAsAdvanced={ true }
+              artist={ currentPodcast && currentPodcast.author }
+              album={ currentPodcast && currentPodcast.schedule }
+              image={ currentPodcast && currentPodcast.image }
+            />
+            <Playlist
+              date={ date }
+              minDate={ minDate }
+              maxDate={ maxDate }
+              completedDownload={ completed }
+              podcasts={ podcasts }
+              current={ current }
+              onClickPodcast={ this.handleClickPodcast }
+              onClickUpdate={ this.handleClickUpdate }
+              onDateBlur={ this.keyHandlerFocus }
+              onDateChange={ this.handleDateChange }
+            />
+            { currentPodcast !== undefined ? (
+                <>
+                  <div style={{ width: '.5em', height: '.5em' }} />
+                  <PodcastCover
+                    image={ currentPodcast.image }
+                    programUrl={ currentPodcast.programUrl }
+                    title={ currentPodcast.title }
+                    author={ currentPodcast.author }
+                    schedule={ currentPodcast.schedule }
+                  />
+                </>
+              ) : null }
+          </div>
+        )}
+      </MediaQuery>
     );
   }
 
-  handleHistoryChange(location, action) {
+  handleHistoryChange = (location, action) => {
     const dateNew = this.getDateFromParams(this.props);
     const { date } = this.state;
 
@@ -347,44 +262,9 @@ class Rac1ByDate extends Component {
     }
   }
 
-  // Play status may change from our Constrols button or from the <audio> tag
-  // itself (or whatever associated, as from notifications screen controls)
-  handlePlayStatusChange(isPlaying) {
-    this.setState({ isPlaying });
-  }
-
-  handlePlayStatusChangeTrue = this.handlePlayStatusChange.bind(this, true);
-  handlePlayStatusChangeFalse = this.handlePlayStatusChange.bind(this, false);
-
-  /////////////////////////////
-  // Actions for our Controls
-  // Bound to this when needed
-  /////////////////////////////
   allowFocus = el => el.className.match( /date-?picker|rc-slider-handle|ReactModal/ )
-  _onSetVolume = volume => this.setState({ volume })
-  _onSetMuted = muted => this.setState({ muted })
-  _onSetVolumeAndMuted = e => {
-    this.onSetVolume(e.currentTarget.volume);
-    this.onSetMuted(e.currentTarget.muted);
-  }
-  _onShowAdvancedChange = show => {
-    this.setState({ showAdvancedControls: show });
-    return `${show ? 'Show' : 'Hide'} advanced buttons`
-  }
 
-  onSetVolume          = this._onSetVolume.bind(this)
-  onSetMuted           = this._onSetMuted.bind(this)
-  onSetVolumeAndMuted  = this._onSetVolumeAndMuted.bind(this)
-  onShowAdvancedChange = this._onShowAdvancedChange.bind(this)
-
-  // Bound functions for getting refs from Controls and audio player
-  _refControls = el => { if ( el ) { this.controlsKeyHandlerFocus = el.keyHandlerFocus } }
-  _refPlayer = el => { this._player = el }
-
-  refControls = this._refControls.bind(this)
-  refPlayer   = this._refPlayer.bind(this)
-
-  _handleListUpdate(podcasts, completed) {
+  handleListUpdate = (podcasts, completed) => {
     // Stop waiting if completed
     const { waitingUpdate, currentUUID, date } = this.state;
     const waitingUpdateNext = waitingUpdate && completed ? false : waitingUpdate;
@@ -410,7 +290,7 @@ class Rac1ByDate extends Component {
     }
   }
 
-  _handleDateChange(date) {
+  handleDateChange = (date) => {
     if ( date !== this.state.date ) {
 
       // Save new date to state
@@ -425,13 +305,13 @@ class Rac1ByDate extends Component {
         this.historyPush(date);
 
         // Abort backend fetches
-        this.rac1.abort();
+        this.backend.abort();
 
         // Stop throtle mechanism
         this.throtle.clear();
 
         // Call in background to prevent list update's state overwrite
-        setTimeout(() => this.rac1.setDate(date), 50);
+        setTimeout(() => this.backend.setDate(date), 50);
       }
     }
   }
@@ -481,16 +361,12 @@ class Rac1ByDate extends Component {
       date,
     });
 
-    // Force status ti pause. If it will autoplay,
-    // it will change again to playing = true
-    this.handlePlayStatusChangeFalse();
-
     // Force push&replace if current podcast is not set
     const replace = currentUUID === '';
     this.historyPush(date, replace);
   }
 
-  _handlePlayPrev() {
+  handlePlayPrev = () => {
     const current = this.findCurrentPodcast();
     if ( current > 0 &&
        'path' in this.state.podcasts[current - 1]) {
@@ -499,7 +375,7 @@ class Rac1ByDate extends Component {
     }
   }
 
-  _handlePlayNext(retry=true) {
+  handlePlayNext = (retry=true) => {
     const current = this.findCurrentPodcast();
 
     // If there is a next podcast and it has path, play it
@@ -524,22 +400,14 @@ class Rac1ByDate extends Component {
     }
   }
 
-  _handleSeekBackward() {
-    this.getPlayer().current.currentTime -= 10
-  }
-
-  _handleSeekForward() {
-    this.getPlayer().current.currentTime += 10
-  }
-
-  _handleClickPodcast(uuid, e) {
+  handleClickPodcast = (uuid, e) => {
     e.stopPropagation();
     e.preventDefault();
     this.playPodcast( this.findPodcastByUUID(uuid) );
   }
 
   // Updates podcasts list from backend
-  _handleClickUpdate() {
+  handleClickUpdate = () => {
 
     // If there is not already an incomplete update
     if ( this.state.completed ) {
@@ -548,30 +416,16 @@ class Rac1ByDate extends Component {
       });
 
       // Trigger a list update
-      return this.rac1.updateList();
+      return this.backend.updateList();
     }
   }
 
-  _getPlayer = () => this._player.audioEl
-
   // Removes last podcast from list (for testing purposes)
-  _handlePodcastsLastRemove() {
+  handlePodcastsLastRemove = () => {
     this.setState({
       podcasts: [...this.state.podcasts].slice(0,-1),
     });
   }
-
-  // Bind event handlers to `this`
-  handleListUpdate         = this._handleListUpdate.bind(this)
-  handleDateChange         = this._handleDateChange.bind(this)
-  handlePlayPrev           = this._handlePlayPrev.bind(this)
-  handlePlayNext           = this._handlePlayNext.bind(this)
-  handleSeekBackward       = this._handleSeekBackward.bind(this)
-  handleSeekForward        = this._handleSeekForward.bind(this)
-  handleClickPodcast       = this._handleClickPodcast.bind(this)
-  handleClickUpdate        = this._handleClickUpdate.bind(this)
-  handlePodcastsLastRemove = this._handlePodcastsLastRemove.bind(this)
-  getPlayer                = this._getPlayer.bind(this)
 }
 
-export default translate('Rac1ByDate')(Rac1ByDate);
+export default translate('ByDate')(ByDate);

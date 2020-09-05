@@ -4,7 +4,9 @@ import {
   Switch,
   Redirect,
 } from 'react-router-dom';
+
 import Modal from 'react-modal';
+import { translate } from 'react-translate'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
@@ -46,7 +48,7 @@ class ModalRouterInner extends React.PureComponent {
     };
 
     // Register history change event listener
-    this.unlisten = this.history.listen(this.handleHistoryChange.bind(this));
+    this.unlisten = this.history.listen(this.handleHistoryChange);
   }
 
   getPathState(location) {
@@ -91,11 +93,9 @@ class ModalRouterInner extends React.PureComponent {
     }
   }
 
-  openModal() {
-    this.setState({modalIsOpen: true})
-  }
+  openModal = () => this.setState({ modalIsOpen: true });
 
-  closeModal(propsClose={}) {
+  closeModal = (propsClose={}) => {
     if ( !('history' in propsClose) ||
          propsClose.history.location.hash !== '' ) {
 
@@ -108,13 +108,13 @@ class ModalRouterInner extends React.PureComponent {
     }
   }
 
-  handleHistoryChange(location, action) {
+  handleHistoryChange = (location, action) => {
     const state = this.getPathState(location);
     this.setState(state);
   }
 
   render() {
-    const { children, initializing, force, appElement } = this.props;
+    const { children, initializing, force, appElement, t } = this.props;
     const { autoForce, path, forced } = this.state;
 
     if ( initializing ) {
@@ -138,9 +138,9 @@ class ModalRouterInner extends React.PureComponent {
       <Modal
         appElement={ appElement }
         isOpen={ this.state.modalIsOpen }
-        onAfterOpen={ this.openModal.bind(this) }
-        onRequestClose={ this.closeModal.bind(this) }
-        contentLabel='Dialog'
+        onAfterOpen={ this.openModal }
+        onRequestClose={ this.closeModal }
+        contentLabel={ t('Dialog') }
         closeTimeoutMS={ 200 }
         aria={{
           labelledby: 'modal_heading',
@@ -179,9 +179,9 @@ class ModalRouterInner extends React.PureComponent {
             fontSize: '20px',
             cursor: 'pointer',
           }}
-          title={ 'Close modal' }
-          aeia-label={ 'Close modal' }
-          onClick={ () => this.closeModal() }
+          title={ t('Close modal') }
+          aria-label={ t('Close modal') }
+          onClick={ this.closeModal }
         >
           <FontAwesomeIcon icon={ faClose } />
         </button>
@@ -209,4 +209,4 @@ class ModalRouter extends React.PureComponent {
   }
 }
 
-export default ModalRouter;
+export default translate('ModalRouter')(ModalRouter);

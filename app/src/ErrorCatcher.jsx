@@ -40,7 +40,7 @@ class ErrorCatcher extends React.PureComponent {
     this.sendEvent('Unhandled Error');
   }
 
-  reloadApp() {
+  reloadApp = () => {
     this.sendEvent('Reload from Error');
 
     // Reload app
@@ -62,7 +62,7 @@ class ErrorCatcher extends React.PureComponent {
         <>
           <h1>{ t('Something went wrong :(') }</h1>
           <button
-            onClick={ this.reloadApp.bind(this) }
+            onClick={ this.reloadApp }
             style={{ padding: '1em' }}
           >
             <FontAwesomeIcon

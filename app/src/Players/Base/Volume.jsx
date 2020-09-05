@@ -14,10 +14,16 @@ import {
 
 import { Button } from './Button';
 
-class Volume extends React.Component {
+class Volume extends React.PureComponent {
+
+  title = "Volume handler | Keys: Shift + Arrow Up, Shift + Arrow Down";
+
+  onSetVolume           = value => this.props.onSetVolume(value / 100);
+  keyHandlerFocusForced = e     => this.props.keyHandlerFocus(e, true);
+  onClickButton         = ()    => this.props.onSetMuted( !this.props.muted );
+
   render() {
     const { volume, muted } = this.props;
-    const title = "Volume handler | Keys: Shift + Arrow Up, Shift + Arrow Down";
 
     // Select volume icon
     const faVolume =
@@ -41,18 +47,18 @@ class Volume extends React.Component {
           paddingTop: '.3em',
         }}>
           <Slider
-            onAfterChange={ () => this.props.keyHandlerFocus() }
-            onChange={ value => this.props.onSetVolume(value / 100) }
+            onAfterChange={ this.props.keyHandlerFocus }
+            onChange={ this.onSetVolume }
             value={ volume * 100 }
             vertical
-            aria-label={ title }
-            title={ title }
+            aria-label={ this.title }
+            title={ this.title }
           />
         </div>
         <div>
           <Button
-            onMouseUp={ e => this.props.keyHandlerFocus(e, true) }
-            action={ () => this.props.onSetMuted( !muted ) }
+            onMouseUp={ this.keyHandlerFocusForced }
+            action={ this.onClickButton }
             help={ 'Toggle mute status' }
             text={ muted ? 'Unmute' : 'Mute' }
             icon={ <FontAwesomeIcon icon={ faVolume } /> }
