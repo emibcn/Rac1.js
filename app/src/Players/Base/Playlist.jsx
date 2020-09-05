@@ -93,7 +93,7 @@ class Playlist extends React.PureComponent {
     );
   }
 
-  _handleDateChange(date) {
+  handleDateChange = (date) => {
     date.setHours(0);
     date.setMinutes(0);
     this.props.onDateChange(date);
@@ -104,7 +104,7 @@ class Playlist extends React.PureComponent {
   //
   // Those are used to navigate within the date picker, so date picker is
   // still beeing used and needing the focus
-  _handleDateBlur(e) {
+  handleDateBlur = (e) => {
     if (!(
           e && e.relatedTarget &&
           e.relatedTarget.className.match(/(calendar|date-?picker)/)
@@ -112,10 +112,6 @@ class Playlist extends React.PureComponent {
       this.props.onDateBlur(e);
     }
   }
-
-  // Bind event handlers to `this`
-  handleDateChange = this._handleDateChange.bind(this)
-  handleDateBlur = this._handleDateBlur.bind(this)
 }
 
 

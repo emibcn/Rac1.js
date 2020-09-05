@@ -11,6 +11,8 @@ class MediaSession extends Component {
 
   setActions(props) {
     if ('mediaSession' in navigator) {
+      navigator.mediaSession.setActionHandler('play', props.onPlay);
+      navigator.mediaSession.setActionHandler('pause', props.onPause);
       navigator.mediaSession.setActionHandler('seekbackward', props.onSeekBackward);
       navigator.mediaSession.setActionHandler('seekforward', props.onSeekForward);
       navigator.mediaSession.setActionHandler('previoustrack', props.onPlayPrev);
@@ -66,6 +68,8 @@ MediaSession.propTypes = {
   album: PropTypes.string,
   image: PropTypes.string,
   artwork: PropTypes.array,
+  onPlay: PropTypes.func,
+  onPause: PropTypes.func,
   onPlayPrev: PropTypes.func,
   onPlayNext: PropTypes.func,
   onSeekBackward: PropTypes.func,
