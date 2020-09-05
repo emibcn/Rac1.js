@@ -33,7 +33,7 @@ const AppHelmet = function(props) {
   const t = useTranslate("App");
   return (
     <Helmet
-      titleTemplate={ `${ t("Rac1 Radio Podcasts Player") } | %s` }
+      titleTemplate={ `%s | ${ t("Rac1 Radio Podcasts Player") }` }
       defaultTitle={ t("Rac1 Radio Podcasts Player") }
     />
   );
@@ -73,14 +73,14 @@ class App extends React.Component {
   }
 
   componentDidMount() {
-    document.addEventListener('onNewServiceWorker', this.handleNewServiceWorker.bind(this));
+    document.addEventListener('onNewServiceWorker', this.handleNewServiceWorker);
   }
 
   componentWillUnmount() {
-    document.removeEventListener('onNewServiceWorker', this.handleNewServiceWorker.bind(this));
+    document.removeEventListener('onNewServiceWorker', this.handleNewServiceWorker);
   }
 
-  handleNewServiceWorker(event) {
+  handleNewServiceWorker = (event) => {
     this.registration = event.detail.registration;
     this.setState({
       newServiceWorkerDetected: true,
@@ -152,9 +152,9 @@ class App extends React.Component {
               <ErrorCatcher origin='AppMenu'>
                 <AppMenu
                   newServiceWorkerDetected={ newServiceWorkerDetected }
-                  onLoadNewServiceWorkerAccept={ this.handleLoadNewServiceWorkerAccept.bind(this) }
+                  onLoadNewServiceWorkerAccept={ this.handleLoadNewServiceWorkerAccept }
                   language={ language }
-                  onLanguageChange={ this.handleLanguageChange.bind(this) }
+                  onLanguageChange={ this.handleLanguageChange }
                   trackOptIn={ trackOptIn }
                 />
               </ErrorCatcher>
@@ -215,13 +215,9 @@ class App extends React.Component {
     )
   }
 
-  handleLoadNewServiceWorkerAccept() {
-    this.props.onLoadNewServiceWorkerAccept(this.registration);
-  }
+  handleLoadNewServiceWorkerAccept = () => this.props.onLoadNewServiceWorkerAccept(this.registration);
 
-  handleLanguageChange(language) {
-    this.setState({ language });
-  }
+  handleLanguageChange = (language) => this.setState({ language });
 }
 
 App.defaultProps = {

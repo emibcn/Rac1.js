@@ -53,7 +53,7 @@ class AppMenu extends React.Component {
         }}>
         <NavLink
           className='bm-item'
-          onClick={ this.handleClick.bind(this) }
+          onClick={ this.handleClick }
           isActive={ (match, location) => location.pathname.match(/\/\d{4}(\/\d{1,2}){2,4}(#.*)?$/) }
           to="/"
           title={ t("Play podcasts filtered by date and ordered chronologically") }
@@ -63,7 +63,7 @@ class AppMenu extends React.Component {
         </NavLink>
         <NavLink
           className='bm-item'
-          onClick={ this.handleClick.bind(this) }
+          onClick={ this.handleClick }
           to="/live"
           title={ t("Play live stream") }
         >
@@ -72,7 +72,7 @@ class AppMenu extends React.Component {
         </NavLink>
         <NavLink
           className='bm-item'
-          onClick={ this.handleClickModal.bind(this) }
+          onClick={ this.handleClickModal }
           to="#about"
           isActive={ (match, location) => location.hash === '#about' }
           title={ t("Information about this app and its author") }
@@ -82,7 +82,7 @@ class AppMenu extends React.Component {
         </NavLink>
         <NavLink
           className='bm-item'
-          onClick={ this.handleClickModal.bind(this) }
+          onClick={ this.handleClickModal }
           to="#help"
           isActive={ (match, location) => location.hash === '#help' }
           title={ t("Help using this app") }
@@ -92,7 +92,7 @@ class AppMenu extends React.Component {
         </NavLink>
         <NavLink
           className='bm-item'
-          onClick={ this.handleClickModal.bind(this) }
+          onClick={ this.handleClickModal }
           to="#cookies"
           isActive={ (match, location) => location.hash === '#cookies' }
           title={ t("Allow tracking user interactions for usage analysis") }
@@ -119,7 +119,7 @@ class AppMenu extends React.Component {
               className='bm-item'
               style={{ color: 'green' }}
               title={ t("New version available!") }
-              onClick={ this.handleClickUpdate.bind(this) }
+              onClick={ this.handleClickUpdate }
               >
               <FontAwesomeIcon icon={ faUpgrade } style={{ marginRight: '.5em' }} />
               <span>{ t("Update!") }</span>
@@ -130,7 +130,7 @@ class AppMenu extends React.Component {
           href='/'
           className='bm-item'
           title={ t("Change application language") }
-          onClick={ this.handleLanguageSectionClick.bind(this) }
+          onClick={ this.handleLanguageSectionClick }
           >
           <FontAwesomeIcon icon={ faLanguage } style={{ marginRight: '.5em' }} />
           <span>{ t("Language") }</span>
@@ -183,7 +183,7 @@ class AppMenu extends React.Component {
                 pageWrapId='page-wrap'
                 outerContainerId='router-container'
                 isOpen={ isOpen }
-                onStateChange={ state => this.handleMenuStateChange(state.isOpen) }
+                onStateChange={ this.handleMenuStateChange }
                 disableCloseOnEsc
               >
                 { this.renderLinks() }
@@ -195,7 +195,7 @@ class AppMenu extends React.Component {
     )
   }
 
-  handleMenuStateChange(isOpen) {
+  handleMenuIsOpenChange = (isOpen) => {
     if ( isOpen !== this.state.isOpen ) {
       this.setState({
         isOpen,
@@ -204,32 +204,35 @@ class AppMenu extends React.Component {
     }
   }
 
-  handleClick(e) {
-    this.handleMenuStateChange(false);
+  handleMenuStateChange = (state) => this.handleMenuIsOpenChange(state.isOpen);
+  closeMenu = () => this.handleMenuIsOpenChange(false);
+
+  handleClick = (e) => {
+    this.closeMenu();
     this.props.sendEvent('Menu', 'Click link', `${e.currentTarget.text}`);
   }
 
-  handleClickModal(e) {
-    this.handleMenuStateChange(false);
+  handleClickModal = (e) => {
+    this.closeMenu();
     this.props.sendEvent('Menu', 'Click modal', `${e.currentTarget.text}`);
   }
 
-  handleLanguageSectionClick(e) {
+  handleLanguageSectionClick = (e) => {
     const { isLanguageOpen } = this.state;
     e.preventDefault();
     this.setState({ isLanguageOpen: !isLanguageOpen });
   }
 
-  handleClickLanguage(language, e) {
+  handleClickLanguage = (language, e) => {
     e.preventDefault();
-    this.handleMenuStateChange(false);
+    this.closeMenu();
     this.props.onLanguageChange(language);
     this.props.sendEvent('Menu', 'Change language', `Current language: ${language}`);
   }
 
-  handleClickUpdate(e) {
+  handleClickUpdate = (e) => {
     e.preventDefault();
-    this.handleMenuStateChange(false);
+    this.closeMenu();
     this.props.onLoadNewServiceWorkerAccept();
     this.props.sendEvent('Menu', 'Update!');
   }

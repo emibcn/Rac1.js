@@ -10,11 +10,11 @@ class Throtle {
 
   // Starts Throtle timer (bans running, except if forced)
   start(timeout) {
-    this.timer = setTimeout( this.clear.bind(this), timeout);
+    this.timer = setTimeout( this.clear, timeout);
   }
 
   // Clear Throtle timer (allows running)
-  clear() {
+  clear = () => {
     if ( this.timer !== false ) {
       clearTimeout( this.timer );
       this.timer = false;
