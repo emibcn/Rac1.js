@@ -24,7 +24,7 @@ class Common {
   }
 
   // Raises exception on response error
-  handleFetchErrors(response) {
+  handleFetchErrors = (response) => {
     // Raise succeeded non-ok responses
     if ( !response.ok ) {
       return Promise.reject( Error(`${this.name} backend: ${response.statusText}`) );
@@ -34,7 +34,7 @@ class Common {
 
   // Catches fetch errors, original or 'self-raised', and throws to `onError` prop
   // Filters out non-error "Connection aborted"
-  catchFetchErrors(err) {
+  catchFetchErrors = (err) => {
     if ( err.name === 'AbortError' ) {
       console.log('Connection aborted', err);
     }

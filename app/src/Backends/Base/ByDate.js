@@ -48,7 +48,7 @@ class ByDate extends Common {
       .then( podcasts => this.handleListUpdate() )
 
       // Catch Exceptions
-      .catch( this.catchFetchErrors.bind(this) )
+      .catch( this.catchFetchErrors )
   }
 
   getMissingPodcasts(pageNumber, podcasts) {
@@ -62,7 +62,7 @@ class ByDate extends Common {
           // update event when updated
           this.getPodcastData(podcast.uuid)
             .then( podcast => this.handlePodcastUpdate(pageNumber, podcast) )
-            .catch( this.catchFetchErrors.bind(this) )
+            .catch( this.catchFetchErrors )
         }
 
         return podcast;
