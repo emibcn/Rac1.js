@@ -57,14 +57,14 @@ jobs:
         percentage: 30
         filename: "app/coverage/clover.xml"
 
-    - uses: actions/checkout@v2
-      with:
-        refs: badges
-
     - name: Extract branch name
       shell: bash
       run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
       id: extract_branch
+
+    - uses: actions/checkout@v2
+      with:
+        refs: badges
 
     # Use the output from the `coverage` step
     - name: Generate the badge SVG image
@@ -74,17 +74,18 @@ jobs:
         label: 'Coverage'
         status: ${{ steps.coverage.outputs.coverage }}
         color: ${{ steps.coverage.outputs.coverage > 75 && 'green' || 'red' }}
-        path: ${{ steps.extract_branch.output.branch }}/test-coverage.svg
+        path: test-coverage.svg
 
     - name: Commit badge
       env:
         BRANCH: ${{ steps.extract_branch.outputs.branch }}
+        FILE: 'test-coverage.svg'
       run: |
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
         mkdir -p "${BRANCH}"
-        mv badge.svg "${BRANCH}"
-        git add "${BRANCH}/badge.svg"
+        mv "${FILE}" "${BRANCH}"
+        git add "${BRANCH}/${FILE}"
         git commit -m "Add/Update badge"
     - name: Push badge commit
       uses: ad-m/github-push-action@master
