@@ -1,6 +1,6 @@
 ![Node.js CI](https://github.com/emibcn/Rac1.js/workflows/Node.js%20CI/badge.svg)
 [![Build Status](https://travis-ci.com/emibcn/Rac1.js.svg?branch=master)](https://travis-ci.com/emibcn/Rac1.js)
-[![coverage](https://raw.githubusercontent.com/emibcn/Rac1.js/master/.github/badges/coverage.svg)](https://raw.githubusercontent.com/emibcn/Rac1.js/master/.github/badges/coverage.svg)
+[![coverage](https://raw.githubusercontent.com/emibcn/Rac1.js/badges/master/test-coverage.svg)](https://raw.githubusercontent.com/emibcn/Rac1.js/badges/master/test-coverage.svg)
 
 Web APP to listen to [Rac1 radio station](https://www.rac1.cat/) podcasts. Uses React as JS frontend library and GitHub pages to publish it at **[Rac1 podcast player at Github Pages](https://emibcn.github.io/Rac1.js/)**. There, you will find [this repo's `gh-pages` branch](https://github.com/emibcn/Rac1.js/tree/gh-pages) contents, which are the results of executing `yarn build` on [this project's GitHub workflow/Actions](https://github.com/emibcn/Rac1.js/actions) using [this project's source application](https://github.com/emibcn/Rac1.js/tree/master/app) (See more in the [Install](https://github.com/emibcn/Rac1.js#install) section).
 

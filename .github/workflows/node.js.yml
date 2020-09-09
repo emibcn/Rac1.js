@@ -5,6 +5,10 @@ name: Node.js CI
 
 on:
   push:
+    branches:
+      - '*'
+      - '!badges'
+      - '!gh-pages'
   pull_request:
     branches: [ master ]
 
@@ -38,18 +42,8 @@ jobs:
         yarn install
         yarn test -- --coverage
 
-    # Coverage badges will be updated on any branch except protected
-    # branches 'develop' and 'master' and on a pull requests
-    - run: mkdir -p .github/badges/
-    - name: Test coverage badges
-      uses: emibcn/clover-coverage-badges-action@v2.3
-      with:
-        # The GITHUB_TOKEN secret.
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        coverage-summary-path: app/coverage/clover.xml
-        badges-directory: .github/badges/
-
-    # Try new technique to generate the covergae badge
+    # Coverage badges will be updated on any branch
+    # and saved into a dedicated one
     - name: Check test coverage
       uses: johanvanhelden/gha-clover-test-coverage-check@v1
       id: coverage
