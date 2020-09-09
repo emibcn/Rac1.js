@@ -74,14 +74,13 @@ jobs:
         label: 'Coverage'
         status: ${{ steps.round.outputs.coverage }}
         color: ${{
-          steps.coverage.outputs.coverage > 90 && 'green'         ||
-          steps.coverage.outputs.coverage > 80 && 'yellow,green'  ||
-          steps.coverage.outputs.coverage > 70 && 'yellow'        ||
-          steps.coverage.outputs.coverage > 60 && 'orange,yellow' ||
-          steps.coverage.outputs.coverage > 50 && 'orange'        ||
-          steps.coverage.outputs.coverage > 40 && 'red,orange'    ||
-          'red'
-        }}
+          steps.coverage.outputs.coverage > 90 && 'green'         || \
+          steps.coverage.outputs.coverage > 80 && 'yellow,green'  || \
+          steps.coverage.outputs.coverage > 70 && 'yellow'        || \
+          steps.coverage.outputs.coverage > 60 && 'orange,yellow' || \
+          steps.coverage.outputs.coverage > 50 && 'orange'        || \
+          steps.coverage.outputs.coverage > 40 && 'red,orange'    || \
+          'red' }}
         path: test-coverage.svg
 
     - name: Commit badge
