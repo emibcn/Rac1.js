@@ -53,7 +53,7 @@ jobs:
 
     - name: Round coverage value
       id: round
-      run: printf '##[set-output name=coverage;]%.2f%%\n' ${COVERAGE/\./,}
+      run: printf '##[set-output name=coverage;]%.2f%%\n' ${COVERAGE}
       env:
         COVERAGE: ${{ steps.coverage.outputs.coverage }}
 
