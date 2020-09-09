@@ -80,7 +80,9 @@ jobs:
         mkdir -p "${BRANCH}"
         mv "${FILE}" "${BRANCH}"
         git add "${BRANCH}/${FILE}"
-        git commit -m "Add/Update badge"
+
+        # Will give error if badge did not changed
+        git commit -m "Add/Update badge" || true
     - name: Push badge commit
       uses: ad-m/github-push-action@master
       with:
