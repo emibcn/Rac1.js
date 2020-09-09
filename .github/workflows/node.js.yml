@@ -51,6 +51,12 @@ jobs:
         percentage: 30
         filename: "app/coverage/clover.xml"
 
+    - name: Round coverage value
+      id: round
+      run: printf "##[set-output name=coverage;]%.2f%\n" ${COVERAGE}
+      env:
+        COVERAGE: ${{ steps.coverage.outputs.coverage }}
+
     - name: Extract branch name
       shell: bash
       run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
@@ -66,7 +72,7 @@ jobs:
       id: badge
       with:
         label: 'Coverage'
-        status: ${{ steps.coverage.outputs.coverage }}
+        status: ${{ steps.round.outputs.coverage }}
         color: ${{ steps.coverage.outputs.coverage > 75 && 'green' || 'red' }}
         path: test-coverage.svg
 
