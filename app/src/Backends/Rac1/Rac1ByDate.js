@@ -87,8 +87,8 @@ class Rac1 extends ByDate {
     podcast.title     = podcast.appTabletTitle.replace(/ \d\d\/.*/, '');
     podcast.titleFull = podcast.appTabletTitle;
     podcast.programUrl= podcast.audio.section.program.url;
-    podcast.author    = podcast.audio.section.program.subtitle.replace(/^amb /, '');
-    podcast.schedule  = podcast.audio.section.program.schedule.replace(this.dataScheduleFixScheduleHour, '$1h');
+    podcast.author    = (podcast.audio.section.program.subtitle||'').replace(/^amb /, '');
+    podcast.schedule  = (podcast.audio.section.program.schedule||'').replace(this.dataScheduleFixScheduleHour, '$1h');
 
     Object.keys( podcast.audio.section.program.images )
       .forEach( kind =>
