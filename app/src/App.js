@@ -9,7 +9,7 @@ import {
 
 import Storage from 'react-simple-storage';
 import { TranslatorProvider, useTranslate } from 'react-translate';
-import { Helmet } from 'react-helmet';
+import { Helmet, HelmetProvider } from 'react-helmet-async';
 import available from './i18n/available';
 
 import AppMenu from './AppMenu';
@@ -36,9 +36,29 @@ const AppHelmet = function(props) {
     <Helmet
       titleTemplate={ `%s | ${ title }` }
       defaultTitle={ title }
-    />
+    >
+      <html lang={ props.language } />
+    </Helmet>
   );
 }
+
+// Concentrate all providers (4) used in the app into a single component
+const AppProviders = function(props) {
+  return (
+    <TranslatorProvider translations={ props.translations }>
+      <HelmetProvider>
+        <Router>
+          {/* GoogleAnalytics event provider and route change detector */}
+          <GAListener language={ props.language } trackOptIn={ props.trackOptIn } >
+            <div className='App' id='router-container'>
+              { props.children }
+            </div>
+          </GAListener>
+        </Router>
+      </HelmetProvider>
+    </TranslatorProvider>
+  );
+};
 
 class App extends React.Component {
 
@@ -96,123 +116,120 @@ class App extends React.Component {
 
 
     return (
-      <TranslatorProvider translations={ translations }>
-        <Router>
-          <div className='App' id='router-container'>
-            {/* Persistent state saver into localStorage */}
-            <Storage
-              parent={ this }
-              prefix='App'
-              blacklist={ ['newServiceWorkerDetected'] }
-              onParentStateHydrated={ () => this.setState({ initializing: false }) }
+      <AppProviders { ...{
+          translations,
+          language,
+          trackOptIn,
+        }}
+      >
+
+        {/* Persistent state saver into localStorage */}
+        <Storage
+          parent={ this }
+          prefix='App'
+          blacklist={ ['newServiceWorkerDetected', 'initializing'] }
+          onParentStateHydrated={ () => this.setState({ initializing: false }) }
+        />
+
+        {/*
+            Modal routes hash paths ;)
+            Force initial modal to 'cookies' if all these conditions are true:
+            - Cookies modal not seen yet
+            - App completely initialized
+            - User is not a Bot
+            - User does not have DoNotTrack activated (consider bots as if they have DNT)
+        */}
+        <ModalRouter
+          force={ !trackingSeen && !initializing && !this.isBot ? 'cookies' : false }
+          appElement={ this.appElement.current }
+        >
+          <Route
+            exact
+            path='about'
+            render={ props => withErrorCatcher('About', <About />) }
+          />
+          <Route
+            exact
+            path='help'
+            render={ props => withErrorCatcher('Help', <Help />) }
+          />
+          <Route
+            exact
+            path='cookies'
+            render={ props => withErrorCatcher('Cookies',
+              <Cookies
+                { ...{ trackOptIn, trackingSeen } }
+                onTrackingSeen={ seen =>
+                  this.setState({ trackingSeen: seen })
+                }
+                onTrackOptIn={ track =>
+                  this.setState({ trackOptIn: track })
+                } /> )}
+          />
+
+        </ModalRouter>
+
+        {/* Menu */}
+        <ErrorCatcher origin='AppMenu'>
+          <AppMenu
+            newServiceWorkerDetected={ newServiceWorkerDetected }
+            onLoadNewServiceWorkerAccept={ this.handleLoadNewServiceWorkerAccept }
+            language={ language }
+            onLanguageChange={ this.handleLanguageChange }
+            trackOptIn={ trackOptIn }
+          />
+        </ErrorCatcher>
+
+        <AppHelmet language={ language } />
+
+        <header
+          ref={ this.appElement }
+          className='App-header'
+          id='page-wrap'>
+
+          {/* App Route */}
+          <Switch>
+            <Route
+              exact
+              path={ '/live' }
+              render={ props => withErrorCatcher('Live', <Live { ...props } />) } />
+
+            <Route
+              exact
+              path={ '/(directe|directo)' }
+            >
+              <Redirect to={{ pathname: 'live' }} />
+            </Route>
+
+            <Route
+              path={ '/:year(\\d{4})/:month(\\d{1,2})/:day(\\d{1,2})/:hour(\\d{1,2})/:minute(\\d{1,2})' }
+              render={ props => withErrorCatcher('ByDate 1', <ByDate { ...props } />) } />
+
+            <Route
+              path={ '/:year(\\d{4})/:month(\\d{1,2})/:day(\\d{1,2})/:hour(\\d{1,2})' }
+              render={ props => withErrorCatcher('ByDate 2', <ByDate { ...props } />) } />
+
+            <Route
+              path={ '/:year(\\d{4})/:month(\\d{1,2})/:day(\\d{1,2})' }
+              render={ props => withErrorCatcher('ByDate 3', <ByDate { ...props } />) } />
+
+            {/* Set default date to today */}
+            <Route
+              exact
+              path={ ':all(.*)' }
+              render={ ({ match, ...props }) => {
+                return <Redirect
+                  push
+                  to={{
+                    pathname: todayStr,
+                    hash: props.location.hash.replace('#',''),
+                  }}
+                />
+              }}
             />
-
-            {/* GoogleAnalytics event provider and route change detector */}
-            <GAListener language={ language } trackOptIn={ trackOptIn } >
-
-              {/*
-                  Modal routes hash paths ;)
-                  Force initial modal to 'cookies' if all these conditions are true:
-                  - Cookies modal not seen yet
-                  - App completely initialized
-                  - User is not a Bot
-                  - User does not have DoNotTrack activated (consider bots as if they have DNT)
-              */}
-              <ModalRouter
-                initializing={ initializing }
-                force={ !trackingSeen && !initializing && !this.isBot ? 'cookies' : false }
-                appElement={ this.appElement.current }
-              >
-                <Route
-                  exact
-                  path='about'
-                  render={ props => withErrorCatcher('About', <About />) }
-                />
-                <Route
-                  exact
-                  path='help'
-                  render={ props => withErrorCatcher('Help', <Help />) }
-                />
-                <Route
-                  exact
-                  path='cookies'
-                  render={ props => withErrorCatcher('Cookies',
-                    <Cookies
-                      { ...{ trackOptIn, trackingSeen } }
-                      onTrackingSeen={ seen =>
-                        this.setState({ trackingSeen: seen })
-                      }
-                      onTrackOptIn={ track =>
-                        this.setState({ trackOptIn: track })
-                      } /> )}
-                />
-
-              </ModalRouter>
-
-              {/* Menu */}
-              <ErrorCatcher origin='AppMenu'>
-                <AppMenu
-                  newServiceWorkerDetected={ newServiceWorkerDetected }
-                  onLoadNewServiceWorkerAccept={ this.handleLoadNewServiceWorkerAccept }
-                  language={ language }
-                  onLanguageChange={ this.handleLanguageChange }
-                  trackOptIn={ trackOptIn }
-                />
-              </ErrorCatcher>
-
-              <AppHelmet />
-
-              <header
-                ref={ this.appElement }
-                className='App-header'
-                id='page-wrap'>
-
-                {/* App Route */}
-                <Switch>
-                  <Route
-                    exact
-                    path={ '/live' }
-                    render={ props => withErrorCatcher('Live', <Live { ...props } />) } />
-
-                  <Route
-                    exact
-                    path={ '/(directe|directo)' }
-                  >
-                    <Redirect to={{ pathname: 'live' }} />
-                  </Route>
-
-                  <Route
-                    path={ '/:year(\\d{4})/:month(\\d{1,2})/:day(\\d{1,2})/:hour(\\d{1,2})/:minute(\\d{1,2})' }
-                    render={ props => withErrorCatcher('ByDate 1', <ByDate { ...props } />) } />
-
-                  <Route
-                    path={ '/:year(\\d{4})/:month(\\d{1,2})/:day(\\d{1,2})/:hour(\\d{1,2})' }
-                    render={ props => withErrorCatcher('ByDate 2', <ByDate { ...props } />) } />
-
-                  <Route
-                    path={ '/:year(\\d{4})/:month(\\d{1,2})/:day(\\d{1,2})' }
-                    render={ props => withErrorCatcher('ByDate 3', <ByDate { ...props } />) } />
-
-                  {/* Set default date to today */}
-                  <Route
-                    exact
-                    path={ ':all(.*)' }
-                    render={ ({ match, ...props }) => {
-                      return <Redirect
-                        push
-                        to={{
-                          pathname: todayStr,
-                          hash: props.location.hash.replace('#',''),
-                        }}
-                      />
-                    }}
-                  />
-                </Switch>
-              </header>
-            </GAListener>
-          </div>
-        </Router>
-      </TranslatorProvider>
+          </Switch>
+        </header>
+      </AppProviders>
     )
   }
 
