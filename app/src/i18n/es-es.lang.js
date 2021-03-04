@@ -59,7 +59,7 @@ const tracking = {
   "Allow tracking user interactions for usage analysis": "Permitir el seguimiento de las acciones del usuario con fines de análisis de uso",
 };
 
-export default {
+const translations = {
   locale: "es-es",
 
   App: {
@@ -140,4 +140,6 @@ export default {
     "This site uses cookies and other tracking technologies to assist with navigation and your ability to provide feedback, analyse your use of our products and services, assist with our promotional and marketing efforts, and provide content from third parties.": "Este sitio utiliza cookies y otras tecnologías de seguimiento para ayudar con la navegación y su capacidad de proporcionar comentarios, analizar el uso de nuestros productos y servicios, ayudar con nuestros esfuerzos de promoción y marketing, y proporcionar contenido de terceros.",
     "We need to reload the page when you change this option in order to ensure it is taken completely into account.": "Necesitamos volver a cargar la página cuando cambie esta opción para garantizar que se tenga en cuenta por completo.",
   },
-}
+};
+
+export default translations;

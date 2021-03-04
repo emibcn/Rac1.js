@@ -59,7 +59,7 @@ const tracking = {
     "Allow tracking user interactions for usage analysis": "Permet el seguiment de les accions de l'usuari amb fins d'anàlisi d'ús",
 };
 
-export default {
+const translations = {
   locale: "fr", // :(
 
   App: {
@@ -140,3 +140,5 @@ export default {
     "We need to reload the page when you change this option in order to ensure it is taken completely into account.": "Hem de tornar a carregar la pàgina quan canvieu aquesta opció per assegurar-se que es tingui en compte completament.",
   },
 }
+
+export default translations;

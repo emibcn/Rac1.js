@@ -2,7 +2,7 @@ import en_en from "./en-en.lang.js";
 import ca_es from "./ca-es.lang.js";
 import es_es from "./es-es.lang.js";
 
-export default {
+const available = {
   'en'   : en_en,
   'en-en': en_en,
   'en-us': en_en,
@@ -12,3 +12,5 @@ export default {
   'es'   : es_es,
   'es-es': es_es,
 };
+
+export default available;
