@@ -9,6 +9,15 @@ on:
       - '*'
       - '!badges'
       - '!gh-pages'
+    paths-ignore:
+      # Can we use '**.md' ?
+      - 'README.md'
+      - 'SECURITY.md'
+      - 'CONTRIBUTING.md'
+      - 'CODE_OF_CONDUCT.md'
+      - 'app/README.md'
+      - 'LICENSE'
+      - '.gitignore'
   pull_request:
     branches: [ master ]
 
@@ -33,14 +42,19 @@ jobs:
     - name: Manage cache
       uses: actions/cache@v2.0.0
       with:
-        path: app/node_modules
-        key: Rac1.js
+        path: |
+          app/node_modules
+        key: ${{ runner.OS }}-build-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('.github/workflows/*.yml') }}
+        restore-keys: |
+          ${{ runner.OS }}-build-${{ hashFiles('**/yarn.lock') }}
+          ${{ runner.OS }}-build
 
     - name: yarn install and test
       run: |
-        cd app
-        yarn install
-        yarn test -- --coverage
+        pushd app
+            yarn install
+            yarn test -- --coverage
+        popd
 
     # Coverage badges will be updated on any branch
     # and saved into a dedicated one
@@ -65,6 +79,7 @@ jobs:
     - uses: actions/checkout@v2
       with:
         ref: badges
+        path: badges
 
     # Use the output from the `coverage` step
     - name: Generate the badge SVG image
@@ -81,26 +96,30 @@ jobs:
           steps.coverage.outputs.coverage > 50 && 'orange'        ||
           steps.coverage.outputs.coverage > 40 && 'red,orange'    ||
           'red' }}
-        path: test-coverage.svg
+        path: badges/test-coverage.svg
 
     - name: Commit badge
       env:
         BRANCH: ${{ steps.extract_branch.outputs.branch }}
         FILE: 'test-coverage.svg'
       run: |
-        git config --local user.email "action@github.com"
-        git config --local user.name "GitHub Action"
-        mkdir -p "${BRANCH}"
-        mv "${FILE}" "${BRANCH}"
-        git add "${BRANCH}/${FILE}"
+        pushd badges
+            git config --local user.email "action@github.com"
+            git config --local user.name "GitHub Action"
+            mkdir -p "${BRANCH}"
+            mv "${FILE}" "${BRANCH}"
+            git add "${BRANCH}/${FILE}"
 
-        # Will give error if badge did not changed
-        git commit -m "Add/Update badge" || true
+            # Will give error if badge did not changed
+            git commit -m "Add/Update badge" || true
+        popd
+
     - name: Push badge commit
       uses: ad-m/github-push-action@master
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         branch: badges
+        directory: badges
 
 
   publish:
@@ -130,14 +149,19 @@ jobs:
     - name: Manage cache
       uses: actions/cache@v2.0.0
       with:
-        path: app/node_modules
-        key: Rac1.js
+        path: |
+          app/node_modules
+        key: ${{ runner.OS }}-build-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('.github/workflows/*.yml') }}
+        restore-keys: |
+          ${{ runner.OS }}-build-${{ hashFiles('**/yarn.lock') }}
+          ${{ runner.OS }}-build
 
     - name: yarn install and build
       run: |
-        cd app
-        yarn install
-        yarn build
+        pushd app
+            yarn install
+            yarn build
+        popd
 
     - name: Deploy to GitHub Pages
       if: success()
