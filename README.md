@@ -20,6 +20,7 @@ Inspired by [my command line Python app Rac1.py](https://github.com/emibcn/Rac1.
 ## See also
 - [Joan Domingo's](https://github.com/joan-domingo) [Podcasts-RAC1-Android](https://github.com/joan-domingo/Podcasts-RAC1-Android) android app
 - [emibcn's](https://github.com/emibcn) (me) [Rac1.py](https://github.com/emibcn/Rac1.py) command line app
+- [emibcn's](https://github.com/emibcn) (me) [Covid Data `Refactored`](https://github.com/emibcn/covid) web application, using [Material UI](https://material-ui.com/) (a still better example of what I can do).
 
 ## Dependencies
 - [ReactJS](https://reactjs.org/) based browser [Single Page Application (SPA)](https://en.wikipedia.org/wiki/Single-page_application) and [Progressive Web Application (PWA)](https://en.wikipedia.org/wiki/Progressive_web_application)
@@ -32,7 +33,7 @@ Inspired by [my command line Python app Rac1.py](https://github.com/emibcn/Rac1.
 - Use [react-helmet](https://github.com/nfl/react-helmet) to handle changes to HTML document title (in the future, others, like `meta` tags)
 - Use [react-simple-storage](https://github.com/ryanjyost/react-simple-storage) to save and retrieve state to and from `localStorage`
 - Use [\<HashRouter\>](https://github.com/ReactTraining/react-router/blob/master/packages/react-router-dom/docs/api/HashRouter.md) to handle date and podcast selection, linking and history ([Github Pages doesn't -easily- allows](https://itnext.io/so-you-want-to-host-your-single-age-react-app-on-github-pages-a826ab01e48) [\<BrowserRouter\>](https://github.com/ReactTraining/react-router/blob/master/packages/react-router-dom/docs/api/BrowserRouter.md))
-- Use the [Service Worker](https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API) provided by [Create React App](https://github.com/facebook/create-react-app), adding an [epilog](https://github.com/emibcn/Rac1.js/blob/master/app/src/sw-epilog.js) to allow communicating with it to [force an update from within the app](https://github.com/emibcn/Rac1.js/blob/master/app/src/index.js).
+- Use and register the [Service Worker](https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API) provided by [Create React App](https://github.com/facebook/create-react-app), adding an [epilog](https://github.com/emibcn/Rac1.js/blob/master/app/src/service-worker.js#L64) to allow communicating with it to [force an update from within the app](https://github.com/emibcn/Rac1.js/blob/master/app/src/index.js).
 - Use [react-modal](https://github.com/reactjs/react-modal) for showing some pages inside a modal (using [React Portals](https://reactjs.org/docs/portals.html)), while player may still be playing in the background.
 - Use [raw.macro](https://github.com/pveyes/raw.macro) to load raw HTML into bundle (for the [Privacy Policy](https://github.com/emibcn/Rac1.js/blob/master/app/src/legal.html)).
 - Use [react-component/slider](https://github.com/react-component/slider) for volume control (and possibly others in the future!)
