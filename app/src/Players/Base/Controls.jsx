@@ -309,7 +309,7 @@ class Controls extends React.Component {
       />;
 
     return (
-      <div style={{
+      <div role="toolbar" style={{
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',

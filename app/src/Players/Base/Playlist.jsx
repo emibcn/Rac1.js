@@ -48,7 +48,7 @@ class Playlist extends React.PureComponent {
     const { completedDownload, date, podcasts, current, minDate, maxDate } = this.props;
 
     return (
-      <div style={{
+      <div role="list" style={{
         color: '#333',
         backgroundColor: 'white',
         padding: '2em',
