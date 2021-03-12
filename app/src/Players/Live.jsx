@@ -8,28 +8,34 @@ import AudioWrapper from './Base/AudioWrapper';
 import PodcastCover from './Base/PodcastCover';
 
 class Live extends Component {
+  extraControls = [];
+
+  // Initial state
+  state = {
+    podcast: false,
+    hasError: false,
+    error: {},
+  };
 
   constructor(props) {
     super();
 
     this.backend = new Rac1Live({
-
       // Get data from backend
       onUpdate: this.handleUpdate,
 
       // Get errors from backend
       onError: this.handleError,
-
     });
+  }
 
-    this.extraControls = [];
+  componentDidMount() {
+    this.backend.launchTimer();
+  }
 
-    // Initial state
-    this.state = {
-      podcast: false,
-      hasError: false,
-      error: {},
-    };
+  componentWillUnmount() {
+    // Abort backend fetches
+    this.backend.abort();
   }
 
   handleUpdate = (podcast) => {
@@ -44,11 +50,6 @@ class Live extends Component {
       hasError: true,
       error: error,
     });
-  }
-
-  componentWillUnmount() {
-    // Abort backend fetches
-    this.backend.abort();
   }
 
   render() {
