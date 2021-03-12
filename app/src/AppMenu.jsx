@@ -26,6 +26,7 @@ import {
 } from 'react-burger-menu'
 
 import { withGAEvent } from './GAListener';
+import withServiceWorkerUpdater from './withServiceWorkerUpdater';
 import './AppMenu.css';
 
 class AppMenu extends React.Component {
@@ -254,4 +255,10 @@ AppMenu.propTypes = {
   sendEvent: PropTypes.func.isRequired,
 };
 
-export default translate('AppMenu')(withGAEvent(AppMenu));
+export default translate('AppMenu')(
+  withGAEvent(
+    withServiceWorkerUpdater(
+      AppMenu
+    )
+  )
+);
