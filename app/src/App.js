@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import {
   HashRouter as Router,
   Route,
@@ -96,10 +95,8 @@ class App extends React.Component {
     // Save App element to handle modal
     this.appElement = React.createRef();
 
-    this.registration = false;
     this.state = {
       initializing: true,
-      newServiceWorkerDetected: false,
       language: available.hasOwnProperty(navigator.language) ? navigator.language : 'en-en',
       trackingSeen: false,
       trackOptIn: !this.dnt,
@@ -108,30 +105,17 @@ class App extends React.Component {
     };
   }
 
-  componentDidMount() {
-    document.addEventListener('onNewServiceWorker', this.handleNewServiceWorker);
-  }
-
-  componentWillUnmount() {
-    document.removeEventListener('onNewServiceWorker', this.handleNewServiceWorker);
-  }
-
-  handleNewServiceWorker = (event) => {
-    this.registration = event.detail.registration;
-    this.setState({
-      newServiceWorkerDetected: true,
-    });
-  }
-
   handleStopInitializing = () => {
     this.setState({ initializing: false });
   }
+
+  handleLanguageChange = (language) => this.setState({ language });
 
 
   render() {
     const date = new Date();
     const todayStr = `/${date.getFullYear()}/${1 + date.getMonth()}/${date.getDate()}/0/0`;
-    const { newServiceWorkerDetected, language, trackOptIn, trackingSeen, initializing } = this.state;
+    const { language, trackOptIn, trackingSeen, initializing } = this.state;
     const translations = available[language];
 
 
@@ -148,7 +132,7 @@ class App extends React.Component {
         <Storage
           parent={ this }
           prefix='App'
-          blacklist={ ['newServiceWorkerDetected', 'initializing'] }
+          blacklist={ ['initializing'] }
           onParentStateHydrated={ this.handleStopInitializing  }
         />
 
@@ -195,8 +179,6 @@ class App extends React.Component {
             {/* Menu */}
             <ErrorCatcher origin='AppMenu'>
               <AppMenu
-                newServiceWorkerDetected={ newServiceWorkerDetected }
-                onLoadNewServiceWorkerAccept={ this.handleLoadNewServiceWorkerAccept }
                 language={ language }
                 onLanguageChange={ this.handleLanguageChange }
                 trackOptIn={ trackOptIn }
@@ -257,18 +239,6 @@ class App extends React.Component {
       </AppProviders>
     )
   }
-
-  handleLoadNewServiceWorkerAccept = () => this.props.onLoadNewServiceWorkerAccept(this.registration);
-
-  handleLanguageChange = (language) => this.setState({ language });
 }
-
-App.defaultProps = {
-  onLoadNewServiceWorkerAccept: registration => {},
-};
-
-App.propTypes = {
-  onLoadNewServiceWorkerAccept: PropTypes.func.isRequired,
-};
 
 export default App;
