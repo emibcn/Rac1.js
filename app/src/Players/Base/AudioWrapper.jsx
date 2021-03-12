@@ -45,7 +45,7 @@ class AudioWrapper extends PureComponent {
   // Actions for our Controls
   // Bound to this when needed
   /////////////////////////////
-  getPlayer = () => this._player.audioEl
+  getPlayer = () => this._player?.audioEl
 
   // Actions activated through MediaSession
   // Call Controls.runAction to ensure all work coherently:
@@ -75,9 +75,7 @@ class AudioWrapper extends PureComponent {
   isSeekable = () => {
     const player = this.getPlayer();
     return (
-      player &&
-      player.current &&
-      player.current.duration !== Infinity
+      player?.current?.duration !== Infinity
     )
   }
   getHideButtons = () => {
