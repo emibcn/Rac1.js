@@ -22,7 +22,7 @@ class ByDate extends Common {
   }
 
   setDate(date) {
-    if ( this.date !== date ) {
+    if ( this.date !== date && this.date !== undefined) {
       this.previousListUpdate = [];
       this.abort();
     }

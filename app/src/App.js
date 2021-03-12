@@ -28,7 +28,14 @@ import './App.css';
 const GACode = process.env.REACT_APP_GA_CODE;
 
 // Template function for catching errors from components
-const withErrorCatcher = (origin, component) => <ErrorCatcher {...{ origin , key: origin }}>{ component }</ErrorCatcher>;
+const withErrorCatcher = (origin, component) =>
+  <ErrorCatcher {...{ origin , key: origin }}>{ component }</ErrorCatcher>;
+
+const withErrorCatcherCreator = (origin, Component) => (props) =>
+  <ErrorCatcher {...{ origin , key: origin }}><Component { ...props } /></ErrorCatcher>;
+
+const LiveWithErrorCatcher = withErrorCatcherCreator('Live', Live);
+const ByDateWithErrorCatcher = withErrorCatcherCreator('ByDate', ByDate);
 
 // App Helmet: Controls HTML <head> elements with SideEffect
 // - Set a default title and title template, translated
@@ -116,6 +123,10 @@ class App extends React.Component {
     });
   }
 
+  handleStopInitializing = () => {
+    this.setState({ initializing: false });
+  }
+
 
   render() {
     const date = new Date();
@@ -138,107 +149,111 @@ class App extends React.Component {
           parent={ this }
           prefix='App'
           blacklist={ ['newServiceWorkerDetected', 'initializing'] }
-          onParentStateHydrated={ () => this.setState({ initializing: false }) }
+          onParentStateHydrated={ this.handleStopInitializing  }
         />
 
-        {/*
-            Modal routes hash paths ;)
-            Force initial modal to 'cookies' if all these conditions are true:
-            - Cookies modal not seen yet
-            - App completely initialized
-            - User is not a Bot
-            - User does not have DoNotTrack activated (consider bots as if they have DNT)
-        */}
-        <ModalRouter
-          force={ !trackingSeen && !initializing && !this.isBot ? 'cookies' : false }
-          appElement={ this.appElement.current }
-        >
-          <Route
-            exact
-            path='about'
-            render={ props => withErrorCatcher('About', <About />) }
-          />
-          <Route
-            exact
-            path='help'
-            render={ props => withErrorCatcher('Help', <Help />) }
-          />
-          <Route
-            exact
-            path='cookies'
-            render={ props => withErrorCatcher('Cookies',
-              <Cookies
-                { ...{ trackOptIn, trackingSeen } }
-                onTrackingSeen={ seen =>
-                  this.setState({ trackingSeen: seen })
-                }
-                onTrackOptIn={ track =>
-                  this.setState({ trackOptIn: track })
-                } /> )}
-          />
-
-        </ModalRouter>
-
-        {/* Menu */}
-        <ErrorCatcher origin='AppMenu'>
-          <AppMenu
-            newServiceWorkerDetected={ newServiceWorkerDetected }
-            onLoadNewServiceWorkerAccept={ this.handleLoadNewServiceWorkerAccept }
-            language={ language }
-            onLanguageChange={ this.handleLanguageChange }
-            trackOptIn={ trackOptIn }
-          />
-        </ErrorCatcher>
-
-        <AppHelmet language={ language } />
-
-        <header
-          ref={ this.appElement }
-          className='App-header'
-          id='page-wrap'>
-
-          {/* App Route */}
-          <Switch>
-            <Route
-              exact
-              path={ '/live' }
-              render={ props => withErrorCatcher('Live', <Live { ...props } />) } />
-
-            <Route
-              exact
-              path={ '/(directe|directo)' }
+        { initializing ? null : (
+          <>
+            {/*
+                Modal routes hash paths ;)
+                Force initial modal to 'cookies' if all these conditions are true:
+                - Cookies modal not seen yet
+                - App completely initialized
+                - User is not a Bot
+                - User does not have DoNotTrack activated (consider bots as if they have DNT)
+            */}
+            <ModalRouter
+              force={ !trackingSeen && !initializing && !this.isBot ? 'cookies' : false }
+              appElement={ this.appElement.current }
             >
-              <Redirect to={{ pathname: 'live' }} />
-            </Route>
+              <Route
+                exact
+                path='about'
+                render={ props => withErrorCatcher('About', <About />) }
+              />
+              <Route
+                exact
+                path='help'
+                render={ props => withErrorCatcher('Help', <Help />) }
+              />
+              <Route
+                exact
+                path='cookies'
+                render={ props => withErrorCatcher('Cookies',
+                  <Cookies
+                    { ...{ trackOptIn, trackingSeen } }
+                    onTrackingSeen={ seen =>
+                      this.setState({ trackingSeen: seen })
+                    }
+                    onTrackOptIn={ track =>
+                      this.setState({ trackOptIn: track })
+                    } /> )}
+              />
 
-            <Route
-              path={ '/:year(\\d{4})/:month(\\d{1,2})/:day(\\d{1,2})/:hour(\\d{1,2})/:minute(\\d{1,2})' }
-              render={ props => withErrorCatcher('ByDate 1', <ByDate { ...props } />) } />
+            </ModalRouter>
 
-            <Route
-              path={ '/:year(\\d{4})/:month(\\d{1,2})/:day(\\d{1,2})/:hour(\\d{1,2})' }
-              render={ props => withErrorCatcher('ByDate 2', <ByDate { ...props } />) } />
+            {/* Menu */}
+            <ErrorCatcher origin='AppMenu'>
+              <AppMenu
+                newServiceWorkerDetected={ newServiceWorkerDetected }
+                onLoadNewServiceWorkerAccept={ this.handleLoadNewServiceWorkerAccept }
+                language={ language }
+                onLanguageChange={ this.handleLanguageChange }
+                trackOptIn={ trackOptIn }
+              />
+            </ErrorCatcher>
 
-            <Route
-              path={ '/:year(\\d{4})/:month(\\d{1,2})/:day(\\d{1,2})' }
-              render={ props => withErrorCatcher('ByDate 3', <ByDate { ...props } />) } />
+            <AppHelmet language={ language } />
 
-            {/* Set default date to today */}
-            <Route
-              exact
-              path={ ':all(.*)' }
-              render={ ({ match, ...props }) => {
-                return <Redirect
-                  push
-                  to={{
-                    pathname: todayStr,
-                    hash: props.location.hash.replace('#',''),
+            <header
+              ref={ this.appElement }
+              className='App-header'
+              id='page-wrap'>
+
+              {/* App Route */}
+              <Switch>
+                <Route
+                  exact
+                  path={ '/live' }
+                  render={ LiveWithErrorCatcher } />
+
+                <Route
+                  exact
+                  path={ '/(directe|directo)' }
+                >
+                  <Redirect to={{ pathname: 'live' }} />
+                </Route>
+
+                <Route
+                  path={ '/:year(\\d{4})/:month(\\d{1,2})/:day(\\d{1,2})/:hour(\\d{1,2})/:minute(\\d{1,2})' }
+                  render={ ByDateWithErrorCatcher } />
+
+                <Route
+                  path={ '/:year(\\d{4})/:month(\\d{1,2})/:day(\\d{1,2})/:hour(\\d{1,2})' }
+                  render={ ByDateWithErrorCatcher } />
+
+                <Route
+                  path={ '/:year(\\d{4})/:month(\\d{1,2})/:day(\\d{1,2})' }
+                  render={ ByDateWithErrorCatcher } />
+
+                {/* Set default date to today */}
+                <Route
+                  exact
+                  path={ ':all(.*)' }
+                  render={ ({ match, ...props }) => {
+                    return <Redirect
+                      push
+                      to={{
+                        pathname: todayStr,
+                        hash: props.location.hash.replace('#',''),
+                      }}
+                    />
                   }}
                 />
-              }}
-            />
-          </Switch>
-        </header>
+              </Switch>
+            </header>
+          </>
+        )}
       </AppProviders>
     )
   }

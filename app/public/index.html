@@ -93,8 +93,8 @@
   let linkTag = document.createElement('link');
   linkTag.rel = 'preload';
   linkTag.href = self.url;
+  linkTag.as = 'fetch';
   linkTag.crossOrigin = 'crossorigin';
-  linkTag.type = 'fetch';
   document.head.appendChild(linkTag);
 
   self = null;
