@@ -9,6 +9,7 @@ services:
     working_dir: /home/node/app
     environment:
       - NODE_ENV=development
+      - REACT_APP_GA_CODE="UA-129704402-1"
     volumes:
       - ./app:/home/node/app
       - ./docs:/home/node/docs

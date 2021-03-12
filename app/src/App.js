@@ -14,7 +14,7 @@ import available from './i18n/available';
 
 import AppMenu from './AppMenu';
 import ModalRouter from './ModalRouter';
-import GAListener from './GAListener';
+import GAListener, {ReportWebVitals} from './GAListener';
 import ErrorCatcher from './ErrorCatcher';
 import { Live, ByDate } from './Players';
 import Cookies from './Cookies';
@@ -23,6 +23,9 @@ import Help from './Help';
 import botCheck from './botCheck';
 
 import './App.css';
+
+// GoogleAnalytics code taken from env
+const GACode = process.env.REACT_APP_GA_CODE;
 
 // Template function for catching errors from components
 const withErrorCatcher = (origin, component) => <ErrorCatcher {...{ origin , key: origin }}>{ component }</ErrorCatcher>;
@@ -49,7 +52,12 @@ const AppProviders = function(props) {
       <HelmetProvider>
         <Router>
           {/* GoogleAnalytics event provider and route change detector */}
-          <GAListener language={ props.language } trackOptIn={ props.trackOptIn } >
+          <GAListener
+            GACode={ props.GACode }
+            language={ props.language }
+            trackOptIn={ props.trackOptIn }
+          >
+            <ReportWebVitals/>
             <div className='App' id='router-container'>
               { props.children }
             </div>
@@ -108,6 +116,7 @@ class App extends React.Component {
     });
   }
 
+
   render() {
     const date = new Date();
     const todayStr = `/${date.getFullYear()}/${1 + date.getMonth()}/${date.getDate()}/0/0`;
@@ -120,6 +129,7 @@ class App extends React.Component {
           translations,
           language,
           trackOptIn,
+          GACode,
         }}
       >
 

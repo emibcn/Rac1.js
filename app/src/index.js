@@ -6,6 +6,13 @@ import App from './App';
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 import reportWebVitals from './reportWebVitals';
 
+// Creates a custom event and fires it on the document
+// Internal components can listen to it
+const dispatchCustomEvent = (name, detail) => {
+  const event = new CustomEvent(name, { detail });
+  document.dispatchEvent(event);
+}
+
 // Callback to call when user accepts loading new service worker
 // - Send message to SW to trigger the update
 // - Once updated, reload this window to load new assets
@@ -46,9 +53,9 @@ serviceWorkerRegistration.register({
 
   // When new ServiceWorker is available, trigger an event on `document`,
   // passing `registration` as extra data
+  // Send message to internal components through document custom event
   onUpdate: (registration) => {
-    var event = new CustomEvent('onNewServiceWorker', { detail: { registration } });
-    document.dispatchEvent(event);
+    dispatchCustomEvent('onNewServiceWorker', { registration });
   }
 
 });
@@ -56,4 +63,5 @@ serviceWorkerRegistration.register({
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+// Send message to internal components through document custom event
+reportWebVitals( args => dispatchCustomEvent('webVitals', args ) );

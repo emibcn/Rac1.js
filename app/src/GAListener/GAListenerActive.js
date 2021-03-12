@@ -4,35 +4,44 @@ import { withRouter } from "react-router-dom"
 import ReactGA from 'react-ga';
 
 class GAListenerActive extends React.Component {
-  constructor(){
-    super();
 
-    const GACode = 'UA-129704402-1';
+  componentDidMount() {
+    const {GACode} = this.props;
+
     this.loadGoogleTag(GACode);
     ReactGA.initialize(GACode, {
       titleCase: false,
     });
   }
 
-  componentDidMount() {
-    this.sendPageView( this.props.history.location );
-    this.props.history.listen( this.sendPageView );
-
-    ReactGA.set({ PageLanguage: this.props.language });
-  }
-
+  // Detect language change
   componentDidUpdate(prevProps) {
     if ( prevProps.language !== this.props.language ) {
-      ReactGA.set({ PageLanguage: this.props.language });
+      this.sendLanguage();
     }
   }
 
-  sendPageView(location) {
-    ReactGA.set({ page: location.pathname });
-    ReactGA.pageview(location.pathname);
+  manageHistory = () => {
+    const {history} = this.props;
+    this.sendPageView( history.location );
+    history.listen( this.sendPageView );
   }
 
-  loadGoogleTag(GACode) {
+  // Fired on route change
+  sendPageView = ({pathname, hash}) => {
+    const page = `${pathname}${hash}`;
+    console.log(`event: Navigated to '${page}'`);
+    ReactGA.set({ page });
+    ReactGA.pageview(page);
+  }
+
+  sendLanguage = () => {
+    const {language} = this.props;
+    console.log(`event: Change language to '${language}'`);
+    ReactGA.set({ PageLanguage: language });
+  }
+
+  loadGoogleTag = (GACode) => {
     // Global site tag (gtag.js) - Google Analytics
     global.dataLayer = global.dataLayer || [];
     global.gtag = function(){ global.dataLayer.push(arguments) }
@@ -41,14 +50,20 @@ class GAListenerActive extends React.Component {
     global.gtag('config', GACode);
 
     // Load GTag script async
-    setTimeout(() => {
-      let scriptTag = document.createElement('script');
-      scriptTag.src = `https://www.googletagmanager.com/gtag/js?id=${GACode}`;
-      document.body.appendChild(scriptTag);
-    }, 1);
+    const scriptTag = document.createElement('script');
+    scriptTag.src = `https://www.googletagmanager.com/gtag/js?id=${GACode}`;
+    scriptTag.async = true;
+    scriptTag.onload = this.onScriptLoad;
+    document.body.appendChild(scriptTag);
   }
 
-  removeGA() {
+  onScriptLoad = () => {
+    this.sendLanguage();
+    this.manageHistory();
+    this.props.onLoad();
+  }
+
+  removeGA = () => {
     this._ga = ReactGA.ga;
     ReactGA.ga = null;
     global.gtag = [];
@@ -62,13 +77,15 @@ class GAListenerActive extends React.Component {
 
 GAListenerActive.defaultProps = {
   language: 'en-en',
+  onLoad: () => {},
 };
 
 GAListenerActive.propTypes = {
   language: PropTypes.string.isRequired,
   match: PropTypes.object.isRequired,
   location: PropTypes.object.isRequired,
-  history: PropTypes.object.isRequired
+  history: PropTypes.object.isRequired,
+  onLoad: PropTypes.func.isRequired
 };
 
 export default withRouter( GAListenerActive );

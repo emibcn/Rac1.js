@@ -8,23 +8,33 @@ import GAListenerActive from './GAListenerActive';
 // Renders GA+children in production, only children for the rest
 class GAListener extends React.Component {
 
-  createEvent = (origin, help, status) => {
-    const event = {
-      category: origin,
-      action: help,
-    };
+  createEvent = (...args) => {
+    const event = {};
 
-    if ( typeof status === 'string' ) {
-      console.log(status);
-      event.label = status;
+    if(args.length > 1) {
+      // Generate a React-GA event from arguments
+      const [origin, help, status] = args;
+      Object.assign(event, {
+        category: origin,
+        action: help,
+      });
+
+      if ( typeof status === 'string' ) {
+        event.label = status;
+      }
+    }
+    else {
+      // Arguments is already a React-GA event
+      Object.assign(event, args[0]);
     }
 
-    console.log(event);
+    console.log("event:", event);
 
     return event;
   }
 
-  sendEvent = (...args) => ReactGA.event( this.createEvent(...args) );
+  sendEvent = (...args) =>
+    ReactGA.event( this.createEvent(...args) );
 
   render() {
     const { children, trackOptIn, ...props } = this.props;
