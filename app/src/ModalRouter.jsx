@@ -46,7 +46,9 @@ class ModalRouterInner extends React.PureComponent {
       autoForce: false,
       forced: props.force,
     };
+  }
 
+  componentDidMount() {
     // Register history change event listener
     this.unlisten = this.history.listen(this.handleHistoryChange);
   }
