@@ -55,6 +55,8 @@ jobs:
             yarn install
             yarn test -- --coverage
         popd
+      env:
+        REACT_APP_GA_CODE: "UA-129704402-1"
 
     # Coverage badges will be updated on any branch
     # and saved into a dedicated one
@@ -162,6 +164,8 @@ jobs:
             yarn install
             yarn build
         popd
+      env:
+        REACT_APP_GA_CODE: "UA-129704402-1"
 
     - name: Deploy to GitHub Pages
       if: success()
