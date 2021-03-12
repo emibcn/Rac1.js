@@ -7,19 +7,13 @@ class Live extends Common {
   updateUrl = '';
   updateOptions = {};
   podcastData = {};
-
-  // Start the timer to update live podcast info in background
-  constructor(props) {
-    super(props);
-    this.timer = false;
-    this.launchTimer();
-  }
+  timer = false;
 
   // Stop the timer on abort
   abort() {
     if ( this.timer !== false ) {
       clearTimeout( this.timer );
-      this.timer = true;
+      this.timer = false;
     }
     super.abort();
   }
