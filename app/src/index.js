@@ -5,6 +5,7 @@ import './index.css';
 import App from './App';
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 import reportWebVitals from './reportWebVitals';
+import { onServiceWorkerUpdate } from '@3m1/service-worker-updater';
 
 ReactDOM.render(
   <React.StrictMode>
@@ -28,9 +29,7 @@ serviceWorkerRegistration.register({
   // When new ServiceWorker is available, trigger an event on `document`,
   // passing `registration` as extra data
   // Send message to internal components through document custom event
-  onUpdate: (registration) => {
-    dispatchCustomEvent('onNewServiceWorker', { registration });
-  }
+  onUpdate: onServiceWorkerUpdate
 
 });
 

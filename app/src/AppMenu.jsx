@@ -26,7 +26,7 @@ import {
 } from 'react-burger-menu'
 
 import { withGAEvent } from './GAListener';
-import withServiceWorkerUpdater from './withServiceWorkerUpdater';
+import { withServiceWorkerUpdater } from '@3m1/service-worker-updater';
 import './AppMenu.css';
 
 class AppMenu extends React.Component {
