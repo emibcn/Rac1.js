@@ -17,7 +17,7 @@
     "react": "^17.0.1",
     "react-audio-player": "^0.14.0",
     "react-burger-menu": "^3.0.3",
-    "react-date-picker": "^8.0.7",
+    "react-date-picker": "^8.1.1",
     "react-dom": "^17.0.1",
     "react-ga": "^3.3.0",
     "react-helmet-async": "^1.0.9",
