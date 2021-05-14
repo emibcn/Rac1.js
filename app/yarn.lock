@@ -1096,17 +1096,10 @@
   dependencies:
     regenerator-runtime "^0.13.4"
 
-"@babel/runtime@^7.1.2", "@babel/runtime@^7.10.1", "@babel/runtime@^7.11.1", "@babel/runtime@^7.12.1", "@babel/runtime@^7.12.5", "@babel/runtime@^7.9.2":
+"@babel/runtime@^7.1.2", "@babel/runtime@^7.10.1", "@babel/runtime@^7.10.2", "@babel/runtime@^7.11.1", "@babel/runtime@^7.11.2", "@babel/runtime@^7.12.1", "@babel/runtime@^7.12.5", "@babel/runtime@^7.5.5", "@babel/runtime@^7.7.2", "@babel/runtime@^7.8.4", "@babel/runtime@^7.9.2":
   version "7.13.9"
   resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.13.9.tgz#97dbe2116e2630c489f22e0656decd60aaa1fcee"
   integrity sha512-aY2kU+xgJ3dJ1eU6FMB9EH8dIe8dmusF1xEku52joLvw6eAFN0AI+WxCLDnpev2LEejWBAy2sBvBOBAjI3zmvA==
-  dependencies:
-    regenerator-runtime "^0.13.4"
-
-"@babel/runtime@^7.10.2", "@babel/runtime@^7.11.2", "@babel/runtime@^7.5.5", "@babel/runtime@^7.7.2", "@babel/runtime@^7.8.4":
-  version "7.12.18"
-  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.12.18.tgz#af137bd7e7d9705a412b3caaf991fe6aaa97831b"
-  integrity sha512-BogPQ7ciE6SYAUPtlm9tWbgI9+2AgqSam6QivMgXgAT+fKbgppaj4ZX15MHeLC1PVF5sNk70huBu20XxWOs8Cg==
   dependencies:
     regenerator-runtime "^0.13.4"
 
@@ -9195,10 +9188,10 @@ rc-motion@^2.0.0:
     classnames "^2.2.1"
     rc-util "^5.2.1"
 
-rc-slider@^9.7.1:
-  version "9.7.1"
-  resolved "https://registry.yarnpkg.com/rc-slider/-/rc-slider-9.7.1.tgz#63535177a74a3ee44f090909e8c6f98426eb9dba"
-  integrity sha512-r9r0dpFA3PEvxBhIfVi1lVzxuSogWxeY+tGvi2AqMM1rPgaOXQ7WbtT+9kVFkJ9K8TntA/vYPgiCCKfN29KTkw==
+rc-slider@^9.7.2:
+  version "9.7.2"
+  resolved "https://registry.yarnpkg.com/rc-slider/-/rc-slider-9.7.2.tgz#282f571f7582752ebaa33964e441184f4e79ad74"
+  integrity sha512-mVaLRpDo6otasBs6yVnG02ykI3K6hIrLTNfT5eyaqduFv95UODI9PDS6fWuVVehVpdS4ENgOSwsTjrPVun+k9g==
   dependencies:
     "@babel/runtime" "^7.10.1"
     classnames "^2.2.5"
