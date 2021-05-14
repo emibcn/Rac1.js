@@ -15,7 +15,7 @@
     "rc-slider": "^9.7.1",
     "rc-switch": "^3.2.2",
     "react": "^17.0.1",
-    "react-audio-player": "^0.14.0",
+    "react-audio-player": "^0.17.0",
     "react-burger-menu": "^3.0.3",
     "react-date-picker": "^8.1.1",
     "react-dom": "^17.0.1",
