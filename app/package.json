@@ -6,7 +6,7 @@
   "dependencies": {
     "@3m1/service-worker-updater": "^1.0.4",
     "@fortawesome/fontawesome-free": "^5.15.2",
-    "@fortawesome/fontawesome-svg-core": "^1.2.34",
+    "@fortawesome/fontawesome-svg-core": "^1.2.35",
     "@fortawesome/free-solid-svg-icons": "^5.15.2",
     "@fortawesome/react-fontawesome": "^0.1.14",
     "abortcontroller-polyfill": "^1.7.1",
