@@ -2,10 +2,10 @@
 # yarn lockfile v1
 
 
-"@3m1/service-worker-updater@^1.0.4":
-  version "1.0.4"
-  resolved "https://registry.yarnpkg.com/@3m1/service-worker-updater/-/service-worker-updater-1.0.4.tgz#fd565ce2fe1cd4da78d07c348483188ace9e423e"
-  integrity sha512-K4kSJbIE7EIQt0Vlx4Y11SBEZYU/Blg0EwXqfdUrGQdjoQ2vYMGVnuMVVeZlVzEyjVpb4tMlfXAQkVME53fz6Q==
+"@3m1/service-worker-updater@^1.0.5":
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/@3m1/service-worker-updater/-/service-worker-updater-1.0.5.tgz#3a81b7135cb2f946482fd819f81cf20cb6d4381d"
+  integrity sha512-xrsdD1/x3+0R3gL4eeT5iAQt1vFO3GBu7tQa6415giwucueEuSJAzp9rFm1eMjOqpinTxL0cN+0ZjRbf93VFUg==
 
 "@babel/code-frame@7.10.4":
   version "7.10.4"
@@ -9255,10 +9255,10 @@ react-audio-player@^0.17.0:
   dependencies:
     prop-types "^15.7.2"
 
-react-burger-menu@^3.0.3:
-  version "3.0.3"
-  resolved "https://registry.yarnpkg.com/react-burger-menu/-/react-burger-menu-3.0.3.tgz#be1268423b7a4a21d99243ae63842e480a5ba70b"
-  integrity sha512-BqOZnAktmd6uoiQYcKQmx8RFaZXbol5K8cApN2rKWz/qg1U4IPYGeHPKkLaYKDBelQz4IPaD2GMzo4PKCvXwNg==
+react-burger-menu@^3.0.6:
+  version "3.0.6"
+  resolved "https://registry.yarnpkg.com/react-burger-menu/-/react-burger-menu-3.0.6.tgz#9003cc1d65dc9e70d1460e5d8d8982f6b1a79d1d"
+  integrity sha512-Xikyl8VRkQBOyFVoMKpbScTLG6LlW64rajiquyCGwtpPswrDxaifusKckzTWAOH0At40Boguhj5lXq451NO0LA==
   dependencies:
     browserify-optional "^1.0.0"
     classnames "^2.2.6"
