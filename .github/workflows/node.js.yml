@@ -19,8 +19,67 @@ on:
     branches: [ master ]
 
 jobs:
-  test:
+  pre_ci:
+    name: Prepare CI environment
+    runs-on: ubuntu-latest
+    outputs:
+      commit_message: ${{ steps.pr_get_commit_message.outputs.commit_message }}
 
+    steps:
+
+    - name: Checkout Project
+      uses: actions/checkout@v2
+      with:
+        # We need to fetch with a depth of 2 for pull_request so we can do HEAD^2
+        fetch-depth: 2
+
+    - name: "Get commit message"
+      id: pr_get_commit_message
+      env:
+        COMMIT_PUSH: ${{ github.event.head_commit.message }}
+      run: |
+        COMMIT_MESSAGE="${COMMIT_PUSH:-$(git log --format=%B -n 1 HEAD^2)}"
+        echo "::set-output name=commit_message::${COMMIT_MESSAGE}"
+
+  test-build:
+
+    name: Test building
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [12.x]
+
+    steps:
+
+    - uses: actions/checkout@v2
+
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v2.1.5
+      with:
+        node-version: ${{ matrix.node-version }}
+
+    - name: Manage cache
+      uses: actions/cache@v2.1.5
+      with:
+        path: |
+          app/node_modules
+        key: ${{ runner.OS }}-build-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('.github/workflows/*.yml') }}
+        restore-keys: |
+          ${{ runner.OS }}-build-${{ hashFiles('**/yarn.lock') }}
+          ${{ runner.OS }}-build
+
+    - name: yarn install and test building
+      env:
+        REACT_APP_GA_CODE: "UA-129704402-1"
+      working-directory: ./app
+      run: |
+        yarn install
+        yarn build
+
+  test-code:
+
+    name: Test code and generate test coverage value
     runs-on: ubuntu-latest
 
     strategy:
@@ -37,12 +96,12 @@ jobs:
     - uses: actions/checkout@v2
 
     - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
+      uses: actions/setup-node@v2.1.5
       with:
         node-version: ${{ matrix.node-version }}
 
     - name: Manage cache
-      uses: actions/cache@v2.0.0
+      uses: actions/cache@v2.1.5
       with:
         path: |
           app/node_modules
@@ -52,12 +111,12 @@ jobs:
           ${{ runner.OS }}-build
 
     - name: yarn install and test
+      env:
+        REACT_APP_GA_CODE: "UA-129704402-1"
       working-directory: ./app
       run: |
         yarn install
-        yarn test -- --coverage --color
-      env:
-        REACT_APP_GA_CODE: "UA-129704402-1"
+        yarn test --color --coverage
 
     # Coverage badges will be updated on any branch
     # and saved into a dedicated one
@@ -65,9 +124,48 @@ jobs:
       uses: johanvanhelden/gha-clover-test-coverage-check@v1
       id: coverage
       with:
-        percentage: 30
+        percentage: 50
+        exit: 0
         rounded-precision: 2
         filename: "app/coverage/clover.xml"
+
+  test:
+    name: Tests waiter
+    needs: [test-code, test-build]
+    runs-on: ubuntu-latest
+    outputs:
+      coverage: ${{ needs.test-code.outputs.coverage }}
+      coverage-rounded-display: ${{ needs.test-code.outputs.coverage-rounded-display }}
+    steps:
+    - name: Check test coverage
+      env:
+        COVERAGE: ${{ needs.test-code.outputs.coverage }}
+        COVERAGE_ROUNDED: ${{ needs.test-code.outputs.coverage-rounded-display }}
+      run: |
+        echo "Coverage: ${COVERAGE}"
+        echo "Coverage Rounded: ${COVERAGE_ROUNDED}"
+
+  comment_pr:
+    name: Comment on PR with test coverage value
+    needs: [test, pre_ci]
+    if: ${{ github.event_name == 'pull_request' && github.actor == github.repository_owner && !contains(needs.pre_ci.outputs.commit_message, '#comment-badge') }}
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Generate comment file with test coverage
+      shell: bash
+      env:
+        COVERAGE: ${{ needs.test.outputs.coverage-rounded-display }}
+      run: |
+        echo "**Test coverage: ${COVERAGE}**" > output.md
+
+    - name: Comment PR with test coverage
+      uses: machine-learning-apps/pr-comment@1.0.0
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        path: output.md
 
   badge:
 
@@ -76,8 +174,12 @@ jobs:
     # - One of these is met:
     #   - This is a pull request event and the pull actor is the same as the repo owner
     #   - This is a push event and the push event is on branch 'master'
+    name: Generate badge image with test coverage value
     needs: test
     if: ${{ ( github.event_name == 'pull_request' && github.actor == github.repository_owner ) || github.ref == 'refs/heads/master' }}
+    outputs:
+      url: ${{ steps.url.outputs.url }}
+      markdown: ${{ steps.url.outputs.markdown }}
 
     runs-on: ubuntu-latest
 
@@ -95,7 +197,7 @@ jobs:
         else
             EXPORT_VALUE="${TMP_GITHUB_REF}"
         fi
-        echo "##[set-output name=branch;]$(echo ${EXPORT_VALUE})"
+        echo "##[set-output name=branch;]${EXPORT_VALUE}"
       id: extract_branch
 
     - uses: actions/checkout@v2
@@ -144,15 +246,54 @@ jobs:
         branch: badges
         directory: badges
 
+    - name: Badge image URL
+      id: url
+      env:
+        BRANCH: ${{ steps.extract_branch.outputs.branch }}
+        FILE: 'test-coverage.svg'
+        COVERAGE: ${{ needs.test.outputs.coverage-rounded-display }}
+      run: |
+        URL="https://raw.githubusercontent.com/${GITHUB_REPOSITORY}/badges/${BRANCH}/${FILE}"
+        MARKDOWN="![Coverage ${COVERAGE}](${URL})"
+        echo "Badge URL: ${URL}"
+        echo "Badge image for Markdown: ${MARKDOWN}"
+        echo "##[set-output name=url;]${URL}"
+        echo "##[set-output name=markdown;]${MARKDOWN}"
+
+  comment_pr_badge:
+    name: Comment on PR with generated badge
+    needs: [pre_ci, badge]
+    if: ${{ github.event_name == 'pull_request' && contains(needs.pre_ci.outputs.commit_message, '#comment-badge') }}
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Generate comment file with test coverage badge
+      shell: bash
+      env:
+        BADGE: ${{ needs.badge.outputs.markdown }}
+      run: |
+        echo "Badge: ${BADGE}"
+        echo "${BADGE}" > output.md
+
+    - name: Comment PR with test coverage badge
+      uses: machine-learning-apps/pr-comment@1.0.0
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        path: output.md
 
   publish:
 
-    # Only publish if all these conditions are met:
-    # - The previous step ended successfully
-    # - This is a push event
-    # - The push event is on branch 'master'
-    needs: test
-    if: ${{ ( github.event_name == 'pull_request' && github.event.pull_request.merged == true ) || github.ref == 'refs/heads/master' }}
+    # Only generate and publish if these conditions are met:
+    # - Commit message does not contains #no-publish
+    # - The test step ended successfully
+    # - One of these is met:
+    #   - This is a pull request event and the pull has been merged
+    #   - This is a push event and the push event is on branch 'master'
+    name: Publish code to GitHub Pages
+    needs: [pre_ci, test]
+    if: ${{ !contains(github.event.head_commit.message, '#no-publish') && (( github.event_name == 'pull_request' && github.event.pull_request.merged == true ) || github.ref == 'refs/heads/master' ) }}
 
     runs-on: ubuntu-latest
 
@@ -165,12 +306,12 @@ jobs:
     - uses: actions/checkout@v2
 
     - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
+      uses: actions/setup-node@v2.1.5
       with:
         node-version: ${{ matrix.node-version }}
 
     - name: Manage cache
-      uses: actions/cache@v2.0.0
+      uses: actions/cache@v2.1.5
       with:
         path: |
           app/node_modules
