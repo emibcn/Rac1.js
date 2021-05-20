@@ -7,7 +7,7 @@
     "@3m1/service-worker-updater": "^1.0.5",
     "@fortawesome/fontawesome-free": "^5.15.2",
     "@fortawesome/fontawesome-svg-core": "^1.2.35",
-    "@fortawesome/free-solid-svg-icons": "^5.15.2",
+    "@fortawesome/free-solid-svg-icons": "^5.15.3",
     "@fortawesome/react-fontawesome": "^0.1.14",
     "abortcontroller-polyfill": "^1.7.3",
     "babel-polyfill": "^6.26.0",
@@ -68,7 +68,7 @@
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^5.12.0",
-    "@testing-library/react": "^11.1.0",
+    "@testing-library/react": "^11.2.7",
     "@testing-library/user-event": "^13.1.9",
     "jest-canvas-mock": "^2.3.1"
   }
