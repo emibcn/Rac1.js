@@ -1,6 +1,6 @@
-import GAListener from './GAListener';
-import withGAEvent from './withGAEvent';
-import ReportWebVitals from './ReportWebVitals';
+import GAListener from './GAListener'
+import withGAEvent from './withGAEvent'
+import ReportWebVitals from './ReportWebVitals'
 
-export { withGAEvent, ReportWebVitals };
-export default GAListener;
+export { withGAEvent, ReportWebVitals }
+export default GAListener
