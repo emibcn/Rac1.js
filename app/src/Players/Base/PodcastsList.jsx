@@ -8,11 +8,9 @@ import { faPlay } from '@fortawesome/free-solid-svg-icons'
 class PodcastsList extends React.PureComponent {
   renderChildren () {
     const { children, current } = this.props
-    const hasChildren =
-      typeof children === 'undefined' || children.length === 0
-    return hasChildren
-      ? null
-      : children.map((child, index) => (
+    return children.length === 0 ?
+      null :
+      children.map((child, index) => (
         <li
           key={child.key}
           style={{
@@ -46,7 +44,7 @@ class PodcastsList extends React.PureComponent {
       textAlign: 'left'
     }
 
-    return children === undefined || children.length === 0 ? null : (
+    return children.length === 0 ? null : (
       <MediaQuery minWidth={1024}>
         {(matches) => {
           return (
@@ -67,7 +65,9 @@ class PodcastsList extends React.PureComponent {
   }
 }
 
-PodcastsList.defaultProps = {}
+PodcastsList.defaultProps = {
+  children: []
+}
 
 PodcastsList.propTypes = {
   children: PropTypes.arrayOf(PropTypes.element),
