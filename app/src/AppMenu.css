@@ -19,18 +19,18 @@
 }
 
 .news .bm-burger-button::after {
-  background-color: rgba(0, 255, 0, .8);
-  border: 1px solid rgba(50, 255, 50, .8);
+  background-color: rgba(0, 255, 0, 0.8);
+  border: 1px solid rgba(50, 255, 50, 0.8);
   border-radius: 50%;
-  width: .7em;
-  height: .7em;
+  width: 0.7em;
+  height: 0.7em;
   display: block;
   position: absolute;
   top: -8px;
   right: -5px;
   content: "!";
-  color: rgba(255,255,0,.8);
-  line-height: .5em;
+  color: rgba(255, 255, 0, 0.8);
+  line-height: 0.5em;
   font-weight: bold;
   font-size: 1em;
   transform: rotate(15deg);
@@ -81,7 +81,7 @@
 /* Individual item */
 a.bm-item {
   display: block;
-  padding: .5em;
+  padding: 0.5em;
 }
 a.bm-item:link,
 a.bm-item:visited {
@@ -91,7 +91,6 @@ a.bm-item.active {
   outline-style: dotted;
   outline-width: 1px;
 }
-
 
 /* Styling of overlay */
 .bm-overlay {

@@ -3,12 +3,12 @@
   <head>
     <meta charset="utf-8" />
     <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <meta name="theme-color" content="#000000" />
     <meta
-      name="description"
-      content="Rac1 radio podcasts finder and player"
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
     />
+    <meta name="theme-color" content="#000000" />
+    <meta name="description" content="Rac1 radio podcasts finder and player" />
     <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo-rac1.png" />
     <!--
       manifest.json provides metadata used when your web app is installed on a
@@ -27,78 +27,107 @@
     <!--
       Prefetch backend DNS adresses and TLS connections, along with some assets
     -->
-    <link rel="prefetch" as="script" cross-origin="anonymous" href="https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js" />
-    <link rel="dns-prefetch" href="https://www.googletagmanager.com/gtag/js?id=UA-129704402-1" />
-    <link rel="dns-prefetch" href="https://www.google-analytics.com/analytics.js" />
+    <link
+      rel="prefetch"
+      as="script"
+      cross-origin="anonymous"
+      href="https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js"
+    />
+    <link
+      rel="dns-prefetch"
+      href="https://www.googletagmanager.com/gtag/js?id=UA-129704402-1"
+    />
+    <link
+      rel="dns-prefetch"
+      href="https://www.google-analytics.com/analytics.js"
+    />
     <link rel="preconnect" href="https://audioserver.rac1.cat" />
     <title>Rac1 Radio Podcasts Player</title>
     <script>
-"use strict"; !function(self, global) {
+      "use strict";
+      !(function (self, global) {
+        // Exclude preloading for bots
+        if (
+          /bot|google|baidu|bing|msn|duckduckbot|teoma|slurp|yandex/i.test(
+            navigator.userAgent
+          )
+        ) {
+          return;
+        }
 
-  // Exclude preloading for bots
-  if ( /bot|google|baidu|bing|msn|duckduckbot|teoma|slurp|yandex/i.test(navigator.userAgent) ) {
-    return;
-  }
+        // Preload for live player
+        if (["#/directe", "#/live"].includes(global.location.hash)) {
+          self.url = "https://api.audioteca.rac1.cat/directe";
+        }
 
-  // Preload for live player
-  if ( ['#/directe', '#/live'].includes(global.location.hash) ) {
-    self.url = "https://api.audioteca.rac1.cat/directe";
-  }
+        // Preload for by-date player
+        else {
+          self.pad2 = function (num) {
+            return (num < 10 ? "0" : "") + num;
+          };
+          self.dateStr = "";
 
-  // Preload for by-date player
-  else {
-    self.pad2 = function(num) { return ( num < 10 ? '0' : '' ) + num };
-    self.dateStr = '';
+          // Get date from location hash
+          if (global.location.hash.match(/^#\/\d{4}\/\d+\/\d+/)) {
+            self.dateStr = global.location.hash
+              .split("/")
+              .slice(1, 4)
+              .reverse()
+              .map(self.pad2)
+              .join("/");
+          }
+          // Get today's date
+          else {
+            self.date = new Date();
+            self.dateStr =
+              self.pad2(self.date.getDate()) +
+              "/" +
+              self.pad2(1 + self.date.getMonth()) +
+              "/" +
+              self.date.getFullYear();
+          }
 
-    // Get date from location hash
-    if ( global.location.hash.match(/^#\/\d{4}\/\d+\/\d+/)) {
-      self.dateStr = global.location.hash
-        .split('/')
-        .slice(1, 4)
-        .reverse()
-        .map( self.pad2 )
-        .join('/');
-    }
-    // Get today's date
-    else {
-      self.date = new Date();
-      self.dateStr =
-        self.pad2( self.date.getDate() ) + '/' +
-        self.pad2( 1 + self.date.getMonth() ) + '/' +
-        self.date.getFullYear();
-    }
+          // Set next day date if it's not 2018's last day (server inconsistency)
+          if (!self.dateStr.match(/^31\/12\/2018$/)) {
+            self.dateParts = self.dateStr
+              .split("/")
+              .reverse()
+              .map(function (str) {
+                return Number(str);
+              });
+            self.date = new Date(
+              self.dateParts[0],
+              self.dateParts[1] - 1,
+              self.dateParts[2]
+            );
+            self.dateTo = new Date(self.date);
+            self.dateTo.setDate(self.dateTo.getDate() + 1);
+            self.dateStrTo =
+              self.pad2(self.dateTo.getDate()) +
+              "/" +
+              self.pad2(1 + self.dateTo.getMonth()) +
+              "/" +
+              self.dateTo.getFullYear();
+          } else {
+            self.dateStrTo = "";
+          }
 
-    // Set next day date if it's not 2018's last day (server inconsistency)
-    if ( !self.dateStr.match(/^31\/12\/2018$/) ) {
-      self.dateParts = self.dateStr.split('/').reverse().map( function(str) { return Number(str) } );
-      self.date = new Date( self.dateParts[0], self.dateParts[1] - 1, self.dateParts[2] );
-      self.dateTo = new Date(self.date);
-      self.dateTo.setDate( self.dateTo.getDate() + 1 );
-      self.dateStrTo =
-        self.pad2( self.dateTo.getDate() ) + '/' +
-        self.pad2( 1 + self.dateTo.getMonth() ) + '/' +
-        self.dateTo.getFullYear();
-    }
-    else {
-      self.dateStrTo = '';
-    }
+          self.url =
+            "https://api.audioteca.rac1.cat/a-la-carta/cerca?" +
+            "text=&programId=&sectionId=HOUR&" +
+            `from=${self.dateStr}&to=${self.dateStrTo}&pageNumber=0`;
+        }
 
-    self.url =
-      "https://api.audioteca.rac1.cat/a-la-carta/cerca?"
-      + "text=&programId=&sectionId=HOUR&"
-      + `from=${self.dateStr}&to=${self.dateStrTo}&pageNumber=0`;
-  }
+        // Add Link tag to hint the browser
+        let linkTag = document.createElement("link");
+        linkTag.rel = "preload";
+        linkTag.href = self.url;
+        linkTag.as = "fetch";
+        linkTag.crossOrigin = "crossorigin";
+        document.head.appendChild(linkTag);
 
-  // Add Link tag to hint the browser
-  let linkTag = document.createElement('link');
-  linkTag.rel = 'preload';
-  linkTag.href = self.url;
-  linkTag.as = 'fetch';
-  linkTag.crossOrigin = 'crossorigin';
-  document.head.appendChild(linkTag);
-
-  self = null;
-}({}, window)
+        self = null;
+      })({}, window);
     </script>
   </head>
   <body>
