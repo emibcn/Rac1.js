@@ -70,6 +70,7 @@ PodcastCover.propTypes = {
   title: PropTypes.string.isRequired,
   author: PropTypes.string.isRequired,
   schedule: PropTypes.string.isRequired,
+  t: PropTypes.func.isRequired,
   onClick: PropTypes.func,
   minWidth: PropTypes.number
 }
