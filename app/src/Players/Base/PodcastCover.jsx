@@ -5,8 +5,7 @@ import { translate } from 'react-translate'
 import MediaQuery from 'react-responsive'
 
 function PodcastCover (props) {
-  const { minWidth, image, programUrl, title, author, schedule, t } =
-    this.props
+  const { minWidth, image, programUrl, title, author, schedule, t } = props
 
   return (
     <MediaQuery minWidth={minWidth}>
@@ -71,8 +70,8 @@ PodcastCover.propTypes = {
   title: PropTypes.string.isRequired,
   author: PropTypes.string.isRequired,
   schedule: PropTypes.string.isRequired,
-  onClick: PropTypes.func.isRequired,
-  minWidth: PropTypes.number.isRequired
+  onClick: PropTypes.func,
+  minWidth: PropTypes.number
 }
 
 export default translate('PodcastCover')(PodcastCover)
