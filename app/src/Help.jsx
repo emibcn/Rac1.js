@@ -15,6 +15,11 @@ function Key ({ k }) {
     </pre>
   )
 }
+
+Key.propTypes = {
+  k: PropTypes.string.isRequired,
+}
+
 function Arrow (props) {
   return (
     <FontAwesomeIcon icon={faArrow} {...props} style={{ marginRight: '1em' }} />
@@ -83,6 +88,10 @@ function Help ({ t }) {
       </div>
     </>
   )
+}
+
+Help.propTypes = {
+  t: PropTypes.func.isRequired,
 }
 
 export default translate('Help')(Help)
