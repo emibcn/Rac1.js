@@ -16,7 +16,9 @@ function Key ({ k }) {
   )
 }
 function Arrow (props) {
-  return <FontAwesomeIcon icon={faArrow} {...props} style={{ marginRight: '1em' }} />
+  return (
+    <FontAwesomeIcon icon={faArrow} {...props} style={{ marginRight: '1em' }} />
+  )
 }
 
 function Help ({ t }) {
