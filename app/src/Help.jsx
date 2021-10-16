@@ -8,14 +8,16 @@ import {
   faPlay as faArrow
 } from '@fortawesome/free-solid-svg-icons'
 
-function Key ({ k }) (
-  <pre style={{ display: 'inline' }} title={k}>
-    {k}
-  </pre>
-)
-function Arrow (props) (
-  <FontAwesomeIcon icon={faArrow} {...props} style={{ marginRight: '1em' }} />
-)
+function Key ({ k }) {
+  return (
+    <pre style={{ display: 'inline' }} title={k}>
+      {k}
+    </pre>
+i )
+}
+function Arrow (props) {
+  return <FontAwesomeIcon icon={faArrow} {...props} style={{ marginRight: '1em' }} />
+}
 
 function Help ({ t }) {
   return (
