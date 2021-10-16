@@ -1,11 +1,11 @@
-import React, { Component } from 'react';
+import React, { Component } from "react";
 
-import { translate } from 'react-translate';
+import { translate } from "react-translate";
 
-import { Rac1Live } from '../Backends';
+import { Rac1Live } from "../Backends";
 
-import AudioWrapper from './Base/AudioWrapper';
-import PodcastCover from './Base/PodcastCover';
+import AudioWrapper from "./Base/AudioWrapper";
+import PodcastCover from "./Base/PodcastCover";
 
 class Live extends Component {
   extraControls = [];
@@ -40,7 +40,7 @@ class Live extends Component {
 
   handleUpdate = (podcast) => {
     this.setState({ podcast });
-  }
+  };
 
   // Saves errors from backend into state so they
   // can be reraised into ReactDOM tree and catched correctly
@@ -50,74 +50,64 @@ class Live extends Component {
       hasError: true,
       error: error,
     });
-  }
+  };
 
   render() {
     const { podcast, hasError, error } = this.state;
 
     // If we have a backend error, reraise into ReactDOM tree
-    if ( hasError ) {
+    if (hasError) {
       throw Error(error);
     }
 
     const { t } = this.props;
-    const currentPath = podcast !== undefined ? podcast.path : '';
+    const currentPath = podcast !== undefined ? podcast.path : "";
     const titleHead =
-      (
-        !podcast ||
-        !podcast.title
-          ? ''
-          : `${podcast.title} | `
-      ) +
+      (!podcast || !podcast.title ? "" : `${podcast.title} | `) +
       t(this.backend.name);
     const title =
-      t(this.backend.name) + (
-        !podcast ||
-        !podcast.title
-          ? ''
-          : `: ${podcast.title}`
-      );
+      t(this.backend.name) +
+      (!podcast || !podcast.title ? "" : `: ${podcast.title}`);
 
     return (
       <div
         style={{
-          display: 'flex',
-          flexDirection: 'row',
-          flexWrap: 'wrap',
-          justifyContent: 'space-evenly',
-      }}>
+          display: "flex",
+          flexDirection: "row",
+          flexWrap: "wrap",
+          justifyContent: "space-evenly",
+        }}
+      >
         <AudioWrapper
-          autoPlay={ true }
-          title={ title }
-          path={ currentPath }
-          allowFocus={ this.allowFocus }
-          extraControls={ this.extraControls }
-          volumeAsAdvanced={ false }
-          titleHead={ titleHead }
-          artist={ podcast.author }
-          album={ podcast.schedule }
-          image={ podcast.image }
+          autoPlay={true}
+          title={title}
+          path={currentPath}
+          allowFocus={this.allowFocus}
+          extraControls={this.extraControls}
+          volumeAsAdvanced={false}
+          titleHead={titleHead}
+          artist={podcast.author}
+          album={podcast.schedule}
+          image={podcast.image}
         />
-        { podcast !== false ? (
-            <>
-              <div style={{ width: '.5em', height: '.5em' }} />
-              <PodcastCover
-                minWidth={ 708 }
-                image={ podcast.image }
-                programUrl={ podcast.programUrl }
-                title={ podcast.title }
-                author={ podcast.author }
-                schedule={ podcast.schedule }
-              />
-            </>
-          ) : null
-        }
+        {podcast !== false ? (
+          <>
+            <div style={{ width: ".5em", height: ".5em" }} />
+            <PodcastCover
+              minWidth={708}
+              image={podcast.image}
+              programUrl={podcast.programUrl}
+              title={podcast.title}
+              author={podcast.author}
+              schedule={podcast.schedule}
+            />
+          </>
+        ) : null}
       </div>
     );
   }
 
-  allowFocus = el => el.className.match( /rc-slider-handle|ReactModal/ )
-
+  allowFocus = (el) => el.className.match(/rc-slider-handle|ReactModal/);
 }
 
-export default translate('Live')(Live);
+export default translate("Live")(Live);

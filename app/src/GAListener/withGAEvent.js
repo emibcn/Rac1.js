@@ -1,33 +1,32 @@
-import React from 'react';
+import React from 'react'
 
-import GAEventContext from './GAEventContext';
+import GAEventContext from './GAEventContext'
 
 // HOC to add `sendEvent` function respecting refs
-export function withGAEvent(Component) {
-
+export function withGAEvent (Component) {
   // Wrapper component
-  class GAEvent extends React.Component {
-    render() {
-      const { forwardedRef, ...props } = this.props;
+  function GAEvent (props) {
+    const { forwardedRef, ...restProps } = props
 
-      // Get `sendEvent` from context and pass it to the wrapped
-      // component, along with ref and the rest of props
-      return (
-        <GAEventContext.Consumer>
-          { sendEvent => <Component ref={ forwardedRef } { ...props } {...{ sendEvent }} /> }
-        </GAEventContext.Consumer>
-      );
-    }
+    // Get `sendEvent` from context and pass it to the wrapped
+    // component, along with ref and the rest of props
+    return (
+      <GAEventContext.Consumer>
+        {(sendEvent) => (
+          <Component ref={forwardedRef} {...restProps} {...{ sendEvent }} />
+        )}
+      </GAEventContext.Consumer>
+    )
   }
 
   // Return wrapper respecting ref
-  const forwarded = React.forwardRef( (props, ref) => {
-    return <GAEvent { ...props } forwardedRef={ ref } />
-  });
-  forwarded.propTypes = Component.propTypes;
-  forwarded.defaultProps = Component.defaultProps;
+  const forwarded = React.forwardRef((props, ref) => {
+    return <GAEvent {...props} forwardedRef={ref} />
+  })
+  forwarded.propTypes = Component.propTypes
+  forwarded.defaultProps = Component.defaultProps
 
-  return forwarded;
+  return forwarded
 }
 
-export default withGAEvent;
+export default withGAEvent

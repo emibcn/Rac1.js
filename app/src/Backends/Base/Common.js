@@ -1,7 +1,6 @@
 const noop = () => {};
 
 class Common {
-
   // Visible backend name
   // Change when subclassing
   name = "Common";
@@ -26,23 +25,24 @@ class Common {
   // Raises exception on response error
   handleFetchErrors = (response) => {
     // Raise succeeded non-ok responses
-    if ( !response.ok ) {
-      return Promise.reject( Error(`${this.name} backend: ${response.statusText}`) );
+    if (!response.ok) {
+      return Promise.reject(
+        Error(`${this.name} backend: ${response.statusText}`)
+      );
     }
     return response;
-  }
+  };
 
   // Catches fetch errors, original or 'self-raised', and throws to `onError` prop
   // Filters out non-error "Connection aborted"
   catchFetchErrors = (err) => {
-    if ( err.name === 'AbortError' ) {
-      console.log('Connection aborted', err);
-    }
-    else {
+    if (err.name === "AbortError") {
+      console.log("Connection aborted", err);
+    } else {
       err.message = `${this.name} backend: ${err.message}`;
       this.onError(err);
     }
-  }
+  };
 }
 
 export default Common;

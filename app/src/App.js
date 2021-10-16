@@ -1,71 +1,73 @@
-import React from 'react';
+import React from "react";
 import {
   HashRouter as Router,
   Route,
   Switch,
   Redirect,
-} from 'react-router-dom';
+} from "react-router-dom";
 
-import Storage from 'react-simple-storage';
-import { TranslatorProvider, useTranslate } from 'react-translate';
-import { Helmet, HelmetProvider } from 'react-helmet-async';
-import available from './i18n/available';
+import Storage from "react-simple-storage";
+import { TranslatorProvider, useTranslate } from "react-translate";
+import { Helmet, HelmetProvider } from "react-helmet-async";
+import available from "./i18n/available";
 
-import AppMenu from './AppMenu';
-import ModalRouter from './ModalRouter';
-import GAListener, {ReportWebVitals} from './GAListener';
-import ErrorCatcher from './ErrorCatcher';
-import { Live, ByDate } from './Players';
-import Cookies from './Cookies';
-import About from './About';
-import Help from './Help';
-import botCheck from './botCheck';
+import AppMenu from "./AppMenu";
+import ModalRouter from "./ModalRouter";
+import GAListener, { ReportWebVitals } from "./GAListener";
+import ErrorCatcher from "./ErrorCatcher";
+import { Live, ByDate } from "./Players";
+import Cookies from "./Cookies";
+import About from "./About";
+import Help from "./Help";
+import botCheck from "./botCheck";
 
-import './App.css';
+import "./App.css";
 
 // GoogleAnalytics code taken from env
 const GACode = process.env.REACT_APP_GA_CODE;
 
 // Template function for catching errors from components
-const withErrorCatcher = (origin, component) =>
-  <ErrorCatcher {...{ origin , key: origin }}>{ component }</ErrorCatcher>;
+const withErrorCatcher = (origin, component) => (
+  <ErrorCatcher {...{ origin, key: origin }}>{component}</ErrorCatcher>
+);
 
 const withErrorCatcherCreator = (origin, Component) => (props) =>
-  <ErrorCatcher {...{ origin , key: origin }}><Component { ...props } /></ErrorCatcher>;
+  (
+    <ErrorCatcher {...{ origin, key: origin }}>
+      <Component {...props} />
+    </ErrorCatcher>
+  );
 
-const LiveWithErrorCatcher = withErrorCatcherCreator('Live', Live);
-const ByDateWithErrorCatcher = withErrorCatcherCreator('ByDate', ByDate);
+const LiveWithErrorCatcher = withErrorCatcherCreator("Live", Live);
+const ByDateWithErrorCatcher = withErrorCatcherCreator("ByDate", ByDate);
 
 // App Helmet: Controls HTML <head> elements with SideEffect
 // - Set a default title and title template, translated
-const AppHelmet = function(props) {
+const AppHelmet = function (props) {
   const t = useTranslate("App");
   const title = t("Rac1 Radio Podcasts Player");
   return (
-    <Helmet
-      titleTemplate={ `%s | ${ title }` }
-      defaultTitle={ title }
-    >
-      <html lang={ props.language } />
+    <Helmet titleTemplate={`%s | ${title}`} defaultTitle={title}>
+      <html lang={props.language} />
     </Helmet>
   );
-}
+};
 
 // Concentrate all providers (4) used in the app into a single component
-const AppProviders = function(props) {
+const AppProviders = function (props) {
   return (
-    <TranslatorProvider translations={ props.translations }>
+    <TranslatorProvider translations={props.translations}>
       <HelmetProvider>
         <Router>
           {/* GoogleAnalytics event provider and route change detector */}
           <GAListener
-            GACode={ props.GACode }
-            language={ props.language }
-            trackOptIn={ props.trackOptIn }
+            GACode={props.GACode}
+            language={props.language}
+            trackOptIn={props.trackOptIn}
           >
-            <ReportWebVitals/>
-            <div className='App' id='router-container'>
-              { props.children }
+            <ReportWebVitals />
+            <div className="App" id="router-container">
+              {props.children}
             </div>
           </GAListener>
         </Router>
@@ -75,20 +77,24 @@ const AppProviders = function(props) {
 };
 
 class App extends React.Component {
-
   constructor() {
     super();
 
     // Get DoNotTrack user preference
     // Deactivate tracking by default to users with DNT and to all bots
     this.isBot = botCheck();
-    const dnt = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
-    this.dnt = process.env.NODE_ENV === 'test' || dnt === '1' || dnt === 'yes' || this.isBot;
+    const dnt =
+      navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+    this.dnt =
+      process.env.NODE_ENV === "test" ||
+      dnt === "1" ||
+      dnt === "yes" ||
+      this.isBot;
 
     // Fix bad browser encoding HASH
     const decoded = decodeURIComponent(global.location.hash);
-    if ( decoded !==  '' && decoded !== global.location.hash ) {
-      const hash = decoded.replace(/[^#]*(#.*)$/, '$1');
+    if (decoded !== "" && decoded !== global.location.hash) {
+      const hash = decoded.replace(/[^#]*(#.*)$/, "$1");
       global.location.replace(hash);
     }
 
@@ -97,7 +103,9 @@ class App extends React.Component {
 
     this.state = {
       initializing: true,
-      language: available.hasOwnProperty(navigator.language) ? navigator.language : 'en-en',
+      language: available.hasOwnProperty(navigator.language)
+        ? navigator.language
+        : "en-en",
       trackingSeen: false,
       trackOptIn: !this.dnt,
       isBot: this.isBot,
@@ -107,36 +115,36 @@ class App extends React.Component {
 
   handleStopInitializing = () => {
     this.setState({ initializing: false });
-  }
+  };
 
   handleLanguageChange = (language) => this.setState({ language });
 
-
   render() {
     const date = new Date();
-    const todayStr = `/${date.getFullYear()}/${1 + date.getMonth()}/${date.getDate()}/0/0`;
+    const todayStr = `/${date.getFullYear()}/${
+      1 + date.getMonth()
+    }/${date.getDate()}/0/0`;
     const { language, trackOptIn, trackingSeen, initializing } = this.state;
     const translations = available[language];
 
-
     return (
-      <AppProviders { ...{
+      <AppProviders
+        {...{
           translations,
           language,
           trackOptIn,
           GACode,
         }}
       >
-
         {/* Persistent state saver into localStorage */}
         <Storage
-          parent={ this }
-          prefix='App'
-          blacklist={ ['initializing'] }
-          onParentStateHydrated={ this.handleStopInitializing  }
+          parent={this}
+          prefix="App"
+          blacklist={["initializing"]}
+          onParentStateHydrated={this.handleStopInitializing}
         />
 
-        { initializing ? null : (
+        {initializing ? null : (
           <>
             {/*
                 Modal routes hash paths ;)
@@ -147,89 +155,96 @@ class App extends React.Component {
                 - User does not have DoNotTrack activated (consider bots as if they have DNT)
             */}
             <ModalRouter
-              force={ !trackingSeen && !initializing && !this.isBot ? 'cookies' : false }
-              appElement={ this.appElement.current }
+              force={
+                !trackingSeen && !initializing && !this.isBot
+                  ? "cookies"
+                  : false
+              }
+              appElement={this.appElement.current}
             >
               <Route
                 exact
-                path='about'
-                render={ props => withErrorCatcher('About', <About />) }
+                path="about"
+                render={(props) => withErrorCatcher("About", <About />)}
               />
               <Route
                 exact
-                path='help'
-                render={ props => withErrorCatcher('Help', <Help />) }
+                path="help"
+                render={(props) => withErrorCatcher("Help", <Help />)}
               />
               <Route
                 exact
-                path='cookies'
-                render={ props => withErrorCatcher('Cookies',
-                  <Cookies
-                    { ...{ trackOptIn, trackingSeen } }
-                    onTrackingSeen={ seen =>
-                      this.setState({ trackingSeen: seen })
-                    }
-                    onTrackOptIn={ track =>
-                      this.setState({ trackOptIn: track })
-                    } /> )}
+                path="cookies"
+                render={(props) =>
+                  withErrorCatcher(
+                    "Cookies",
+                    <Cookies
+                      {...{ trackOptIn, trackingSeen }}
+                      onTrackingSeen={(seen) =>
+                        this.setState({ trackingSeen: seen })
+                      }
+                      onTrackOptIn={(track) =>
+                        this.setState({ trackOptIn: track })
+                      }
+                    />
+                  )
+                }
               />
-
             </ModalRouter>
 
             {/* Menu */}
-            <ErrorCatcher origin='AppMenu'>
+            <ErrorCatcher origin="AppMenu">
               <AppMenu
-                language={ language }
-                onLanguageChange={ this.handleLanguageChange }
-                trackOptIn={ trackOptIn }
+                language={language}
+                onLanguageChange={this.handleLanguageChange}
+                trackOptIn={trackOptIn}
               />
             </ErrorCatcher>
 
-            <AppHelmet language={ language } />
+            <AppHelmet language={language} />
 
-            <header
-              ref={ this.appElement }
-              className='App-header'
-              id='page-wrap'>
-
+            <header ref={this.appElement} className="App-header" id="page-wrap">
               {/* App Route */}
               <Switch>
-                <Route
-                  exact
-                  path={ '/live' }
-                  render={ LiveWithErrorCatcher } />
+                <Route exact path={"/live"} render={LiveWithErrorCatcher} />
 
-                <Route
-                  exact
-                  path={ '/(directe|directo)' }
-                >
-                  <Redirect to={{ pathname: 'live' }} />
+                <Route exact path={"/(directe|directo)"}>
+                  <Redirect to={{ pathname: "live" }} />
                 </Route>
 
                 <Route
-                  path={ '/:year(\\d{4})/:month(\\d{1,2})/:day(\\d{1,2})/:hour(\\d{1,2})/:minute(\\d{1,2})' }
-                  render={ ByDateWithErrorCatcher } />
+                  path={
+                    "/:year(\\d{4})/:month(\\d{1,2})/:day(\\d{1,2})/:hour(\\d{1,2})/:minute(\\d{1,2})"
+                  }
+                  render={ByDateWithErrorCatcher}
+                />
 
                 <Route
-                  path={ '/:year(\\d{4})/:month(\\d{1,2})/:day(\\d{1,2})/:hour(\\d{1,2})' }
-                  render={ ByDateWithErrorCatcher } />
+                  path={
+                    "/:year(\\d{4})/:month(\\d{1,2})/:day(\\d{1,2})/:hour(\\d{1,2})"
+                  }
+                  render={ByDateWithErrorCatcher}
+                />
 
                 <Route
-                  path={ '/:year(\\d{4})/:month(\\d{1,2})/:day(\\d{1,2})' }
-                  render={ ByDateWithErrorCatcher } />
+                  path={"/:year(\\d{4})/:month(\\d{1,2})/:day(\\d{1,2})"}
+                  render={ByDateWithErrorCatcher}
+                />
 
                 {/* Set default date to today */}
                 <Route
                   exact
-                  path={ ':all(.*)' }
-                  render={ ({ match, ...props }) => {
-                    return <Redirect
-                      push
-                      to={{
-                        pathname: todayStr,
-                        hash: props.location.hash.replace('#',''),
-                      }}
-                    />
+                  path={":all(.*)"}
+                  render={({ match, ...props }) => {
+                    return (
+                      <Redirect
+                        push
+                        to={{
+                          pathname: todayStr,
+                          hash: props.location.hash.replace("#", ""),
+                        }}
+                      />
+                    );
                   }}
                 />
               </Switch>
@@ -237,7 +252,7 @@ class App extends React.Component {
           </>
         )}
       </AppProviders>
-    )
+    );
   }
 }
 

@@ -1,17 +1,16 @@
-import React from 'react';
-import { PropTypes } from 'prop-types';
-import ReactGA from 'react-ga';
+import React from "react";
+import { PropTypes } from "prop-types";
+import ReactGA from "react-ga";
 
-import GAEventContext from './GAEventContext';
-import GAListenerActive from './GAListenerActive';
+import GAEventContext from "./GAEventContext";
+import GAListenerActive from "./GAListenerActive";
 
 // Renders GA+children in production, only children for the rest
 class GAListener extends React.Component {
-
   createEvent = (...args) => {
     const event = {};
 
-    if(args.length > 1) {
+    if (args.length > 1) {
       // Generate a React-GA event from arguments
       const [origin, help, status] = args;
       Object.assign(event, {
@@ -19,11 +18,10 @@ class GAListener extends React.Component {
         action: help,
       });
 
-      if ( typeof status === 'string' ) {
+      if (typeof status === "string") {
         event.label = status;
       }
-    }
-    else {
+    } else {
       // Arguments is already a React-GA event
       Object.assign(event, args[0]);
     }
@@ -31,26 +29,23 @@ class GAListener extends React.Component {
     console.log("event:", event);
 
     return event;
-  }
+  };
 
-  sendEvent = (...args) =>
-    ReactGA.event( this.createEvent(...args) );
+  sendEvent = (...args) => ReactGA.event(this.createEvent(...args));
 
   render() {
     const { children, trackOptIn, ...props } = this.props;
 
     // Disable GA unless user has opt'ed in to tracking
     return trackOptIn ? (
-      <GAEventContext.Provider value={ this.sendEvent }>
-        <GAListenerActive { ...props } >
-          { children }
-        </GAListenerActive>
+      <GAEventContext.Provider value={this.sendEvent}>
+        <GAListenerActive {...props}>{children}</GAListenerActive>
       </GAEventContext.Provider>
     ) : (
-      <GAEventContext.Provider value={ this.createEvent }>
-        { children }
+      <GAEventContext.Provider value={this.createEvent}>
+        {children}
       </GAEventContext.Provider>
-    )
+    );
   }
 }
 
