@@ -14,9 +14,7 @@ function About ({ t }) {
         {t('About')}
       </h1>
       <div id='modal_description' style={{ textAlign: 'left' }}>
-        <p>
-          {t('Play Rac1 catalan radio station podcasts or live emission.')}
-        </p>
+        <p>{t('Play Rac1 catalan radio station podcasts or live emission.')}</p>
         <p>
           <span>
             {t(
