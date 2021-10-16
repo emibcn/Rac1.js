@@ -8,22 +8,26 @@ Web APP to listen to [Rac1 radio station](https://www.rac1.cat/) podcasts. Uses 
 The [podcasts lister](https://github.com/emibcn/Rac1.js/blob/master/app/src/Backends/) is a pure JS lib, which only depends on [abortcontroller-polyfill](https://github.com/mo/abortcontroller-polyfill) to help GoogleBot execute modern JS, so you can easily re-use it for other JS projects.
 
 ## Motivation
+
 I made this app for 3 reasons:
- - I needed a better way to listen to those podcasts (because the [official app](https://play.google.com/store/apps/details?id=com.grupogodo.rac1) is not useful to me) and I wanted it to be easily compatible with all my devices.
- - Learn modern JavaScript (and some other modern stuff): I've been using JavaScript (mostly with JQuery) since a long time ago. Doing an app on my free time is a good way to me to learn a new language or refreshing it.
- - This is an [open and free](https://github.com/emibcn/Rac1.js/blob/master/LICENSE) (open, _gratis_ and _libre_) app. It can serve as:
-   - Learning material (as I did). You may want to learn some of the libs and APIs used here.
-   - Share and re-use. You may want to use it as a starting point for your own app, or you may want to add parts of the code to your own app. Please, follow GPLv3.
-   - This source code and the working APP also serve as presentational card for my '20s frontend abilities. If you want to hire me, [send me a PM](https://twitter.com/emibcn).
+
+- I needed a better way to listen to those podcasts (because the [official app](https://play.google.com/store/apps/details?id=com.grupogodo.rac1) is not useful to me) and I wanted it to be easily compatible with all my devices.
+- Learn modern JavaScript (and some other modern stuff): I've been using JavaScript (mostly with JQuery) since a long time ago. Doing an app on my free time is a good way to me to learn a new language or refreshing it.
+- This is an [open and free](https://github.com/emibcn/Rac1.js/blob/master/LICENSE) (open, _gratis_ and _libre_) app. It can serve as:
+  - Learning material (as I did). You may want to learn some of the libs and APIs used here.
+  - Share and re-use. You may want to use it as a starting point for your own app, or you may want to add parts of the code to your own app. Please, follow GPLv3.
+  - This source code and the working APP also serve as presentational card for my '20s frontend abilities. If you want to hire me, [send me a PM](https://twitter.com/emibcn).
 
 Inspired by [my command line Python app Rac1.py](https://github.com/emibcn/Rac1.py), which was not enough for my Android phone ;P
 
 ## See also
+
 - [Joan Domingo's](https://github.com/joan-domingo) [Podcasts-RAC1-Android](https://github.com/joan-domingo/Podcasts-RAC1-Android) android app
 - [emibcn's](https://github.com/emibcn) (me) [Rac1.py](https://github.com/emibcn/Rac1.py) command line app
 - [emibcn's](https://github.com/emibcn) (me) [Covid Data `Refactored`](https://github.com/emibcn/covid) web application, using [Material UI](https://material-ui.com/) (a still better example of what I can do).
 
 ## Dependencies
+
 - [ReactJS](https://reactjs.org/) based browser [Single Page Application (SPA)](https://en.wikipedia.org/wiki/Single-page_application) and [Progressive Web Application (PWA)](https://en.wikipedia.org/wiki/Progressive_web_application)
 - `<audio>` HTML tag, via [react-audio-player](https://github.com/justinmc/react-audio-player)
 - Nice [DatePicker](https://github.com/wojtekmaj/react-date-picker) to allow listening to any day's podcasts
@@ -53,6 +57,7 @@ Inspired by [my command line Python app Rac1.py](https://github.com/emibcn/Rac1.
 - [Docker](https://docs.docker.com/) with [DockerCompose](https://docs.docker.com/compose/) to start a development container, with all the [Create React App](https://github.com/facebook/create-react-app) goodies
 
 ## Features
+
 - Always with a coherently time ordered list of available podcasts
 - Auto play next podcast when currently played one finishes (as a normal playlist)
 - Ability to update podcasts list
@@ -86,6 +91,7 @@ Inspired by [my command line Python app Rac1.py](https://github.com/emibcn/Rac1.
 - Asynchronuosly `fetch` live podcast data (in HTML) and parse it
 
 ## TODO
+
 - Improve UX: layout, styles, info shown, responsible, controls, ¿bootstrap4?
 - Use [Streams API](https://developer.mozilla.org/en-US/docs/Web/API/Streams_API) to control audio downloading and playing (and editing?)
 - Add a section to allow easily play podcasts filtered by program
@@ -97,44 +103,56 @@ Inspired by [my command line Python app Rac1.py](https://github.com/emibcn/Rac1.
 - Add tests
 
 # Install
+
 You can already use the app on it's [public location](https://emibcn.github.io/Rac1.js/). But you would like to run a local copy of it, or start the development local server to start developing some changes. Whatever is your case, you need to download the code and its dependencies, build it and serve it somehow. Here, I use `git` to download the code, `docker` and `docker-compose` to contain all the boilerplate out of my system and ensuring a consistent CI/CD, `npm` and `yarn` to manage the JS dependencies (and building and testing), the `create-react-app` (CRA) development server and NGinx for serving the static/built version.
 
 ## Download
+
 ```
 git clone https://github.com/emibcn/Rac1.js.git
 cd Rac1.js
 ```
 
 ## Development container
+
 Using the provided `docker-compose.yml` file, it is possible to build and execute a live environment which can host the application in development mode using [WebpackDevServer](https://webpack.js.org/configuration/dev-server/) configured by [Create React App](https://github.com/facebook/create-react-app) (CRA), what helps a lot while actively modifying the files. It is also possible to serve the static version of the app using vanilla NGinx locally.
 
 Of course, you can opt-out and install [NodeJS](https://nodejs.org/en/), [NPM](https://www.npmjs.com/) and [`yarn`](https://yarnpkg.com/lang/en/) by yourself. Also, you can [eject](https://github.com/facebook/create-react-app/blob/master/packages/react-scripts/template/README.md#npm-run-eject) CRA.
 
 ### Install Docker
+
 It depends on which system you use. Go to [Docker documentation](https://docs.docker.com/) to get help adapted to your use case.
 
 ### Install DockerCompose
+
 Go to [Docker Compose](https://docs.docker.com/compose/install/) and follow instructions, depending on your use case.
 
 ### Build + Run
+
 This will build the containers images, download system and NodeJS dependencies and launch NodeJS development server at port 3000 and NGinx static server at port 4000:
+
 ```
 docker-compose up -d
 ```
 
 ### Build
+
 This will build the containers images:
+
 ```
 docker-compose build
 ```
 
 ### Run
+
 #### Background
+
 ```
 docker-compose up -d
 ```
 
 #### Foreground (following `WebpackDevServer` logs)
+
 ```
 docker-compose up
 ```
@@ -142,7 +160,9 @@ docker-compose up
 (If you stop this with CTRL+C, container will stop too)
 
 ### Logs (with follow)
+
 Once the container is started, you can view WebpackDevServer logs executing:
+
 ```
 docker-compose logs -f
 ```
@@ -150,14 +170,17 @@ docker-compose logs -f
 (You can stop this with CTRL+C)
 
 ### Stop
+
 ```
 docker-compose down
 ```
 
 ## Application
+
 By default, the container installs all [NPM](https://www.npmjs.com/) dependencies using [`yarn` dependency manager](https://yarnpkg.com/lang/en/). If you use the provided `docker-compose.yml`, the `app` directory will be mounted inside the container. This automatically helps maintaining the cache of the installed npm modules and auto refreshing the browser when any file is modified or module added/removed/updated.
 
 Once the container has been started, you can enter inside it to execute commands needing [NodeJS](https://nodejs.org/en/). For example:
+
 ```
 me@mypc:~/Rac1.js$ docker-compose exec rac1 bash
 node@8cf780c7b2bb:~/app$ yarn add react-dom-router
@@ -167,6 +190,7 @@ me@mypc:~/Rac1.js$
 ```
 
 Or, in one line:
+
 ```
 me@mypc:~/Rac1.js$ docker-compose exec rac1 yarn add react-dom-router
 [...]
@@ -174,18 +198,22 @@ me@mypc:~/Rac1.js$
 ```
 
 If you need root permisions:
+
 ```
 me@mypc:~/Rac1.js$ docker-compose exec -u root rac1 bash
 root@8cf780c7b2bb:~/app$ apt-get update; apt-get install git; apt-get clean
 ```
 
 Or:
+
 ```
 docker-compose exec -u root rac1 bash -c 'apt-get update; apt-get install git; apt-get clean'
 ```
 
 ### Build static app
+
 In order to publish the app, it's needed to build it. This will do some modern JS magic ([Babel, WebPack, ...](https://github.com/facebook/create-react-app#user-content-whats-included)) and create a static version of the app, which can be served as static assets. To do so, it's needed to execute `yarn build` on the app's dir:
+
 ```
 me@mypc:~/Rac1.js$ docker-compose exec rac1 yarn build
 yarn run v1.9.4
@@ -197,4 +225,5 @@ me@mypc:~/Rac1.js$
 ```
 
 # Access the app
+
 Open your browser and point it to the development version at [http://127.0.0.1:3000](http://127.0.0.1:3000) or the static version at [http://127.0.0.1:4000/Rac1.js/](http://127.0.0.1:4000/Rac1.js/), or visit the public version at https://emibcn.github.io/Rac1.js/ .
