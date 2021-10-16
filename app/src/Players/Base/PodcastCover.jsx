@@ -60,7 +60,6 @@ function PodcastCover (props) {
 }
 
 PodcastCover.defaultProps = {
-  onClick: () => {},
   minWidth: 1440
 }
 
@@ -71,7 +70,6 @@ PodcastCover.propTypes = {
   author: PropTypes.string.isRequired,
   schedule: PropTypes.string.isRequired,
   t: PropTypes.func.isRequired,
-  onClick: PropTypes.func,
   minWidth: PropTypes.number
 }
 
