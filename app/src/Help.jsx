@@ -17,7 +17,7 @@ function Key ({ k }) {
 }
 
 Key.propTypes = {
-  k: PropTypes.string.isRequired,
+  k: PropTypes.string.isRequired
 }
 
 function Arrow (props) {
@@ -91,7 +91,7 @@ function Help ({ t }) {
 }
 
 Help.propTypes = {
-  t: PropTypes.func.isRequired,
+  t: PropTypes.func.isRequired
 }
 
 export default translate('Help')(Help)
