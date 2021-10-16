@@ -8,8 +8,8 @@ import { faPlay } from '@fortawesome/free-solid-svg-icons'
 class PodcastsList extends React.PureComponent {
   renderChildren () {
     const { children, current } = this.props
-    return children === undefined || children.length === 0
-      ? null
+    const hasChildren = typeof children === 'undefined' || children.length === 0
+    return hasChildren ? null
       : children.map((child, index) => (
         <li
           key={child.key}
