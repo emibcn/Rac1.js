@@ -8,12 +8,12 @@ import {
   faPlay as faArrow
 } from '@fortawesome/free-solid-svg-icons'
 
-const Key = ({ k }) => (
+function Key ({ k }) (
   <pre style={{ display: 'inline' }} title={k}>
     {k}
   </pre>
 )
-const Arrow = (props) => (
+function Arrow (props) (
   <FontAwesomeIcon icon={faArrow} {...props} style={{ marginRight: '1em' }} />
 )
 
