@@ -23,7 +23,10 @@ import MediaQuery from "react-responsive";
 import { slide as SmallMenu, scaleRotate as BigMenu } from "react-burger-menu";
 
 import { withGAEvent } from "./GAListener";
-import { withServiceWorkerUpdater, LocalStoragePersistenceService } from '@3m1/service-worker-updater'
+import {
+  withServiceWorkerUpdater,
+  LocalStoragePersistenceService,
+} from "@3m1/service-worker-updater";
 import "./AppMenu.css";
 
 class AppMenu extends React.Component {
@@ -270,9 +273,8 @@ AppMenu.propTypes = {
 
 export default translate("AppMenu")(
   withGAEvent(
-    withServiceWorkerUpdater(
-      AppMenu,
-      { persistenceService: new LocalStoragePersistenceService('Rac1.js') }
-    )
+    withServiceWorkerUpdater(AppMenu, {
+      persistenceService: new LocalStoragePersistenceService("Rac1.js"),
+    })
   )
 );
