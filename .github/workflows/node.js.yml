@@ -28,7 +28,7 @@ jobs:
     steps:
 
     - name: Checkout Project
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       with:
         # We need to fetch with a depth of 2 for pull_request so we can do HEAD^2
         fetch-depth: 2
@@ -52,7 +52,7 @@ jobs:
 
     steps:
 
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
 
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v3.0.0
@@ -102,7 +102,7 @@ jobs:
 
     steps:
 
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
 
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v3.0.0
@@ -209,7 +209,7 @@ jobs:
         echo "##[set-output name=branch;]${EXPORT_VALUE}"
       id: extract_branch
 
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       with:
         ref: badges
         path: badges
