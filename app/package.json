@@ -16,7 +16,7 @@
     "rc-switch": "^3.2.2",
     "react": "^17.0.2",
     "react-audio-player": "^0.17.0",
-    "react-burger-menu": "^3.0.6",
+    "react-burger-menu": "^3.0.8",
     "react-date-picker": "^8.4.0",
     "react-dom": "^17.0.2",
     "react-ga": "^3.3.0",
@@ -35,7 +35,7 @@
     "workbox-expiration": "^6.5.3",
     "workbox-google-analytics": "^6.5.3",
     "workbox-navigation-preload": "^6.5.3",
-    "workbox-precaching": "^6.4.1",
+    "workbox-precaching": "^6.5.3",
     "workbox-range-requests": "^6.5.3",
     "workbox-routing": "^6.5.3",
     "workbox-strategies": "^6.5.3",
@@ -69,7 +69,7 @@
   "devDependencies": {
     "@testing-library/jest-dom": "^5.15.1",
     "@testing-library/react": "^12.1.5",
-    "@testing-library/user-event": "^13.5.0",
+    "@testing-library/user-event": "^14.2.0",
     "jest-canvas-mock": "^2.4.0"
   }
 }
