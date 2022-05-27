@@ -5,7 +5,7 @@
   "homepage": "http://emibcn.github.io/Rac1.js/",
   "dependencies": {
     "@3m1/service-worker-updater": "^2.0.3",
-    "@fortawesome/fontawesome-free": "^5.15.4",
+    "@fortawesome/fontawesome-free": "^6.1.1",
     "@fortawesome/fontawesome-svg-core": "^1.2.36",
     "@fortawesome/free-solid-svg-icons": "^5.15.4",
     "@fortawesome/react-fontawesome": "^0.1.16",
@@ -34,7 +34,7 @@
     "workbox-core": "^6.4.1",
     "workbox-expiration": "^6.5.3",
     "workbox-google-analytics": "^6.5.3",
-    "workbox-navigation-preload": "^6.4.1",
+    "workbox-navigation-preload": "^6.5.3",
     "workbox-precaching": "^6.4.1",
     "workbox-range-requests": "^6.5.3",
     "workbox-routing": "^6.5.3",
@@ -68,7 +68,7 @@
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^5.15.1",
-    "@testing-library/react": "^12.1.2",
+    "@testing-library/react": "^12.1.5",
     "@testing-library/user-event": "^13.5.0",
     "jest-canvas-mock": "^2.3.1"
   }
