@@ -11913,7 +11913,7 @@ workbox-routing@^6.5.3:
   dependencies:
     workbox-core "6.5.3"
 
-workbox-strategies@6.4.1, workbox-strategies@^6.3.0:
+workbox-strategies@6.4.1:
   version "6.4.1"
   resolved "https://registry.yarnpkg.com/workbox-strategies/-/workbox-strategies-6.4.1.tgz#d81273c8db5145ed40803b5f90229d8103c9dd02"
   integrity sha512-2UQ+7Siy4Z5QG2LebbVhDLmPG3M7bVo/tZqN4LNUGXS6fDlpbTTK6A3Hu0W8gCVwIX0tSg7U3mVhDntH4qt3Dg==
@@ -11927,6 +11927,13 @@ workbox-strategies@^5.1.4:
   dependencies:
     workbox-core "^5.1.4"
     workbox-routing "^5.1.4"
+
+workbox-strategies@^6.5.3:
+  version "6.5.3"
+  resolved "https://registry.yarnpkg.com/workbox-strategies/-/workbox-strategies-6.5.3.tgz#4bea9a48fee16cf43766e0d8138296773c8a9783"
+  integrity sha512-MgmGRrDVXs7rtSCcetZgkSZyMpRGw8HqL2aguszOc3nUmzGZsT238z/NN9ZouCxSzDu3PQ3ZSKmovAacaIhu1w==
+  dependencies:
+    workbox-core "6.5.3"
 
 workbox-streams@^5.1.4:
   version "5.1.4"
