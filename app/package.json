@@ -17,17 +17,17 @@
     "react": "^17.0.2",
     "react-audio-player": "^0.17.0",
     "react-burger-menu": "^3.0.6",
-    "react-date-picker": "^8.3.6",
+    "react-date-picker": "^8.4.0",
     "react-dom": "^17.0.2",
     "react-ga": "^3.3.0",
     "react-helmet-async": "^1.2.2",
-    "react-modal": "^3.14.4",
+    "react-modal": "^3.15.1",
     "react-responsive": "^8.2.0",
     "react-router-dom": "^5.3.0",
     "react-scripts": "4.0.3",
     "react-simple-storage": "^1.4.2",
     "react-translate": "^7.0.1",
-    "web-vitals": "^2.1.2",
+    "web-vitals": "^2.1.4",
     "workbox-background-sync": "^6.5.3",
     "workbox-broadcast-update": "^6.4.1",
     "workbox-cacheable-response": "^6.5.3",
@@ -70,6 +70,6 @@
     "@testing-library/jest-dom": "^5.15.1",
     "@testing-library/react": "^12.1.5",
     "@testing-library/user-event": "^13.5.0",
-    "jest-canvas-mock": "^2.3.1"
+    "jest-canvas-mock": "^2.4.0"
   }
 }
