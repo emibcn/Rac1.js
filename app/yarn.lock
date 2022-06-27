@@ -9235,10 +9235,10 @@ raw-body@2.4.0:
     iconv-lite "0.4.24"
     unpipe "1.0.0"
 
-raw.macro@^0.4.2:
-  version "0.4.2"
-  resolved "https://registry.yarnpkg.com/raw.macro/-/raw.macro-0.4.2.tgz#1954f9a36465d9400a76b8b68438e4ec8582acd6"
-  integrity sha512-Z+zKtCweyJ3lGYdUNq/BQwfzqQE2wrXjz0RNEes5nDniPpjvBw64sKYFXStJSfmZUmiBxv4DsN1lto982UAhFQ==
+raw.macro@^0.5.0:
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/raw.macro/-/raw.macro-0.5.0.tgz#823ef193993110e7dbf7d5c46b3ae933d3c38547"
+  integrity sha512-krMrBkTHbnXtEZEES1Ng9b/PYSTaf0eZwUR6WfIQx6+cGF7oPhJ0XDgwIOTkCBCylRz7Su1OoG17rouMt1egaw==
   dependencies:
     babel-plugin-macros "^2.8.0"
 
