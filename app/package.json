@@ -27,7 +27,7 @@
     "react-scripts": "4.0.3",
     "react-simple-storage": "^1.4.2",
     "react-translate": "^7.0.1",
-    "web-vitals": "^3.0.2",
+    "web-vitals": "^3.0.3",
     "workbox-background-sync": "^6.5.3",
     "workbox-broadcast-update": "^6.5.4",
     "workbox-cacheable-response": "^6.5.4",
