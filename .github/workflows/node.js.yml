@@ -39,7 +39,7 @@ jobs:
         COMMIT_PUSH: ${{ github.event.head_commit.message }}
       run: |
         COMMIT_MESSAGE="${COMMIT_PUSH:-$(git log --format=%B -n 1 HEAD^2)}"
-        echo "::set-output name=commit_message::${COMMIT_MESSAGE}"
+        echo "commit_message=${COMMIT_MESSAGE}" >> "${GITHUB_OUTPUT}"
 
   test-build:
 
@@ -206,7 +206,7 @@ jobs:
         else
             EXPORT_VALUE="${TMP_GITHUB_REF}"
         fi
-        echo "##[set-output name=branch;]${EXPORT_VALUE}"
+        echo "branch=${EXPORT_VALUE}" >> "${GITHUB_OUTPUT}"
       id: extract_branch
 
     - uses: actions/checkout@v3
@@ -266,8 +266,8 @@ jobs:
         MARKDOWN="![Coverage ${COVERAGE}](${URL})"
         echo "Badge URL: ${URL}"
         echo "Badge image for Markdown: ${MARKDOWN}"
-        echo "##[set-output name=url;]${URL}"
-        echo "##[set-output name=markdown;]${MARKDOWN}"
+        echo "url=${URL}" >> "${GITHUB_OUTPUT}"
+        echo "markdown=${MARKDOWN}" >> "${GITHUB_OUTPUT}"
 
   comment_pr_badge:
     name: Comment on PR with generated badge
