@@ -40,7 +40,12 @@ jobs:
       run: |
         COMMIT_MESSAGE="${COMMIT_PUSH:-$(git log --format=%B -n 1 HEAD^2)}"
         echo -e "Commit message: \n${COMMIT_MESSAGE}\n\n"
-        echo "commit_message=${COMMIT_MESSAGE}" >> "${GITHUB_OUTPUT}"
+        cat <<EOF >> "${GITHUB_OUTPUT}"
+        commit_message<<END_OF_OUTPUT
+        ${COMMIT_MESSAGE}
+        END_OF_OUTPUT
+        EOF
+
         echo "GITHUB_OUTPUT contents:"
         cat "${GITHUB_OUTPUT}"
 
