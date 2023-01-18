@@ -9223,10 +9223,10 @@ react-calendar@^4.0.0:
     get-user-locale "^1.2.0"
     prop-types "^15.6.0"
 
-react-date-picker@^9.1.0:
-  version "9.1.0"
-  resolved "https://registry.yarnpkg.com/react-date-picker/-/react-date-picker-9.1.0.tgz#7a4c49e22032a4d771e514afd51d3de835ac3eff"
-  integrity sha512-wj9SoOhEgQTzJsDRLePpNzUDNrcSiCpj1TFSwiAnLlOuJvvkk10I9rdvIyHmeJg/G17hyP5wSwTppCZHqOTHhA==
+react-date-picker@^9.2.0:
+  version "9.2.0"
+  resolved "https://registry.yarnpkg.com/react-date-picker/-/react-date-picker-9.2.0.tgz#ee194a694fa9891d93e4d40e76fbcdae7eafbe86"
+  integrity sha512-kAE7HFLq1ic4pS0Pk9SyPTjejIfjTyPov04a2eZzLxfZh8ss8EPaaaX7bBUP4RUCkbxHpR0P4UHloD0/fFDCZw==
   dependencies:
     "@types/react-calendar" "^3.0.0"
     "@wojtekmaj/date-utils" "^1.0.3"
