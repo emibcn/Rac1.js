@@ -9155,15 +9155,14 @@ raw.macro@^0.5.0:
   dependencies:
     babel-plugin-macros "^2.8.0"
 
-rc-slider@^10.1.0:
-  version "10.1.0"
-  resolved "https://registry.yarnpkg.com/rc-slider/-/rc-slider-10.1.0.tgz#11e401d8412ae20f9c2ee478bdbaddd042158753"
-  integrity sha512-nhC8V0+lNj4gGKZix2QAfcj/EP3NvCtFhNJPFMvXUdn7pe8bSa2vXNSxQVN5b9veVSic4Xeqgd/7KamX3gqznA==
+rc-slider@^10.1.1:
+  version "10.1.1"
+  resolved "https://registry.yarnpkg.com/rc-slider/-/rc-slider-10.1.1.tgz#5e82036e60b61021aba3ea0e353744dd7c74e104"
+  integrity sha512-gn8oXazZISEhnmRinI89Z/JD/joAaM35jp+gDtIVSTD/JJMCCBqThqLk1SVJmvtfeiEF/kKaFY0+qt4SDHFUDw==
   dependencies:
     "@babel/runtime" "^7.10.1"
     classnames "^2.2.5"
-    rc-util "^5.18.1"
-    shallowequal "^1.1.0"
+    rc-util "^5.27.0"
 
 rc-switch@^4.0.0:
   version "4.0.0"
@@ -9174,14 +9173,13 @@ rc-switch@^4.0.0:
     classnames "^2.2.1"
     rc-util "^5.0.1"
 
-rc-util@^5.0.1, rc-util@^5.18.1:
-  version "5.21.5"
-  resolved "https://registry.yarnpkg.com/rc-util/-/rc-util-5.21.5.tgz#6e2a5699f820ba915f43f11a4b7dfb0b0672d0fa"
-  integrity sha512-ip7HqX37Cy/RDl9MlrFp+FbcKnsWZ22sF5MS5eSpYLtg5MpC0TMqGb5ukBatoOhgjnLL+eJGR6e7YAJ/dhK09A==
+rc-util@^5.0.1, rc-util@^5.27.0:
+  version "5.27.2"
+  resolved "https://registry.yarnpkg.com/rc-util/-/rc-util-5.27.2.tgz#472a7bab26a62856c2c016d18dc6356e46d01012"
+  integrity sha512-8XHRbeJOWlTR2Hk1K2xLaPOf7lZu+3taskAGuqOPccA676vB3ygrz3ZgdrA3wml40CzR9RlIEHDWwI7FZT3wBQ==
   dependencies:
     "@babel/runtime" "^7.18.3"
     react-is "^16.12.0"
-    shallowequal "^1.1.0"
 
 react-app-polyfill@^2.0.0:
   version "2.0.0"
