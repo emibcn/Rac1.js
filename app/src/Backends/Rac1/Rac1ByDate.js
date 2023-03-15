@@ -44,7 +44,7 @@ class Rac1 extends ByDate {
   }
 
   // Cached/compiled regexps & strings for parsing HTML
-  dataAttrsFind = / data-(audio-id|audioteca-search-page)="[^"]*" /;
+  dataAttrsFind = / data-(audio-id|audioteca-search-page)="[^"]*"/;
   dataAttrsClean = /.* (data-(audio-id|audioteca-search-page))="([^"]*)".*/;
   searchData = ["data-audio-id", "data-audioteca-search-page"];
   dataScheduleFixScheduleHour = /(\d)\s+h\b/g;
