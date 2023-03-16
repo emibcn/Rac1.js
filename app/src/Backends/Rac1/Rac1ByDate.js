@@ -1,6 +1,5 @@
 import { ByDate } from '../Base'
 
-
 // Format day and month to 2 digits 0 padded strings
 const pad2 = (num) => `${num < 10 ? '0' : ''}${num}`
 
