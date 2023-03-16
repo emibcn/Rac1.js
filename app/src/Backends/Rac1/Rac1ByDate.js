@@ -1,5 +1,7 @@
 import { ByDate } from '../Base'
 
+const baseURL = 'https://api.audioteca.rac1.cat'
+
 // Format day and month to 2 digits 0 padded strings
 const pad2 = (num) => `${num < 10 ? '0' : ''}${num}`
 
@@ -9,7 +11,6 @@ const format_date = (day, month, year) =>
 
 class Rac1 extends ByDate {
   name = 'Rac1 by date'
-  baseURL = 'https://api.audioteca.rac1.cat'
 
   pageUrl (pageNumber) {
     const date = format_date(
@@ -50,7 +51,7 @@ class Rac1 extends ByDate {
       .map((key) => `${key}=${parameters[key]}`)
       .join('&')
 
-    return `${this.baseURL}/a-la-carta/cerca?${parameters_str}`
+    return `${baseURL}/a-la-carta/cerca?${parameters_str}`
   }
 
   // Cached/compiled regexps & strings for parsing HTML
@@ -87,7 +88,7 @@ class Rac1 extends ByDate {
     }
   }
 
-  podcastUrl = (uuid) => `${this.baseURL}/piece/audio?id=${uuid}`
+  podcastUrl = (uuid) => `${baseURL}/piece/audio?id=${uuid}`
 
   parsePodcast (uuid, podcast) {
     // Fix server bug on year's last day, in which gives dates in the future
@@ -124,7 +125,7 @@ class Rac1 extends ByDate {
       (kind) =>
         (podcast.audio.section.program.images[
           kind
-        ] = `${this.baseURL}/${podcast.audio.section.program.images[kind]}?v${podcast.audio.section.program.imageVersion}`)
+        ] = `${baseURL}/${podcast.audio.section.program.images[kind]}?v${podcast.audio.section.program.imageVersion}`)
     )
     podcast.image = podcast.audio.section.program.images.person
 
