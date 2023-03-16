@@ -202,7 +202,7 @@ class ByDate extends Common {
     if (uuid in this.podcastsData) {
       // Return podcast as an immediatelly resolved Promise,
       // as it is what's expected
-      return new Promise((resolve) => resolve(this.podcastsData[uuid]))
+      return Promise.resolve(this.podcastsData[uuid])
     }
 
     return fetch(this.podcastUrl(uuid), { signal: this.controller.signal })
