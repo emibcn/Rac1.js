@@ -45,7 +45,7 @@ class ByDate extends Common {
         .then((podcasts) => this.getMissingPodcasts(pageNumber, podcasts))
 
         // Trigger event for list updated
-        .then((podcasts) => this.handleListUpdate())
+        .then(() => this.handleListUpdate())
 
         // Catch Exceptions
         .catch(this.catchFetchErrors)
@@ -219,12 +219,23 @@ class ByDate extends Common {
     Virtual/Abstract functions
     Must override on subclass
   */
-  pageUrl (pageNumber) {
+  /*
+     Generates the page URL from its page number
+     (pageNumber) => String(URL)
+  */
+  pageUrl () {
     console.warn(`Need to subclass 'pageUrl' on ${this.name} backend class`)
     return ''
   }
 
-  parsePage (dataRaw) {
+  /*
+     Parses a page and returns the containing podcasts UUIDs and linked pages
+     (dataRaw) => {
+       uuidsPage: [],
+       pages: []
+     }
+  */
+  parsePage () {
     console.warn(`Need to subclass 'parsePage' on ${this.name} backend class`)
     return {
       uuidsPage: [],
@@ -232,12 +243,32 @@ class ByDate extends Common {
     }
   }
 
-  podcastUrl (uuid) {
+  /*
+     Generates the podcast URL from its UUID
+     (uuid) => String(URL)
+  */
+  podcastUrl () {
     console.warn(`Need to subclass 'podcastUrl' on ${this.name} backend class`)
     return ''
   }
 
-  parsePodcast (uuid, podcast) {
+  /*
+     Generates the podcast common object from the data obtained from the web
+     (uuid, podcast) => {
+       uuid: '',
+       date: new Date(),
+       hour: 0,
+       minute: 0,
+       title: '',
+       titleFull: '',
+       author: '',
+       path: '',
+       programUrl: '',
+       schedule: '',
+       image: ''
+     }
+  */
+  parsePodcast () {
     console.warn(
       `Need to subclass 'parsePodcast' on ${this.name} backend class`
     )
