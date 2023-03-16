@@ -2,18 +2,25 @@ import { ByDate } from "../Base";
 
 const baseURL = "https://api.audioteca.rac1.cat";
 
+// Format day and month to 2 digits 0 padded strings
+const pad2 = (num) => `${num < 10 ? "0" : ""}${num}`;
+
+// Format date as expected by the backend
+const format_date = (day, month, year) => [
+    pad2(day),
+    pad2(month),
+    year,
+  ].join("/");
+
 class Rac1 extends ByDate {
   name = "Rac1 by date";
 
   pageUrl(pageNumber) {
-    // Format day and month to 2 digits 0 padded strings
-    const pad2 = (num) => (num < 10 ? "0" : "") + num;
-    const date =
-      pad2(this.date.getDate()) +
-      "/" +
-      pad2(1 + this.date.getMonth()) +
-      "/" +
-      this.date.getFullYear();
+    const date = format_date(
+      this.date.getDate(),
+      1 + this.date.getMonth(),
+      this.date.getFullYear(),
+    );
 
     // Set next day's date and string
     let next = new Date(this.date.getTime());
@@ -28,19 +35,26 @@ class Rac1 extends ByDate {
         next.getDate() === 1
       )
     ) {
-      dateNext =
-        pad2(next.getDate()) +
-        "/" +
-        pad2(1 + next.getMonth()) +
-        "/" +
-        next.getFullYear();
+      dateNext = format_date(
+        next.getDate(),
+        1 + next.getMonth(),
+        next.getFullYear(),
+      );
     }
 
-    return (
-      `${baseURL}/a-la-carta/cerca?` +
-      "text=&programId=&sectionId=HOUR&" +
-      `from=${date}&to=${dateNext}&pageNumber=${pageNumber}`
-    );
+    const parameters = {
+      text: "",
+      programId: "",
+      sectionId: "HOUR",
+      from: date,
+      to: dateNext,
+      pageNumber: pageNumber,
+    };
+    const parameters_str = Object.keys(parameters)
+      .map(key => `${key}=${parameters[key]}`)
+      .join("&");
+
+    return `${baseURL}/a-la-carta/cerca?${parameters_str}`;
   }
 
   // Cached/compiled regexps & strings for parsing HTML
@@ -90,7 +104,7 @@ class Rac1 extends ByDate {
         `${this.date.getFullYear() + 1}`,
         `${this.date.getFullYear()}`
       );
-      console.log("Podcast date in future. Fixing to: " + podcast.dateTime);
+      console.log("Podcast date in future. Fixing to: ", podcast.dateTime);
     }
 
     // Add some processed data to the podcast
@@ -113,9 +127,7 @@ class Rac1 extends ByDate {
     Object.keys(podcast.audio.section.program.images).forEach(
       (kind) =>
         (podcast.audio.section.program.images[kind] =
-          `${baseURL}/` +
-          podcast.audio.section.program.images[kind] +
-          `?v${podcast.audio.section.program.imageVersion}`)
+          `${baseURL}/${podcast.audio.section.program.images[kind]}?v${podcast.audio.section.program.imageVersion}`)
     );
     podcast.image = podcast.audio.section.program.images.person;
 

@@ -134,20 +134,20 @@ class ByDate extends Common {
 
   // Saves the new podcast to the pages cache and fires onPodcastUpdate
   // (pageNumber, podcastNew) => null
-  handlePodcastUpdate(pageNumber, podcastNew) {
+  handlePodcastUpdate(page, podcastNew) {
     try {
-      podcastNew.page = pageNumber;
+      podcastNew.page = page;
 
-      this.pagesUuids[pageNumber].forEach((podcast, index) => {
+      this.pagesUuids[page].forEach((podcast, index) => {
         if (podcast.uuid === podcastNew.uuid) {
-          this.pagesUuids[pageNumber][index] = podcastNew;
+          this.pagesUuids[page][index] = podcastNew;
         }
       });
 
       // Trigger update event
       this.handleListUpdate();
     } catch (err) {
-      console.log("Podcast data arrived after pages clean. Discarding data.");
+      console.log(`Podcast data arrived after pages clean. Discarding data for page ${page}.`);
     }
   }
 
@@ -158,15 +158,18 @@ class ByDate extends Common {
     return this.getPage(pageNumber)
       .then((dataRaw) => this.parsePage(dataRaw))
       .then(({ uuidsPage, pages }) => {
+
         // If it's the first page, call to process the rest of pages, if any
         if (pageNumber === 0) {
           // Save the list of pages, in reverse order
           // If there are no pages (only one page), create a one element array,
           // with page zero in it's first element
           this.pages = pages.length > 0 ? pages.reverse() : [0];
+          if (pages.find(page => page === 0) === undefined)
+            pages.push(0);
 
           // Resolve first the last page, so we have first the first day's UUIDs
-          // Don't call again first page
+          // Don't call again the first page
           this.pages.forEach((page) => page !== 0 && this.updateList(page));
         }
 
