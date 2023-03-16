@@ -59,7 +59,9 @@ class ByDate extends Common {
         // Download podcast data and then trigger
         // update event when updated
         this.getPodcastData(podcast.uuid)
-          .then((podcastData) => this.handlePodcastUpdate(pageNumber, podcastData))
+          .then((podcastData) =>
+            this.handlePodcastUpdate(pageNumber, podcastData)
+          )
           .catch(this.catchFetchErrors)
       }
 
