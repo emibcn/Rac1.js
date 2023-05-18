@@ -1,77 +1,77 @@
-import React from "react";
-import PropTypes from "prop-types";
+import React from 'react'
+import PropTypes from 'prop-types'
 
-import { translate } from "react-translate";
-import DatePicker from "react-date-picker";
+import { translate } from 'react-translate'
+import DatePicker from 'react-date-picker'
 
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   faSyncAlt as faRefresh,
-  faCalendarAlt as faCalendar,
-} from "@fortawesome/free-solid-svg-icons";
+  faCalendarAlt as faCalendar
+} from '@fortawesome/free-solid-svg-icons'
 
-import PodcastsList from "./PodcastsList";
-import Podcast from "./Podcast";
+import PodcastsList from './PodcastsList'
+import Podcast from './Podcast'
 
-import 'react-date-picker/dist/DatePicker.css';
-import 'react-calendar/dist/Calendar.css';
+import 'react-date-picker/dist/DatePicker.css'
+import 'react-calendar/dist/Calendar.css'
 
-const UpdateButton = translate("UpdateButton")((props) => {
-  const { t, ...restProps } = props;
-  const text = t("Update");
+const UpdateButton = translate('UpdateButton')((props) => {
+  const { t, ...restProps } = props
+  const text = t('Update')
   return (
     <button
       {...restProps}
       aria-label={text}
       style={{
-        borderRadius: ".5em",
-        padding: ".25em",
-        margin: "0 0 0 1em",
+        borderRadius: '.5em',
+        padding: '.25em',
+        margin: '0 0 0 1em'
       }}
     >
       <div
         style={{
-          fontSize: "calc(.5em + 2vmin)",
-          fontWeight: "bold",
-          marginBottom: "-.25em",
+          fontSize: 'calc(.5em + 2vmin)',
+          fontWeight: 'bold',
+          marginBottom: '-.25em'
         }}
       >
         <FontAwesomeIcon icon={faRefresh} />
       </div>
       <span
         style={{
-          fontSize: "calc(5px + 1vmin)",
-          color: "#333",
+          fontSize: 'calc(5px + 1vmin)',
+          color: '#333'
         }}
       >
         {text}
       </span>
     </button>
-  );
-});
+  )
+})
 
 class Playlist extends React.PureComponent {
-  render() {
+  render () {
     const { completedDownload, date, podcasts, current, minDate, maxDate } =
-      this.props;
+      this.props
 
     return (
       <div
-        role="list"
+        role='list'
         style={{
-          color: "#333",
-          backgroundColor: "white",
-          padding: "2em",
-          borderRadius: "10px",
-          textAlign: "left",
-          fontSize: "large",
+          color: '#333',
+          backgroundColor: 'white',
+          padding: '2em',
+          borderRadius: '10px',
+          textAlign: 'left',
+          fontSize: 'large'
         }}
       >
         <div
           style={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center'
           }}
         >
           <DatePicker
@@ -79,7 +79,7 @@ class Playlist extends React.PureComponent {
             onBlur={this.handleDateBlur}
             minDate={minDate}
             maxDate={maxDate}
-            required={true}
+            required
             value={date}
             clearIcon={null}
             calendarIcon={<FontAwesomeIcon icon={faCalendar} />}
@@ -91,13 +91,13 @@ class Playlist extends React.PureComponent {
         </div>
         <div
           style={{
-            textAlign: "center",
+            textAlign: 'center'
           }}
         >
           <PodcastsList current={current}>
             {podcasts.map((podcast, index) => (
               <Podcast
-                key={podcast.uuid !== "..." ? podcast.uuid : `..._${index}`}
+                key={podcast.uuid !== '...' ? podcast.uuid : `..._${index}`}
                 {...podcast}
                 onClick={this.props.onClickPodcast}
               />
@@ -105,14 +105,14 @@ class Playlist extends React.PureComponent {
           </PodcastsList>
         </div>
       </div>
-    );
+    )
   }
 
   handleDateChange = (date) => {
-    date.setHours(0);
-    date.setMinutes(0);
-    this.props.onDateChange(date);
-  };
+    date.setHours(0)
+    date.setMinutes(0)
+    this.props.onDateChange(date)
+  }
 
   // Trigger onDateBlur only if not originated by an element with one of those classNames:
   // - calendar, date, date-picker
@@ -127,9 +127,9 @@ class Playlist extends React.PureComponent {
         e.relatedTarget.className.match(/(calendar|date-?picker)/)
       )
     ) {
-      this.props.onDateBlur(e);
+      this.props.onDateBlur(e)
     }
-  };
+  }
 }
 
 Playlist.defaultProps = {
@@ -139,8 +139,8 @@ Playlist.defaultProps = {
   completedDownload: true,
   date: new Date(),
   maxDate: new Date(),
-  podcasts: [],
-};
+  podcasts: []
+}
 
 Playlist.propTypes = {
   onClickUpdate: PropTypes.func.isRequired,
@@ -152,7 +152,7 @@ Playlist.propTypes = {
   minDate: PropTypes.instanceOf(Date).isRequired,
   maxDate: PropTypes.instanceOf(Date).isRequired,
   podcasts: PropTypes.array.isRequired,
-  current: PropTypes.number.isRequired,
-};
+  current: PropTypes.number.isRequired
+}
 
-export default Playlist;
+export default Playlist
