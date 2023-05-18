@@ -13,6 +13,9 @@ import {
 import PodcastsList from "./PodcastsList";
 import Podcast from "./Podcast";
 
+import 'react-date-picker/dist/DatePicker.css';
+import 'react-calendar/dist/Calendar.css';
+
 const UpdateButton = translate("UpdateButton")((props) => {
   const { t, ...restProps } = props;
   const text = t("Update");
