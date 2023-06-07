@@ -32,7 +32,7 @@
     "workbox-broadcast-update": "^7.0.0",
     "workbox-cacheable-response": "^7.0.0",
     "workbox-core": "^6.4.1",
-    "workbox-expiration": "^6.5.4",
+    "workbox-expiration": "^7.0.0",
     "workbox-google-analytics": "^7.0.0",
     "workbox-navigation-preload": "^7.0.0",
     "workbox-precaching": "^7.0.0",
