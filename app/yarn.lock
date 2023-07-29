@@ -4139,10 +4139,10 @@ destroy@1.2.0:
   resolved "https://registry.yarnpkg.com/destroy/-/destroy-1.2.0.tgz#4803735509ad8be552934c67df614f94e66fa015"
   integrity sha512-2sJGJTaXIIaR1w4iJSNoN0hnMY7Gpc/n8D4qSCJw8QqFWXf7cuAgnEHxBpweaVcPevC2l3KpjYCx3NypQQgaJg==
 
-detect-element-overflow@^1.3.1:
-  version "1.3.1"
-  resolved "https://registry.yarnpkg.com/detect-element-overflow/-/detect-element-overflow-1.3.1.tgz#1a83f11abfd70c4dec750f214c7d7808c5c19638"
-  integrity sha512-E29Axx3pyotgg3j5HUbusTTarjPUHsC02p7fZ3/cnUufyK0kx5RzRA9waBvrKFWGc/LWiRj3pD9Y3y+mymMYiQ==
+detect-element-overflow@^1.4.0:
+  version "1.4.1"
+  resolved "https://registry.yarnpkg.com/detect-element-overflow/-/detect-element-overflow-1.4.1.tgz#fc2ff7eb04c03090b289abe45a447b2c78b983b6"
+  integrity sha512-6a1wXl5+KbnXhO5FWgKq+omp8km42QLWgd1UYj99SS6o/aYBuTPU/ByI9dLgPYi9aes5TAg62IRoRKpqrDb0PQ==
 
 detect-newline@^3.0.0:
   version "3.1.0"
@@ -7169,10 +7169,10 @@ make-dir@^3.0.0, make-dir@^3.0.2:
   dependencies:
     semver "^6.0.0"
 
-make-event-props@^1.4.2:
-  version "1.5.0"
-  resolved "https://registry.yarnpkg.com/make-event-props/-/make-event-props-1.5.0.tgz#17a34e6c70a1c9f971d5a5aad8dd008371201c3e"
-  integrity sha512-ubtzzj95Ga0t/LoINWPjqQWIxbb1SJ6td7YygKzx8kX5ywu/dpN0YnCsjzJOTxFXKsb/1SJBzy+uBAMnKWMVDw==
+make-event-props@^1.6.0:
+  version "1.6.1"
+  resolved "https://registry.yarnpkg.com/make-event-props/-/make-event-props-1.6.1.tgz#1d587017c3f1f3b42719b775af93d5253656ccdd"
+  integrity sha512-JhvWq/iz1BvlmnPvLJjXv+xnMPJZuychrDC68V+yCGQJn5chcA8rLGKo5EP1XwIKVrigSXKLmbeXAGkf36wdCQ==
 
 makeerror@1.0.x:
   version "1.0.11"
@@ -9214,10 +9214,10 @@ react-burger-menu@^3.0.9:
     prop-types "^15.7.2"
     snapsvg-cjs "0.0.6"
 
-react-calendar@^4.5.0:
-  version "4.5.0"
-  resolved "https://registry.yarnpkg.com/react-calendar/-/react-calendar-4.5.0.tgz#03a6ef29e3abb70b4b849f1154f61fe5e97038cd"
-  integrity sha512-K/41WRjF9j9X0b77eVNC9J2oZkxqvOSLnoyAWhpgZwTpga5Ho4RwIedR2tWnmcptD17xtSMTJgXmAFPysf0uDQ==
+react-calendar@^4.6.0:
+  version "4.6.0"
+  resolved "https://registry.yarnpkg.com/react-calendar/-/react-calendar-4.6.0.tgz#2410895ba5f257f931815ffa74af06ff7a56d2e3"
+  integrity sha512-GJ6ZipKMQmlK666t+0hgmecu6WHydEnMWJjKdEkUxW6F471hiM5DkbWXkfr8wlAg9tc9feNCBhXw3SqsPOm01A==
   dependencies:
     "@wojtekmaj/date-utils" "^1.1.3"
     clsx "^2.0.0"
@@ -9225,19 +9225,19 @@ react-calendar@^4.5.0:
     prop-types "^15.6.0"
     tiny-warning "^1.0.0"
 
-react-date-picker@^10.3.0:
-  version "10.3.0"
-  resolved "https://registry.yarnpkg.com/react-date-picker/-/react-date-picker-10.3.0.tgz#1c2312af736070b7d45e57434ab4e32950ca2a0a"
-  integrity sha512-Ch2S5WBAQ+baxb8TuezpjKbHQNbxmp/OB/zPLNsriOf8szfMQU4vD74c9qCI7/eAmtJuAbNK/7s5Weyh9hDnrA==
+react-date-picker@^10.5.0:
+  version "10.5.0"
+  resolved "https://registry.yarnpkg.com/react-date-picker/-/react-date-picker-10.5.0.tgz#a3204d6c68eb04d2ea5e97ee26b5ba5983b4f32b"
+  integrity sha512-A0LsM7M9iaOj+ALFOum5xdKlE6GdmKQKrctKJiOrU9lAeX+adkBqjHMZItYiO2OmWoHhRQm8iGVJCMA2SV8+IA==
   dependencies:
     "@wojtekmaj/date-utils" "^1.1.3"
     clsx "^2.0.0"
     get-user-locale "^2.2.1"
-    make-event-props "^1.4.2"
+    make-event-props "^1.6.0"
     prop-types "^15.6.0"
-    react-calendar "^4.5.0"
-    react-fit "^1.6.0"
-    update-input-width "^1.3.1"
+    react-calendar "^4.6.0"
+    react-fit "^1.7.0"
+    update-input-width "^1.4.0"
 
 react-dev-utils@^11.0.3:
   version "11.0.4"
@@ -9288,12 +9288,12 @@ react-fast-compare@^3.2.0:
   resolved "https://registry.yarnpkg.com/react-fast-compare/-/react-fast-compare-3.2.0.tgz#641a9da81b6a6320f270e89724fb45a0b39e43bb"
   integrity sha512-rtGImPZ0YyLrscKI9xTpV8psd6I8VAtjKCzQDlzyDvqJA8XOW78TXYQwNRNd8g8JZnDu8q9Fu/1v4HPAVwVdHA==
 
-react-fit@^1.6.0:
-  version "1.6.0"
-  resolved "https://registry.yarnpkg.com/react-fit/-/react-fit-1.6.0.tgz#2be3bb49961a492ceaedb4d17e0e61c83c132515"
-  integrity sha512-2ROyM89CU62AZc+xWBKLEA5+4Q0mt11SaitO7jsGHrzjXcsekH2ziYttBPFXAFRL9VQgB6BfryTgBcC/sqlVgA==
+react-fit@^1.7.0:
+  version "1.7.0"
+  resolved "https://registry.yarnpkg.com/react-fit/-/react-fit-1.7.0.tgz#0d0c5614cff691028357f748efc7a6e853e3c654"
+  integrity sha512-mp1zCayzmCXrTYoSZjBGaN/VkYZ+QwMXm52Jh33au+bgrLoC7sn2XND1TOh2VZ/vqZ2MgpPjGcygCQ+7p514cQ==
   dependencies:
-    detect-element-overflow "^1.3.1"
+    detect-element-overflow "^1.4.0"
     prop-types "^15.6.0"
     tiny-warning "^1.0.0"
 
@@ -11143,10 +11143,10 @@ upath@^1.1.1, upath@^1.1.2, upath@^1.2.0:
   resolved "https://registry.yarnpkg.com/upath/-/upath-1.2.0.tgz#8f66dbcd55a883acdae4408af8b035a5044c1894"
   integrity sha512-aZwGpamFO61g3OlfT7OQCHqhGnW43ieH9WZeP7QxN/G/jS4jfqUkZxoryvJgVPEcrl5NL/ggHsSmLMHuH64Lhg==
 
-update-input-width@^1.3.1:
-  version "1.3.1"
-  resolved "https://registry.yarnpkg.com/update-input-width/-/update-input-width-1.3.1.tgz#35d9e56da9e89b57ca84d806a0383b3ff41ca0c0"
-  integrity sha512-hV2DGiSn7FKerjIXaI3s0EG/AnmAeoRTV5cvpsFcygzUzKreYj5qSu7rVihzUOEXF/MP2mjJpUzwi14sZdp0nw==
+update-input-width@^1.4.0:
+  version "1.4.1"
+  resolved "https://registry.yarnpkg.com/update-input-width/-/update-input-width-1.4.1.tgz#94636ef786da0a33581091c57d3a3c66d9fdcbd2"
+  integrity sha512-/FDlfTvxlEQ9+/duf5PoC1q0uYQd/nE4w7K7rVAAoW/QKKa4bdhccuPaWtfkrWEy2r08rzX6wlmCHeGL+vgJOw==
 
 uri-js@^4.2.2:
   version "4.4.1"
