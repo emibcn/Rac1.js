@@ -67,7 +67,7 @@
     ]
   },
   "devDependencies": {
-    "@testing-library/jest-dom": "^5.17.0",
+    "@testing-library/jest-dom": "^6.0.1",
     "@testing-library/react": "^12.1.5",
     "@testing-library/user-event": "^14.4.3",
     "jest-canvas-mock": "^2.5.2"
