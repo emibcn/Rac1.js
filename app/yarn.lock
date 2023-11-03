@@ -9267,10 +9267,10 @@ raw.macro@^0.5.0:
   dependencies:
     babel-plugin-macros "^2.8.0"
 
-rc-slider@^10.3.1:
-  version "10.3.1"
-  resolved "https://registry.yarnpkg.com/rc-slider/-/rc-slider-10.3.1.tgz#345e818975f4bb61b66340799af8cfccad7c8ad7"
-  integrity sha512-XszsZLkbjcG9ogQy/zUC0n2kndoKUAnY/Vnk1Go5Gx+JJQBz0Tl15d5IfSiglwBUZPS9vsUJZkfCmkIZSqWbcA==
+rc-slider@^10.4.0:
+  version "10.4.0"
+  resolved "https://registry.yarnpkg.com/rc-slider/-/rc-slider-10.4.0.tgz#efc016583fdea5f5dfb4f3dc61b6755a19e5f453"
+  integrity sha512-ZlpWjFhOlEf0w4Ng31avFBkXNNBj60NAcTPaIoiCxBkJ29wOtHSPMqv9PZeEoqmx64bpJkgK7kPa47HG4LPzww==
   dependencies:
     "@babel/runtime" "^7.10.1"
     classnames "^2.2.5"
