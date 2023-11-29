@@ -31,12 +31,11 @@ const withErrorCatcher = (origin, component) => (
   <ErrorCatcher {...{ origin, key: origin }}>{component}</ErrorCatcher>
 );
 
-const withErrorCatcherCreator = (origin, Component) => (props) =>
-  (
-    <ErrorCatcher {...{ origin, key: origin }}>
-      <Component {...props} />
-    </ErrorCatcher>
-  );
+const withErrorCatcherCreator = (origin, Component) => (props) => (
+  <ErrorCatcher {...{ origin, key: origin }}>
+    <Component {...props} />
+  </ErrorCatcher>
+);
 
 const LiveWithErrorCatcher = withErrorCatcherCreator("Live", Live);
 const ByDateWithErrorCatcher = withErrorCatcherCreator("ByDate", ByDate);
@@ -186,7 +185,7 @@ class App extends React.Component {
                       onTrackOptIn={(track) =>
                         this.setState({ trackOptIn: track })
                       }
-                    />
+                    />,
                   )
                 }
               />
@@ -206,9 +205,9 @@ class App extends React.Component {
             <header ref={this.appElement} className="App-header" id="page-wrap">
               {/* App Route */}
               <Switch>
-                <Route exact path={"/live"} render={LiveWithErrorCatcher} />
+                <Route exact path="/live" render={LiveWithErrorCatcher} />
 
-                <Route exact path={"/(directe|directo)"}>
+                <Route exact path="/(directe|directo)">
                   <Redirect to={{ pathname: "live" }} />
                 </Route>
 
@@ -234,7 +233,7 @@ class App extends React.Component {
                 {/* Set default date to today */}
                 <Route
                   exact
-                  path={":all(.*)"}
+                  path=":all(.*)"
                   render={({ match, ...props }) => {
                     return (
                       <Redirect

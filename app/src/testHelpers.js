@@ -75,7 +75,7 @@ class MockFetch {
         }
         return new Response(
           JSON.stringify({ tested: true, url }),
-          this.options.responseOptions.bind(this)()
+          this.options.responseOptions.bind(this)(),
         );
       });
     }

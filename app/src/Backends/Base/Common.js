@@ -27,7 +27,7 @@ class Common {
     // Raise succeeded non-ok responses
     if (!response.ok) {
       return Promise.reject(
-        Error(`${this.name} backend: ${response.statusText}`)
+        Error(`${this.name} backend: ${response.statusText}`),
       );
     }
     return response;

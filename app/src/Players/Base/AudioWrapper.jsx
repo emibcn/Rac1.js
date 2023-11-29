@@ -40,10 +40,10 @@ class AudioWrapper extends PureComponent {
     }
   }
 
-  /////////////////////////////
+  /// //////////////////////////
   // Actions for our Controls
   // Bound to this when needed
-  /////////////////////////////
+  /// //////////////////////////
   getPlayer = () => this._player?.audioEl;
 
   // Actions activated through MediaSession
@@ -71,10 +71,12 @@ class AudioWrapper extends PureComponent {
     this.onSetVolume(e.currentTarget.volume);
     this.onSetMuted(e.currentTarget.muted);
   };
+
   isSeekable = () => {
     const player = this.getPlayer();
     return player?.current?.duration !== Infinity;
   };
+
   getHideButtons = () => {
     return {
       hideButtons: [
@@ -86,6 +88,7 @@ class AudioWrapper extends PureComponent {
       ],
     };
   };
+
   onLoadedMetadata = () => this.setState(this.getHideButtons());
   onShowAdvancedChange = (show) => {
     this.setState({ showAdvancedControls: show });
@@ -100,6 +103,7 @@ class AudioWrapper extends PureComponent {
   refPlayer = (el) => {
     this._player = el;
   };
+
   refControls = (el) => {
     if (el) {
       this.controlsKeyHandlerFocus = el.keyHandlerFocus;
