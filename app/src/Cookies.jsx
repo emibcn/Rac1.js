@@ -31,7 +31,7 @@ class Cookies extends React.Component {
         <div id="modal_description" style={{ textAlign: "left" }}>
           <p>
             {t(
-              "This site uses cookies and other tracking technologies to assist with navigation and your ability to provide feedback, analyse your use of our products and services, assist with our promotional and marketing efforts, and provide content from third parties."
+              "This site uses cookies and other tracking technologies to assist with navigation and your ability to provide feedback, analyse your use of our products and services, assist with our promotional and marketing efforts, and provide content from third parties.",
             )}
           </p>
           <details>
@@ -68,7 +68,7 @@ class Cookies extends React.Component {
         <p>
           <i>
             {t(
-              "We need to reload the page when you change this option in order to ensure it is taken completely into account."
+              "We need to reload the page when you change this option in order to ensure it is taken completely into account.",
             )}
           </i>
         </p>
@@ -84,7 +84,7 @@ class Cookies extends React.Component {
     this.props.sendEvent(
       "Menu",
       "Change tracking preference",
-      `Current tracking preference: ${!this.props.trackOptIn}`
+      `Current tracking preference: ${!this.props.trackOptIn}`,
     );
     window.location.reload();
   };

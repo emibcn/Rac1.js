@@ -23,7 +23,10 @@ import MediaQuery from "react-responsive";
 import { slide as SmallMenu, scaleRotate as BigMenu } from "react-burger-menu";
 
 import { withGAEvent } from "./GAListener";
-import { withServiceWorkerUpdater, LocalStoragePersistenceService } from '@3m1/service-worker-updater'
+import {
+  withServiceWorkerUpdater,
+  LocalStoragePersistenceService,
+} from "@3m1/service-worker-updater";
 import "./AppMenu.css";
 
 class AppMenu extends React.Component {
@@ -58,7 +61,7 @@ class AppMenu extends React.Component {
           }
           to="/"
           title={t(
-            "Play podcasts filtered by date and ordered chronologically"
+            "Play podcasts filtered by date and ordered chronologically",
           )}
         >
           <FontAwesomeIcon icon={faByDate} style={{ marginRight: ".5em" }} />
@@ -209,7 +212,7 @@ class AppMenu extends React.Component {
       this.props.sendEvent(
         "Menu",
         "Change open state",
-        `Menu is open: ${isOpen}`
+        `Menu is open: ${isOpen}`,
       );
     }
   };
@@ -240,7 +243,7 @@ class AppMenu extends React.Component {
     this.props.sendEvent(
       "Menu",
       "Change language",
-      `Current language: ${language}`
+      `Current language: ${language}`,
     );
   };
 
@@ -270,9 +273,8 @@ AppMenu.propTypes = {
 
 export default translate("AppMenu")(
   withGAEvent(
-    withServiceWorkerUpdater(
-      AppMenu,
-      { persistenceService: new LocalStoragePersistenceService('Rac1.js') }
-    )
-  )
+    withServiceWorkerUpdater(AppMenu, {
+      persistenceService: new LocalStoragePersistenceService("Rac1.js"),
+    }),
+  ),
 );

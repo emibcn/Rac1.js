@@ -48,7 +48,7 @@ class Live extends Component {
     error.message = `Live: ${error.message}`;
     this.setState({
       hasError: true,
-      error: error,
+      error,
     });
   };
 
@@ -79,7 +79,7 @@ class Live extends Component {
         }}
       >
         <AudioWrapper
-          autoPlay={true}
+          autoPlay
           title={title}
           path={currentPath}
           allowFocus={this.allowFocus}

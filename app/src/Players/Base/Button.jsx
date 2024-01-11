@@ -23,7 +23,7 @@ class ButtonLegacy extends React.PureComponent {
               key: key.key.length === 1 ? key.key.toUpperCase() : t(key.key),
             };
           })
-          .map((key) => (key.shiftKey ? ` ${t("SHIFT")} + ` : "") + key.key)
+          .map((key) => (key.shiftKey ? ` ${t("SHIFT")} + ` : "") + key.key),
       ),
     ];
     return ` | ${t(`Key${keys.length > 1 ? "s" : ""}`)}: ${keys.join(", ")}`;
@@ -104,7 +104,7 @@ ButtonLegacy.propTypes = {
         ctrlKey: PropTypes.bool,
         metaKey: PropTypes.bool,
       }),
-    ])
+    ]),
   ),
 };
 

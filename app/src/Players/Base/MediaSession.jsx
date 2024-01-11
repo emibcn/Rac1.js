@@ -14,15 +14,15 @@ class MediaSession extends Component {
       navigator.mediaSession.setActionHandler("pause", props.onPause);
       navigator.mediaSession.setActionHandler(
         "seekbackward",
-        props.onSeekBackward
+        props.onSeekBackward,
       );
       navigator.mediaSession.setActionHandler(
         "seekforward",
-        props.onSeekForward
+        props.onSeekForward,
       );
       navigator.mediaSession.setActionHandler(
         "previoustrack",
-        props.onPlayPrev
+        props.onPlayPrev,
       );
       navigator.mediaSession.setActionHandler("nexttrack", props.onPlayNext);
     }
@@ -34,14 +34,14 @@ class MediaSession extends Component {
       artwork && artwork.length
         ? artwork
         : image && image.length
-        ? [
-            {
-              src: image,
-              sizes: "512x512",
-              type: "image/png",
-            },
-          ]
-        : undefined;
+          ? [
+              {
+                src: image,
+                sizes: "512x512",
+                type: "image/png",
+              },
+            ]
+          : undefined;
     navigator.mediaSession.metadata = new window.MediaMetadata({
       title,
       artist,

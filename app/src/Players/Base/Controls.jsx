@@ -285,7 +285,7 @@ class Controls extends React.Component {
           (control) =>
             (control.text instanceof Function
               ? control.text()
-              : control.text) === text
+              : control.text) === text,
         )
 
         // Run it
@@ -303,9 +303,9 @@ class Controls extends React.Component {
       return res;
     }, {});
 
-    if (buttons["advanced"].length) {
-      buttons["basic"].push(
-        ...this.filterButtonsGroup(this.controls, "do-advanced")
+    if (buttons.advanced.length) {
+      buttons.basic.push(
+        ...this.filterButtonsGroup(this.controls, "do-advanced"),
       );
     }
 
@@ -328,7 +328,7 @@ class Controls extends React.Component {
           justifyContent: "center",
         }}
       >
-        {buttons["basic"].length ? (
+        {buttons.basic.length ? (
           <div
             style={{
               display: "flex",
@@ -336,14 +336,14 @@ class Controls extends React.Component {
             }}
           >
             <ButtonsGroup
-              buttons={buttons["basic"]}
+              buttons={buttons.basic}
               keyHandlerFocus={this.keyHandlerFocus}
             />
             {!volumeAsAdvanced ? volumeComponent : null}
           </div>
         ) : null}
         <div style={{ display: "flex" }}>
-          {showAdvanced && buttons["advanced"].length ? (
+          {showAdvanced && buttons.advanced.length ? (
             <div
               style={{
                 display: "flex",
@@ -352,11 +352,11 @@ class Controls extends React.Component {
               }}
             >
               <ButtonsGroup
-                buttons={this.filterButtonsGroup(buttons["advanced"], "prev")}
+                buttons={this.filterButtonsGroup(buttons.advanced, "prev")}
                 keyHandlerFocus={this.keyHandlerFocus}
               />
               <ButtonsGroup
-                buttons={this.filterButtonsGroup(buttons["advanced"], "next")}
+                buttons={this.filterButtonsGroup(buttons.advanced, "next")}
                 keyHandlerFocus={this.keyHandlerFocus}
               />
             </div>
@@ -436,13 +436,13 @@ class Controls extends React.Component {
     this.controls.forEach((control) => {
       (control.keys || []).forEach((key_orig) => {
         // Understand plain string or custom key object
-        let key = typeof key_orig === "string" ? { key: key_orig } : key_orig;
+        const key = typeof key_orig === "string" ? { key: key_orig } : key_orig;
 
         // If it's exact key match
         if (
           e.key === key.key &&
           ["shiftKey", "altKey", "ctrlKey", "metaKey"].every(
-            (mod) => !!e[mod] === !!key[mod]
+            (mod) => !!e[mod] === !!key[mod],
           )
         ) {
           stopPropagation = true;
@@ -499,7 +499,7 @@ Controls.propTypes = {
       "+60s",
       "+10s",
       "Play/Pause",
-    ])
+    ]),
   ).isRequired,
   extraControls: PropTypes.arrayOf(
     // As a button, but `text` and `icon` are not required
@@ -507,7 +507,7 @@ Controls.propTypes = {
       ...Button.propTypes,
       text: PropTypes.oneOfType([PropTypes.func, PropTypes.node]),
       icon: PropTypes.oneOfType([PropTypes.func, PropTypes.node]),
-    })
+    }),
   ).isRequired,
   sendEvent: PropTypes.func.isRequired,
 };

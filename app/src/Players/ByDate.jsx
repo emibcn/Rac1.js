@@ -21,7 +21,7 @@ class ByDate extends Component {
       date.month - 1,
       date.day,
       date.hour || 0,
-      date.minute || 0
+      date.minute || 0,
     );
   }
 
@@ -83,7 +83,7 @@ class ByDate extends Component {
     error.message = `Rac1ByDate: ${error.message}`;
     this.setState({
       hasError: true,
-      error: error,
+      error,
     });
   };
 
@@ -174,7 +174,7 @@ class ByDate extends Component {
               onPlayNext={this.handlePlayNext}
               onPlayPrev={this.handlePlayPrev}
               extraControls={this.extraControls}
-              volumeAsAdvanced={true}
+              volumeAsAdvanced
               artist={currentPodcast && currentPodcast.author}
               album={currentPodcast && currentPodcast.schedule}
               image={currentPodcast && currentPodcast.image}
@@ -333,7 +333,7 @@ class ByDate extends Component {
 
   findPodcastByUUID(uuid) {
     const index = this.state.podcasts.findIndex(
-      (podcast) => podcast.uuid === uuid
+      (podcast) => podcast.uuid === uuid,
     );
 
     // Return index = 0 (first element in list) if
