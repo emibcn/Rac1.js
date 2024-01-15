@@ -442,7 +442,7 @@ class Controls extends React.Component {
         if (
           e.key === key.key &&
           ["shiftKey", "altKey", "ctrlKey", "metaKey"].every(
-            (mod) => !!e[mod] === !!key[mod]
+            (mod) => Boolean(e[mod]) === Boolean(key[mod])
           )
         ) {
           stopPropagation = true;

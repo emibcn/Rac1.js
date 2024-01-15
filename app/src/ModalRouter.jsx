@@ -48,7 +48,7 @@ class ModalRouterInner extends React.PureComponent {
   getPathState(location) {
     const path = location.hash.replace(/[^#]*#(.*)$/, "$1");
     return {
-      modalIsOpen: !!path.length && path !== "close",
+      modalIsOpen: Boolean(path.length) && path !== "close",
       path,
       initialPath: this.state ? this.state.initialPath : path,
     };
