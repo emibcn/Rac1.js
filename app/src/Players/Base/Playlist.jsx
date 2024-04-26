@@ -122,8 +122,7 @@ class Playlist extends React.PureComponent {
   handleDateBlur = (e) => {
     if (
       !(
-        e &&
-        e.relatedTarget &&
+        e?.relatedTarget &&
         e.relatedTarget.className.match(/(calendar|date-?picker)/)
       )
     ) {

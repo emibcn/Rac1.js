@@ -175,9 +175,9 @@ class ByDate extends Component {
               onPlayPrev={this.handlePlayPrev}
               extraControls={this.extraControls}
               volumeAsAdvanced
-              artist={currentPodcast && currentPodcast.author}
-              album={currentPodcast && currentPodcast.schedule}
-              image={currentPodcast && currentPodcast.image}
+              artist={currentPodcast?.author}
+              album={currentPodcast?.schedule}
+              image={currentPodcast?.image}
             />
             <Playlist
               date={date}

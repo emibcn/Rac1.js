@@ -218,7 +218,7 @@ class Controls extends React.Component {
     let doFocus = true
 
     // Allow datepicker to get focus
-    if (e && e.relatedTarget && this.props.allowFocus(e.relatedTarget)) {
+    if (e?.relatedTarget && this.props.allowFocus(e.relatedTarget)) {
       doFocus = false
     }
 
