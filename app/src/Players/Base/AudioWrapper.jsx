@@ -25,7 +25,7 @@ class AudioWrapper extends PureComponent {
   componentWillUnmount() {
     // Unregister player event listeners
     const player = this.getPlayer().current;
-    if (player && player.removeEventListener) {
+    if (player?.removeEventListener) {
       player.removeEventListener("play", this.handlePlayStatusChangeTrue);
       player.removeEventListener("pause", this.handlePlayStatusChangeFalse);
     }

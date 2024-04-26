@@ -31,9 +31,9 @@ class MediaSession extends Component {
   setMetadata(props) {
     const { title, artist, album, image, artwork } = props;
     const artworkReal =
-      artwork && artwork.length
+      artwork?.length
         ? artwork
-        : image && image.length
+        : image?.length
         ? [
             {
               src: image,
