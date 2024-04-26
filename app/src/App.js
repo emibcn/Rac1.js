@@ -103,7 +103,7 @@ class App extends React.Component {
 
     this.state = {
       initializing: true,
-      language: available.hasOwnProperty(navigator.language)
+      language: Object.prototype.hasOwnProperty.call(available, navigator.language)
         ? navigator.language
         : "en-en",
       trackingSeen: false,
