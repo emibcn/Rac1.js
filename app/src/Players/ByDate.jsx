@@ -174,7 +174,7 @@ class ByDate extends Component {
               onPlayNext={this.handlePlayNext}
               onPlayPrev={this.handlePlayPrev}
               extraControls={this.extraControls}
-              volumeAsAdvanced={true}
+              volumeAsAdvanced
               artist={currentPodcast && currentPodcast.author}
               album={currentPodcast && currentPodcast.schedule}
               image={currentPodcast && currentPodcast.image}

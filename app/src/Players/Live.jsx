@@ -79,7 +79,7 @@ class Live extends Component {
         }}
       >
         <AudioWrapper
-          autoPlay={true}
+          autoPlay
           title={title}
           path={currentPath}
           allowFocus={this.allowFocus}
