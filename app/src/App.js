@@ -118,6 +118,14 @@ class App extends React.Component {
     this.setState({ initializing: false });
   };
 
+  handleTrackingSeenChange = (trackingSeen) => {
+    this.setState({ trackingSeen });
+  };
+
+  handleTrackOptInChange = (trackOptIn) => {
+    this.setState({ trackOptIn });
+  };
+
   render() {
     const { trackOptIn, trackingSeen, initializing } = this.state;
     const { language, handleLanguageChange, isBot } = this.props;
@@ -165,10 +173,8 @@ class App extends React.Component {
               <Route exact path="cookies">
                 <CookiesWithErrorCatcher
                   {...{ trackOptIn, trackingSeen }}
-                  onTrackingSeen={(seen) =>
-                    this.setState({ trackingSeen: seen })
-                  }
-                  onTrackOptIn={(track) => this.setState({ trackOptIn: track })}
+                  onTrackingSeen={ this.handleTrackingSeenChange }
+                  onTrackOptIn={ this.handleTrackOptInChange }
                 />
               </Route>
             </ModalRouter>
