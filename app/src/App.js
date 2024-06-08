@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo, useState } from "react";
 import {
   HashRouter as Router,
   Route,
@@ -94,19 +94,8 @@ const RedirectToToday = function () {
 };
 
 class App extends React.Component {
-  constructor() {
+  constructor(props) {
     super();
-
-    // Get DoNotTrack user preference
-    // Deactivate tracking by default to users with DNT and to all bots
-    this.isBot = botCheck();
-    const dnt =
-      navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
-    this.dnt =
-      process.env.NODE_ENV === "test" ||
-      dnt === "1" ||
-      dnt === "yes" ||
-      this.isBot;
 
     // Fix bad browser encoding HASH
     const decoded = decodeURIComponent(global.location.hash);
@@ -120,16 +109,8 @@ class App extends React.Component {
 
     this.state = {
       initializing: true,
-      language: Object.prototype.hasOwnProperty.call(
-        available,
-        navigator.language,
-      )
-        ? navigator.language
-        : "en-en",
       trackingSeen: false,
-      trackOptIn: !this.dnt,
-      isBot: this.isBot,
-      dnt: this.dnt,
+      trackOptIn: !props.dnt,
     };
   }
 
@@ -137,10 +118,9 @@ class App extends React.Component {
     this.setState({ initializing: false });
   };
 
-  handleLanguageChange = (language) => this.setState({ language });
-
   render() {
-    const { language, trackOptIn, trackingSeen, initializing } = this.state;
+    const { trackOptIn, trackingSeen, initializing } = this.state;
+    const { language, handleLanguageChange, isBot } = this.props;
     const translations = available[language];
 
     return (
@@ -172,7 +152,7 @@ class App extends React.Component {
             */}
             <ModalRouter
               force={
-                !trackingSeen && !initializing && !this.isBot
+                !trackingSeen && !initializing && !isBot
                   ? "cookies"
                   : false
               }
@@ -199,7 +179,7 @@ class App extends React.Component {
             <ErrorCatcher origin="AppMenu">
               <AppMenu
                 language={language}
-                onLanguageChange={this.handleLanguageChange}
+                onLanguageChange={handleLanguageChange}
                 trackOptIn={trackOptIn}
               />
             </ErrorCatcher>
@@ -250,4 +230,34 @@ class App extends React.Component {
   }
 }
 
-export default App;
+// Get DoNotTrack user preference
+// Deactivate tracking by default to users with DNT and to all bots
+const AppWrapper = function() {
+  const isBot = useMemo(botCheck);
+  const dnt = useMemo(() => {
+    const navDNT = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+    return process.env.NODE_ENV === "test" ||
+      navDNT === "1" ||
+      navDNT === "yes" ||
+      isBot
+  });
+  const defaultLanguage = useMemo(() => 
+    Object.prototype.hasOwnProperty.call(
+      available,
+      navigator.language,
+    ) ? navigator.language
+      : "en-en",
+  )
+  const [language, setLanguage] = useState(defaultLanguage)
+
+  return (
+    <App
+      isBot={isBot}
+      dnt={dnt}
+      language={language}
+      handleLanguageChange={setLanguage}
+    />
+  )
+}
+
+export default AppWrapper;
