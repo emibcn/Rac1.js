@@ -1,7 +1,7 @@
 import React from "react";
 import { PropTypes } from "prop-types";
 import ReactGA from "react-ga";
-import withLocationAndHistory from "../withLocationAndHistory"
+import withLocationAndHistory from "../withLocationAndHistory";
 
 class GAListenerActive extends React.Component {
   componentDidMount() {
