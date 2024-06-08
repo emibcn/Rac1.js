@@ -152,9 +152,7 @@ class App extends React.Component {
             */}
             <ModalRouter
               force={
-                !trackingSeen && !initializing && !isBot
-                  ? "cookies"
-                  : false
+                !trackingSeen && !initializing && !isBot ? "cookies" : false
               }
               appElement={this.appElement.current}
             >
@@ -232,23 +230,24 @@ class App extends React.Component {
 
 // Get DoNotTrack user preference
 // Deactivate tracking by default to users with DNT and to all bots
-const AppWrapper = function() {
+const AppWrapper = function () {
   const isBot = useMemo(botCheck);
   const dnt = useMemo(() => {
-    const navDNT = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
-    return process.env.NODE_ENV === "test" ||
+    const navDNT =
+      navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+    return (
+      process.env.NODE_ENV === "test" ||
       navDNT === "1" ||
       navDNT === "yes" ||
       isBot
+    );
   });
-  const defaultLanguage = useMemo(() => 
-    Object.prototype.hasOwnProperty.call(
-      available,
-      navigator.language,
-    ) ? navigator.language
+  const defaultLanguage = useMemo(() =>
+    Object.prototype.hasOwnProperty.call(available, navigator.language)
+      ? navigator.language
       : "en-en",
-  )
-  const [language, setLanguage] = useState(defaultLanguage)
+  );
+  const [language, setLanguage] = useState(defaultLanguage);
 
   return (
     <App
@@ -257,7 +256,7 @@ const AppWrapper = function() {
       language={language}
       handleLanguageChange={setLanguage}
     />
-  )
-}
+  );
+};
 
 export default AppWrapper;
