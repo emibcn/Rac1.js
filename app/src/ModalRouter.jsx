@@ -15,21 +15,14 @@ if (process.env.NODE_ENV !== 'test') {
 }
 
 const CloseModal = function () {
-  const [timer, setTimer] = React.useState(false)
   const history = useHistory()
 
   React.useEffect(() => {
     if (history.location.hash !== '') {
-      setTimer(global.setTimeout(() => history.push('#'), 10))
+      const timer = global.setTimeout(() => history.push('#'), 10)
+      return () => global.cancelTimeout(timer)
     }
-
-    return () => {
-      if(timer !== false) {
-        global.cancelTimeout(timer)
-        setTimer(false)
-      }
-    }
-  }, [])
+  }, [history])
 
   return null
 }
