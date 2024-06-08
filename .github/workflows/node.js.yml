@@ -5,7 +5,7 @@ name: Node.js CI
 
 on:
   push:
-    branches: [ master ]
+    branches: [ main ]
     paths-ignore:
       # Can we use '**.md' ?
       - 'README.md'
@@ -16,7 +16,7 @@ on:
       - 'LICENSE'
       - '.gitignore'
   pull_request:
-    branches: [ master ]
+    branches: [ main ]
 
 jobs:
   pre_ci:
@@ -87,7 +87,7 @@ jobs:
 
     - uses: actions/upload-artifact@v4
       # Same condition as `publish`job
-      if: ${{ !contains(github.event.head_commit.message, '#no-publish') && (( github.event_name == 'pull_request' && github.event.pull_request.merged == true ) || github.ref == 'refs/heads/master' ) }}
+      if: ${{ !contains(github.event.head_commit.message, '#no-publish') && (( github.event_name == 'pull_request' && github.event.pull_request.merged == true ) || github.ref == 'refs/heads/main' ) }}
       with:
         name: built-app
         path: docs
@@ -190,10 +190,10 @@ jobs:
     # - The test step ended successfully
     # - One of these is met:
     #   - This is a pull request event and the pull actor is the same as the repo owner
-    #   - This is a push event and the push event is on branch 'master'
+    #   - This is a push event and the push event is on branch 'main'
     name: Generate badge image with test coverage value
     needs: test
-    if: ${{ ( github.event_name == 'pull_request' && github.actor == github.repository_owner ) || github.ref == 'refs/heads/master' }}
+    if: ${{ ( github.event_name == 'pull_request' && github.actor == github.repository_owner ) || github.ref == 'refs/heads/main' }}
     outputs:
       url: ${{ steps.url.outputs.url }}
       markdown: ${{ steps.url.outputs.markdown }}
@@ -307,10 +307,10 @@ jobs:
     # - The test step ended successfully
     # - One of these is met:
     #   - This is a pull request event and the pull has been merged
-    #   - This is a push event and the push event is on branch 'master'
+    #   - This is a push event and the push event is on branch 'main'
     name: Publish code to GitHub Pages
     needs: [pre_ci, test]
-    if: ${{ !contains(github.event.head_commit.message, '#no-publish') && (( github.event_name == 'pull_request' && github.event.pull_request.merged == true ) || github.ref == 'refs/heads/master' ) }}
+    if: ${{ !contains(github.event.head_commit.message, '#no-publish') && (( github.event_name == 'pull_request' && github.event.pull_request.merged == true ) || github.ref == 'refs/heads/main' ) }}
 
     runs-on: ubuntu-latest
 
