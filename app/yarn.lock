@@ -2798,7 +2798,7 @@ babel-plugin-jest-hoist@^26.6.2:
     "@types/babel__core" "^7.0.0"
     "@types/babel__traverse" "^7.0.6"
 
-babel-plugin-macros@2.8.0, babel-plugin-macros@^2.8.0:
+babel-plugin-macros@2.8.0:
   version "2.8.0"
   resolved "https://registry.yarnpkg.com/babel-plugin-macros/-/babel-plugin-macros-2.8.0.tgz#0f958a7cc6556b1e65344465d99111a1e5e10138"
   integrity sha512-SEP5kJpfGYqYKpBrj5XU3ahw5p5GOHJ0U5ssOSQ/WBVdwkD2Dzlce95exQTs3jOVWPPKLBN2rlEWkCK7dSmLvg==
@@ -9294,12 +9294,10 @@ raw-body@2.5.2:
     iconv-lite "0.4.24"
     unpipe "1.0.0"
 
-raw.macro@^0.5.0:
-  version "0.5.0"
-  resolved "https://registry.yarnpkg.com/raw.macro/-/raw.macro-0.5.0.tgz#823ef193993110e7dbf7d5c46b3ae933d3c38547"
-  integrity sha512-krMrBkTHbnXtEZEES1Ng9b/PYSTaf0eZwUR6WfIQx6+cGF7oPhJ0XDgwIOTkCBCylRz7Su1OoG17rouMt1egaw==
-  dependencies:
-    babel-plugin-macros "^2.8.0"
+raw.macro@^0.7.0:
+  version "0.7.0"
+  resolved "https://registry.yarnpkg.com/raw.macro/-/raw.macro-0.7.0.tgz#3cb47025bb4b1b6a9ec42f0d328a22efab6231eb"
+  integrity sha512-SVAShKzXzPHXg6x9bRMjcHWHj3xKqSyBG9x/alSeXOPmpAWb/wl/nZAHxpa5UDDptyA8z0ZJt1nArbZnmeFvpA==
 
 rc-slider@^10.6.2:
   version "10.6.2"
