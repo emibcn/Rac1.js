@@ -1,7 +1,7 @@
 import React from "react";
 import { PropTypes } from "prop-types";
-import { withRouter } from "react-router-dom";
 import ReactGA from "react-ga";
+import withLocationAndHistory from "../withLocationAndHistory";
 
 class GAListenerActive extends React.Component {
   componentDidMount() {
@@ -89,4 +89,4 @@ GAListenerActive.propTypes = {
   onLoad: PropTypes.func.isRequired,
 };
 
-export default withRouter(GAListenerActive);
+export default withLocationAndHistory(GAListenerActive);
