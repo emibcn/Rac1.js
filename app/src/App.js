@@ -230,15 +230,19 @@ class App extends React.Component {
 
 // Get DoNotTrack user preference
 // Deactivate tracking by default to users with DNT and to all bots
-const defaultLanguage = 
-  Object.prototype.hasOwnProperty.call(available, global.navigator.language)
-    ? global.navigator.language
-    : "en-en";
+const defaultLanguage = Object.prototype.hasOwnProperty.call(
+  available,
+  global.navigator.language,
+)
+  ? global.navigator.language
+  : "en-en";
 const AppWrapper = function () {
   const isBot = useMemo(botCheck, [global.navigator.userAgent]);
   const dnt = useMemo(() => {
     const navDNT =
-      global.navigator.doNotTrack || window.doNotTrack || global.navigator.msDoNotTrack;
+      global.navigator.doNotTrack ||
+      window.doNotTrack ||
+      global.navigator.msDoNotTrack;
     return (
       process.env.NODE_ENV === "test" ||
       navDNT === "1" ||
