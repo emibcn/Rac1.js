@@ -7,10 +7,12 @@ class Rac1Live extends Live {
 
   dataAttrsFind =
     /\s(data-ajax-href=|class="(program-header-title-link|program-listed-author|story-image))/;
+
   dataAttrsClean = /.*\s(src|alt|href|data-ajax-href)="([^"]*)".*/;
   dataTagContent = /<?[^<>]*>([^<]*)<\/[^>]*>/;
   dataTagContents =
     /\s*<?[^<>]*>(?:amb )?([^<]*?)<\/[^>]*>\s*<?[^<>]*>([^<]*?)<\/[^>]*>/g;
+
   dataFilenameClean = /^.*[^/.].png$/;
   dataScheduleFixScheduleHour = /(\d)\s+h\b/g;
 
@@ -38,8 +40,8 @@ class Rac1Live extends Live {
         (match, author, schedule) =>
           `${author}\n${schedule.replace(
             this.dataScheduleFixScheduleHour,
-            "$1h"
-          )}`
+            "$1h",
+          )}`,
       )
       .split("\n");
     const image = data

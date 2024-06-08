@@ -28,10 +28,10 @@ class Volume extends React.PureComponent {
     const faVolume = muted
       ? faVolumeMute
       : volume === 0
-      ? faVolumeOff
-      : volume < 0.5
-      ? faVolumeDown
-      : faVolumeUp;
+        ? faVolumeOff
+        : volume < 0.5
+          ? faVolumeDown
+          : faVolumeUp;
 
     return (
       <div
@@ -65,7 +65,7 @@ class Volume extends React.PureComponent {
           <Button
             onMouseUp={this.keyHandlerFocusForced}
             action={this.onClickButton}
-            help={"Toggle mute status"}
+            help="Toggle mute status"
             text={muted ? "Unmute" : "Mute"}
             icon={<FontAwesomeIcon icon={faVolume} />}
             keys={["M"]}
