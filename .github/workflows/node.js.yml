@@ -162,27 +162,27 @@ jobs:
         echo "Coverage: ${COVERAGE}"
         echo "Coverage Rounded: ${COVERAGE_ROUNDED}"
 
-  comment_pr:
-    name: Comment on PR with test coverage value
-    needs: [test, pre_ci]
-    if: ${{ github.event_name == 'pull_request' && github.actor == github.repository_owner && !contains(needs.pre_ci.outputs.commit_message, '#comment-badge') }}
+  #comment_pr:
+  #  name: Comment on PR with test coverage value
+  #  needs: [test, pre_ci]
+  #  if: ${{ github.event_name == 'pull_request' && github.actor == github.repository_owner && !contains(needs.pre_ci.outputs.commit_message, '#comment-badge') }}
 
-    runs-on: ubuntu-latest
+  #  runs-on: ubuntu-latest
 
-    steps:
-    - name: Generate comment file with test coverage
-      shell: bash
-      env:
-        COVERAGE: ${{ needs.test.outputs.coverage-rounded-display }}
-      run: |
-        echo "**Test coverage: ${COVERAGE}**" > output.md
+  #  steps:
+  #  - name: Generate comment file with test coverage
+  #    shell: bash
+  #    env:
+  #      COVERAGE: ${{ needs.test.outputs.coverage-rounded-display }}
+  #    run: |
+  #      echo "**Test coverage: ${COVERAGE}**" > output.md
 
-    - name: Comment PR with test coverage
-      uses: machine-learning-apps/pr-comment@1.0.0
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        path: output.md
+  #  - name: Comment PR with test coverage
+  #    uses: machine-learning-apps/pr-comment@1.0.0
+  #    env:
+  #      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  #    with:
+  #      path: output.md
 
   badge:
 
