@@ -1,5 +1,5 @@
-import React from 'react'
+import React from "react";
 
-const GAEventContext = React.createContext(() => {})
+const GAEventContext = React.createContext(() => {});
 
-export default GAEventContext
+export default GAEventContext;

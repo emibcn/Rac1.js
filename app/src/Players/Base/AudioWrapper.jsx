@@ -1,42 +1,42 @@
-import React, { PureComponent } from 'react'
-import PropTypes from 'prop-types'
+import React, { PureComponent } from "react";
+import PropTypes from "prop-types";
 
-import { Helmet } from 'react-helmet-async'
+import { Helmet } from "react-helmet-async";
 
-import ReactAudioPlayer from 'react-audio-player'
-import Controls from './Controls'
-import MediaSession from './MediaSession'
+import ReactAudioPlayer from "react-audio-player";
+import Controls from "./Controls";
+import MediaSession from "./MediaSession";
 
 class AudioWrapper extends PureComponent {
-  _player = React.createRef()
+  _player = React.createRef();
 
-  constructor (props) {
-    super()
+  constructor(props) {
+    super();
     // Initial state
     this.state = {
       volume: 1,
       muted: false,
       isPlaying: false,
       showAdvancedControls: false,
-      ...this.getHideButtons()
-    }
+      ...this.getHideButtons(),
+    };
   }
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     // Unregister player event listeners
-    const player = this.getPlayer().current
+    const player = this.getPlayer().current;
     if (player?.removeEventListener) {
-      player.removeEventListener('play', this.handlePlayStatusChangeTrue)
-      player.removeEventListener('pause', this.handlePlayStatusChangeFalse)
+      player.removeEventListener("play", this.handlePlayStatusChangeTrue);
+      player.removeEventListener("pause", this.handlePlayStatusChangeFalse);
     }
   }
 
-  componentDidUpdate (prevProps) {
+  componentDidUpdate(prevProps) {
     if (prevProps.path !== this.props.path) {
       // Force status to pause. If it will autoplay,
       // it will change again to playing = true
-      this.handlePlayStatusChangeFalse()
-      this.setState(this.getHideButtons())
+      this.handlePlayStatusChangeFalse();
+      this.setState(this.getHideButtons());
     }
   }
 
@@ -44,76 +44,76 @@ class AudioWrapper extends PureComponent {
   // Actions for our Controls
   // Bound to this when needed
   /// //////////////////////////
-  getPlayer = () => this._player?.audioEl
+  getPlayer = () => this._player?.audioEl;
 
   // Actions activated through MediaSession
   // Call Controls.runAction to ensure all work coherently:
   // - Logs
   // - Tracking
   // - No duplicated code
-  handleSeekBackward = () => this.controlsRunAction('-10s', 'MediaSession')
-  handleSeekForward = () => this.controlsRunAction('+10s', 'MediaSession')
-  handlePlay = () => this.controlsRunAction('Play', 'MediaSession')
-  handlePause = () => this.controlsRunAction('Pause', 'MediaSession')
-  handlePlayPrev = () => this.controlsRunAction('Prev', 'MediaSession')
-  handlePlayNext = () => this.controlsRunAction('Next', 'MediaSession')
+  handleSeekBackward = () => this.controlsRunAction("-10s", "MediaSession");
+  handleSeekForward = () => this.controlsRunAction("+10s", "MediaSession");
+  handlePlay = () => this.controlsRunAction("Play", "MediaSession");
+  handlePause = () => this.controlsRunAction("Pause", "MediaSession");
+  handlePlayPrev = () => this.controlsRunAction("Prev", "MediaSession");
+  handlePlayNext = () => this.controlsRunAction("Next", "MediaSession");
 
   // Play status may change from our Constrols button or from the <audio> tag
   // itself (or whatever associated, as from notifications screen controls)
-  handlePlayStatusChange (isPlaying) {
-    this.setState({ isPlaying })
+  handlePlayStatusChange(isPlaying) {
+    this.setState({ isPlaying });
   }
 
-  onSetVolume = (volume) => this.setState({ volume })
-  onSetMuted = (muted) => this.setState({ muted })
+  onSetVolume = (volume) => this.setState({ volume });
+  onSetMuted = (muted) => this.setState({ muted });
 
   onSetVolumeAndMuted = (e) => {
-    this.onSetVolume(e.currentTarget.volume)
-    this.onSetMuted(e.currentTarget.muted)
-  }
+    this.onSetVolume(e.currentTarget.volume);
+    this.onSetMuted(e.currentTarget.muted);
+  };
 
   isSeekable = () => {
-    const player = this.getPlayer()
-    return player?.current?.duration !== Infinity
-  }
+    const player = this.getPlayer();
+    return player?.current?.duration !== Infinity;
+  };
 
   getHideButtons = () => {
     return {
       hideButtons: [
         ...(this.isSeekable()
           ? []
-          : ['-10m', '-60s', '-10s', '+10m', '+60s', '+10s']),
-        ...(!this.props || !this.props.onPlayNext ? ['Next'] : []),
-        ...(!this.props || !this.props.onPlayPrev ? ['Prev'] : [])
-      ]
-    }
-  }
+          : ["-10m", "-60s", "-10s", "+10m", "+60s", "+10s"]),
+        ...(!this.props || !this.props.onPlayNext ? ["Next"] : []),
+        ...(!this.props || !this.props.onPlayPrev ? ["Prev"] : []),
+      ],
+    };
+  };
 
-  onLoadedMetadata = () => this.setState(this.getHideButtons())
+  onLoadedMetadata = () => this.setState(this.getHideButtons());
   onShowAdvancedChange = (show) => {
-    this.setState({ showAdvancedControls: show })
-    return `${show ? 'Show' : 'Hide'} advanced buttons`
-  }
+    this.setState({ showAdvancedControls: show });
+    return `${show ? "Show" : "Hide"} advanced buttons`;
+  };
 
   // Create bound functions for setting specific playing status
-  handlePlayStatusChangeTrue = this.handlePlayStatusChange.bind(this, true)
-  handlePlayStatusChangeFalse = this.handlePlayStatusChange.bind(this, false)
+  handlePlayStatusChangeTrue = this.handlePlayStatusChange.bind(this, true);
+  handlePlayStatusChangeFalse = this.handlePlayStatusChange.bind(this, false);
 
   // Bound functions for getting refs from Controls and audio player
   refPlayer = (el) => {
-    this._player = el
-  }
+    this._player = el;
+  };
 
   refControls = (el) => {
     if (el) {
-      this.controlsKeyHandlerFocus = el.keyHandlerFocus
-      this.controlsRunAction = el.runAction
+      this.controlsKeyHandlerFocus = el.keyHandlerFocus;
+      this.controlsRunAction = el.runAction;
     }
-  }
+  };
 
-  render () {
+  render() {
     const { volume, muted, isPlaying, showAdvancedControls, hideButtons } =
-      this.state
+      this.state;
     const {
       autoPlay,
       title,
@@ -127,18 +127,18 @@ class AudioWrapper extends PureComponent {
       volumeAsAdvanced,
       artist,
       album,
-      image
-    } = this.props
-    const isSeekable = this.isSeekable()
+      image,
+    } = this.props;
+    const isSeekable = this.isSeekable();
 
     return (
       <div
         style={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
-          padding: '.5em'
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          padding: ".5em",
         }}
       >
         <Helmet>
@@ -181,13 +181,13 @@ class AudioWrapper extends PureComponent {
         />
         <ReactAudioPlayer
           ref={this.refPlayer}
-          style={{ width: '100%' }}
+          style={{ width: "100%" }}
           src={path}
           autoPlay={autoPlay}
           title={title}
           controls
-          controlsList='nodownload'
-          preload={autoPlay ? 'auto' : 'metadata'}
+          controlsList="nodownload"
+          preload={autoPlay ? "auto" : "metadata"}
           onEnded={onEnded}
           volume={volume}
           muted={muted}
@@ -197,7 +197,7 @@ class AudioWrapper extends PureComponent {
           onLoadedMetadata={this.onLoadedMetadata}
         />
       </div>
-    )
+    );
   }
 }
 
@@ -212,7 +212,7 @@ AudioWrapper.propTypes = {
   title: PropTypes.string,
   titleHead: PropTypes.string,
   artist: PropTypes.string,
-  album: PropTypes.string
-}
+  album: PropTypes.string,
+};
 
-export default AudioWrapper
+export default AudioWrapper;
