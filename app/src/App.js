@@ -173,8 +173,8 @@ class App extends React.Component {
               <Route exact path="cookies">
                 <CookiesWithErrorCatcher
                   {...{ trackOptIn, trackingSeen }}
-                  onTrackingSeen={ this.handleTrackingSeenChange }
-                  onTrackOptIn={ this.handleTrackOptInChange }
+                  onTrackingSeen={this.handleTrackingSeenChange}
+                  onTrackOptIn={this.handleTrackOptInChange}
                 />
               </Route>
             </ModalRouter>
