@@ -22,7 +22,7 @@ const CloseModal = function () {
       const timer = global.setTimeout(() => history.push("#"), 10);
       return () => global.cancelTimeout(timer);
     }
-    return null
+    return null;
   }, [history]);
 
   return null;
