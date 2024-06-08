@@ -97,13 +97,6 @@ class App extends React.Component {
   constructor(props) {
     super();
 
-    // Fix bad browser encoding HASH
-    const decoded = decodeURIComponent(global.location.hash);
-    if (decoded !== "" && decoded !== global.location.hash) {
-      const hash = decoded.replace(/[^#]*(#.*)$/, "$1");
-      global.location.replace(hash);
-    }
-
     // Save App element to handle modal
     this.appElement = React.createRef();
 
@@ -257,6 +250,15 @@ const AppWrapper = function () {
     );
   }, [isBot]);
   const [language, setLanguage] = useState(defaultLanguage);
+
+  React.useEffect(() => {
+    // Fix bad browser encoding HASH
+    const decoded = decodeURIComponent(global.location.hash);
+    if (decoded !== "" && decoded !== global.location.hash) {
+      const hash = decoded.replace(/[^#]*(#.*)$/, "$1");
+      global.location.replace(hash);
+    }
+  });
 
   return (
     <App
