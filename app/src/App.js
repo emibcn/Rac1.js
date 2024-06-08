@@ -75,7 +75,7 @@ const AppProviders = function (props) {
   );
 };
 
-const RedirectToToday = function (props) {
+const RedirectToToday = function () {
   const location = useLocation();
   const date = new Date();
   const todayStr = `/${date.getFullYear()}/${
