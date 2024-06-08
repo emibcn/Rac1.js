@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo, useState } from "react";
 import {
   HashRouter as Router,
   Route,
@@ -94,42 +94,16 @@ const RedirectToToday = function () {
 };
 
 class App extends React.Component {
-  constructor() {
+  constructor(props) {
     super();
-
-    // Get DoNotTrack user preference
-    // Deactivate tracking by default to users with DNT and to all bots
-    this.isBot = botCheck();
-    const dnt =
-      navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
-    this.dnt =
-      process.env.NODE_ENV === "test" ||
-      dnt === "1" ||
-      dnt === "yes" ||
-      this.isBot;
-
-    // Fix bad browser encoding HASH
-    const decoded = decodeURIComponent(global.location.hash);
-    if (decoded !== "" && decoded !== global.location.hash) {
-      const hash = decoded.replace(/[^#]*(#.*)$/, "$1");
-      global.location.replace(hash);
-    }
 
     // Save App element to handle modal
     this.appElement = React.createRef();
 
     this.state = {
       initializing: true,
-      language: Object.prototype.hasOwnProperty.call(
-        available,
-        navigator.language,
-      )
-        ? navigator.language
-        : "en-en",
       trackingSeen: false,
-      trackOptIn: !this.dnt,
-      isBot: this.isBot,
-      dnt: this.dnt,
+      trackOptIn: !props.dnt,
     };
   }
 
@@ -137,10 +111,17 @@ class App extends React.Component {
     this.setState({ initializing: false });
   };
 
-  handleLanguageChange = (language) => this.setState({ language });
+  handleTrackingSeenChange = (trackingSeen) => {
+    this.setState({ trackingSeen });
+  };
+
+  handleTrackOptInChange = (trackOptIn) => {
+    this.setState({ trackOptIn });
+  };
 
   render() {
-    const { language, trackOptIn, trackingSeen, initializing } = this.state;
+    const { trackOptIn, trackingSeen, initializing } = this.state;
+    const { language, handleLanguageChange, isBot } = this.props;
     const translations = available[language];
 
     return (
@@ -172,9 +153,7 @@ class App extends React.Component {
             */}
             <ModalRouter
               force={
-                !trackingSeen && !initializing && !this.isBot
-                  ? "cookies"
-                  : false
+                !trackingSeen && !initializing && !isBot ? "cookies" : false
               }
               appElement={this.appElement.current}
             >
@@ -187,10 +166,8 @@ class App extends React.Component {
               <Route exact path="cookies">
                 <CookiesWithErrorCatcher
                   {...{ trackOptIn, trackingSeen }}
-                  onTrackingSeen={(seen) =>
-                    this.setState({ trackingSeen: seen })
-                  }
-                  onTrackOptIn={(track) => this.setState({ trackOptIn: track })}
+                  onTrackingSeen={this.handleTrackingSeenChange}
+                  onTrackOptIn={this.handleTrackOptInChange}
                 />
               </Route>
             </ModalRouter>
@@ -199,7 +176,7 @@ class App extends React.Component {
             <ErrorCatcher origin="AppMenu">
               <AppMenu
                 language={language}
-                onLanguageChange={this.handleLanguageChange}
+                onLanguageChange={handleLanguageChange}
                 trackOptIn={trackOptIn}
               />
             </ErrorCatcher>
@@ -250,4 +227,47 @@ class App extends React.Component {
   }
 }
 
-export default App;
+// Get DoNotTrack user preference
+// Deactivate tracking by default to users with DNT and to all bots
+const defaultLanguage = Object.prototype.hasOwnProperty.call(
+  available,
+  global.navigator.language,
+)
+  ? global.navigator.language
+  : "en-en";
+const AppWrapper = function () {
+  const isBot = useMemo(botCheck, [global.navigator.userAgent]);
+  const dnt = useMemo(() => {
+    const navDNT =
+      global.navigator.doNotTrack ||
+      window.doNotTrack ||
+      global.navigator.msDoNotTrack;
+    return (
+      process.env.NODE_ENV === "test" ||
+      navDNT === "1" ||
+      navDNT === "yes" ||
+      isBot
+    );
+  }, [isBot]);
+  const [language, setLanguage] = useState(defaultLanguage);
+
+  React.useEffect(() => {
+    // Fix bad browser encoding HASH
+    const decoded = decodeURIComponent(global.location.hash);
+    if (decoded !== "" && decoded !== global.location.hash) {
+      const hash = decoded.replace(/[^#]*(#.*)$/, "$1");
+      global.location.replace(hash);
+    }
+  });
+
+  return (
+    <App
+      isBot={isBot}
+      dnt={dnt}
+      language={language}
+      handleLanguageChange={setLanguage}
+    />
+  );
+};
+
+export default AppWrapper;
