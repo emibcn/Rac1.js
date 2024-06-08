@@ -3,6 +3,8 @@ import React, { Component } from 'react'
 import { translate } from 'react-translate'
 import MediaQuery from 'react-responsive'
 
+import withLocationAndHistory from "../withLocationAndHistory"
+
 import { Rac1 } from '../Backends'
 import Throtle from '../Throtle'
 
@@ -432,4 +434,4 @@ class ByDate extends Component {
   }
 }
 
-export default translate('ByDate')(ByDate)
+export default translate('ByDate')(withLocationAndHistory(ByDate))

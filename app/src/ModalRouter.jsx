@@ -1,5 +1,5 @@
 import React from 'react'
-import { Route, Switch, Redirect } from 'react-router-dom'
+import { Route, Switch, Redirect, useHistory } from 'react-router-dom'
 
 import Modal from 'react-modal'
 import { translate } from 'react-translate'
@@ -7,24 +7,31 @@ import { translate } from 'react-translate'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTimesCircle as faClose } from '@fortawesome/free-solid-svg-icons'
 
+import withLocationAndHistory from "./withLocationAndHistory"
 import './ModalRouter.css'
 
 if (process.env.NODE_ENV !== 'test') {
   Modal.setAppElement('#root')
 }
 
-class CloseModal extends React.PureComponent {
-  constructor (props) {
-    super()
+const CloseModal = function () {
+  const [timer, setTimer] = React.useState(false)
+  const history = useHistory()
 
-    if (!('history' in props) || props.history.location.hash !== '') {
-      global.setTimeout(() => props.history.push('#'), 10)
+  React.useEffect(() => {
+    if (history.location.hash !== '') {
+      setTimer(global.setTimeout(() => history.push('#'), 10))
     }
-  }
 
-  render () {
-    return null
-  }
+    return () => {
+      if(timer !== false) {
+        global.cancelTimeout(timer)
+        setTimer(false)
+      }
+    }
+  }, [])
+
+  return null
 }
 
 class ModalRouterInner extends React.PureComponent {
@@ -182,25 +189,26 @@ class ModalRouterInner extends React.PureComponent {
           {children}
 
           {/* Close modal if nothing is shown */}
-          <Route render={(props) => <CloseModal {...props} />} />
+          <Route >
+            <CloseModal />
+          </Route>
         </Switch>
       </Modal>
     )
   }
 }
 
-class ModalRouter extends React.PureComponent {
-  render () {
-    const { children, ...rest } = this.props
-    return (
-      <Route
-        path=':path(.*)'
-        render={(props) => (
-          <ModalRouterInner {...{ children, ...rest, ...props }} />
-        )}
-      />
-    )
-  }
+const ModalRouterHidrated = withLocationAndHistory(ModalRouterInner)
+
+const ModalRouter = function (props) {
+  const { children, ...rest } = props
+  return (
+    <Route
+      path=':path(.*)'
+    >
+      <ModalRouterHidrated {...{ children, ...rest }} />
+    </Route>
+  )
 }
 
 export default translate('ModalRouter')(ModalRouter)

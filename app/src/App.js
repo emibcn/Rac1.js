@@ -3,7 +3,8 @@ import {
   HashRouter as Router,
   Route,
   Switch,
-  Redirect
+  Redirect,
+  useLocation
 } from 'react-router-dom'
 
 import Storage from 'react-simple-storage'
@@ -27,18 +28,17 @@ import './App.css'
 const GACode = process.env.REACT_APP_GA_CODE
 
 // Template function for catching errors from components
-const withErrorCatcher = (origin, component) => (
-  <ErrorCatcher {...{ origin, key: origin }}>{component}</ErrorCatcher>
-)
-
-const withErrorCatcherCreator = (origin, Component) => (props) => (
+const withErrorCatcher = (origin, Component) => (props) => (
   <ErrorCatcher {...{ origin, key: origin }}>
     <Component {...props} />
   </ErrorCatcher>
 )
 
-const LiveWithErrorCatcher = withErrorCatcherCreator('Live', Live)
-const ByDateWithErrorCatcher = withErrorCatcherCreator('ByDate', ByDate)
+const AboutWithErrorCatcher   = withErrorCatcher('About', About)
+const HelpWithErrorCatcher    = withErrorCatcher('Help', Help)
+const CookiesWithErrorCatcher = withErrorCatcher('Cookies', Cookies)
+const LiveWithErrorCatcher    = withErrorCatcher('Live', Live)
+const ByDateWithErrorCatcher  = withErrorCatcher('ByDate', ByDate)
 
 // App Helmet: Controls HTML <head> elements with SideEffect
 // - Set a default title and title template, translated
@@ -72,6 +72,24 @@ const AppProviders = function (props) {
         </Router>
       </HelmetProvider>
     </TranslatorProvider>
+  )
+}
+
+const RedirectToToday = function(props) {
+  const location = useLocation()
+  const date = new Date()
+  const todayStr = `/${date.getFullYear()}/${
+    1 + date.getMonth()
+  }/${date.getDate()}/0/0`
+
+  return (
+    <Redirect
+      push
+      to={{
+        pathname: todayStr,
+        hash: location.hash.replace('#', '')
+      }}
+    />
   )
 }
 
@@ -122,10 +140,6 @@ class App extends React.Component {
   handleLanguageChange = (language) => this.setState({ language })
 
   render () {
-    const date = new Date()
-    const todayStr = `/${date.getFullYear()}/${
-      1 + date.getMonth()
-    }/${date.getDate()}/0/0`
     const { language, trackOptIn, trackingSeen, initializing } = this.state
     const translations = available[language]
 
@@ -167,28 +181,27 @@ class App extends React.Component {
               <Route
                 exact
                 path='about'
-                render={(props) => withErrorCatcher('About', <About />)}
-              />
+              >
+                <AboutWithErrorCatcher />
+              </Route>
               <Route
                 exact
                 path='help'
-                render={(props) => withErrorCatcher('Help', <Help />)}
-              />
+              >
+                <HelpWithErrorCatcher />
+              </Route>
               <Route
                 exact
                 path='cookies'
-                render={(props) =>
-                  withErrorCatcher(
-                    'Cookies',
-                    <Cookies
-                      {...{ trackOptIn, trackingSeen }}
-                      onTrackingSeen={(seen) =>
-                        this.setState({ trackingSeen: seen })}
-                      onTrackOptIn={(track) =>
-                        this.setState({ trackOptIn: track })}
-                    />
-                  )}
-              />
+              >
+                <CookiesWithErrorCatcher
+                  {...{ trackOptIn, trackingSeen }}
+                  onTrackingSeen={(seen) =>
+                    this.setState({ trackingSeen: seen })}
+                  onTrackOptIn={(track) =>
+                    this.setState({ trackOptIn: track })}
+                />
+              </Route>
             </ModalRouter>
 
             {/* Menu */}
@@ -205,7 +218,9 @@ class App extends React.Component {
             <header ref={this.appElement} className='App-header' id='page-wrap'>
               {/* App Route */}
               <Switch>
-                <Route exact path='/live' render={LiveWithErrorCatcher} />
+                <Route exact path='/live' >
+                  <LiveWithErrorCatcher />
+                </Route>
 
                 <Route exact path='/(directe|directo)'>
                   <Redirect to={{ pathname: 'live' }} />
@@ -215,37 +230,31 @@ class App extends React.Component {
                   path={
                     '/:year(\\d{4})/:month(\\d{1,2})/:day(\\d{1,2})/:hour(\\d{1,2})/:minute(\\d{1,2})'
                   }
-                  render={ByDateWithErrorCatcher}
-                />
+                >
+                  <ByDateWithErrorCatcher />
+                </Route>
 
                 <Route
                   path={
                     '/:year(\\d{4})/:month(\\d{1,2})/:day(\\d{1,2})/:hour(\\d{1,2})'
                   }
-                  render={ByDateWithErrorCatcher}
-                />
+                >
+                  <ByDateWithErrorCatcher />
+                </Route>
 
                 <Route
                   path={'/:year(\\d{4})/:month(\\d{1,2})/:day(\\d{1,2})'}
-                  render={ByDateWithErrorCatcher}
-                />
+                >
+                  <ByDateWithErrorCatcher />
+                </Route>
 
                 {/* Set default date to today */}
                 <Route
                   exact
                   path=':all(.*)'
-                  render={({ match, ...props }) => {
-                    return (
-                      <Redirect
-                        push
-                        to={{
-                          pathname: todayStr,
-                          hash: props.location.hash.replace('#', '')
-                        }}
-                      />
-                    )
-                  }}
-                />
+                >
+                  <RedirectToToday />
+                </Route>
               </Switch>
             </header>
           </>
