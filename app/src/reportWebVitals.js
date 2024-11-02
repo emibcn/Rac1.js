@@ -1,4 +1,5 @@
-import { MetricType } from 'web-vitals'
+// Only needed with TS:
+// import { MetricType } from "web-vitals"
 
 const reportWebVitals = (onPerfEntry) => {
   if (onPerfEntry && onPerfEntry instanceof Function) {
