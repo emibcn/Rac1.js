@@ -23,6 +23,7 @@ import MediaQuery from "react-responsive";
 import { slide as SmallMenu, scaleRotate as BigMenu } from "react-burger-menu";
 
 import { withGAEvent } from "./GAListener";
+import withLocationAndHistory from "./withLocationAndHistory";
 import { withServiceWorkerUpdater, LocalStoragePersistenceService } from '@3m1/service-worker-updater'
 import "./AppMenu.css";
 
@@ -37,7 +38,7 @@ class AppMenu extends React.Component {
   }
 
   renderLinks() {
-    const { newServiceWorkerDetected, trackOptIn, children, t } = this.props;
+    const { newServiceWorkerDetected, trackOptIn, children, t, params: {year, month, day, hour, minute } } = this.props;
     const { isLanguageOpen } = this.state;
 
     return (
@@ -67,7 +68,7 @@ class AppMenu extends React.Component {
         <NavLink
           className="bm-item"
           onClick={this.handleClick}
-          to="/live"
+          to="/live" end
           title={t("Play live stream")}
         >
           <FontAwesomeIcon icon={faLive} style={{ marginRight: ".5em" }} />
@@ -76,7 +77,7 @@ class AppMenu extends React.Component {
         <NavLink
           className="bm-item"
           onClick={this.handleClickModal}
-          to="#about"
+          to="#about" end
           isActive={(match, location) => location.hash === "#about"}
           title={t("Information about this app and its author")}
         >
@@ -271,7 +272,7 @@ AppMenu.propTypes = {
 export default translate("AppMenu")(
   withGAEvent(
     withServiceWorkerUpdater(
-      AppMenu,
+      withLocationAndHistory(AppMenu),
       { persistenceService: new LocalStoragePersistenceService('Rac1.js') }
     )
   )

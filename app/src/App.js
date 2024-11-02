@@ -2,8 +2,8 @@ import React, { useMemo, useState } from "react";
 import {
   HashRouter as Router,
   Route,
-  Switch,
-  Redirect,
+  Routes,
+  Navigate,
   useLocation,
 } from "react-router-dom";
 
@@ -83,8 +83,7 @@ const RedirectToToday = function () {
   }/${date.getDate()}/0/0`;
 
   return (
-    <Redirect
-      push
+    <Navigate
       to={{
         pathname: todayStr,
         hash: location.hash.replace("#", ""),
@@ -185,40 +184,46 @@ class App extends React.Component {
 
             <header ref={this.appElement} className="App-header" id="page-wrap">
               {/* App Route */}
-              <Switch>
-                <Route exact path="/live">
-                  <LiveWithErrorCatcher />
-                </Route>
+              <Routes>
+                <Route
+                  exact
+                  path="/live"
+                  element={ <LiveWithErrorCatcher /> }
+                />
 
-                <Route exact path="/(directe|directo)">
-                  <Redirect to={{ pathname: "live" }} />
-                </Route>
+                <Route
+                  exact
+                  path="/(directe|directo)"
+                  element={ <Navigate replace to={{ pathname: "live" }} /> }
+                />
+
+                {/* Different ways of accessing the main component ByDate */}
+                <Route
+                  path={
+                    "/:year/:month/:day/:hour/:minute"
+                  }
+                  element={ <ByDateWithErrorCatcher /> }
+                />
 
                 <Route
                   path={
-                    "/:year(\\d{4})/:month(\\d{1,2})/:day(\\d{1,2})/:hour(\\d{1,2})/:minute(\\d{1,2})"
+                    "/:year/:month/:day/:hour"
                   }
-                >
-                  <ByDateWithErrorCatcher />
-                </Route>
+                  element={ <ByDateWithErrorCatcher /> }
+                />
 
                 <Route
-                  path={
-                    "/:year(\\d{4})/:month(\\d{1,2})/:day(\\d{1,2})/:hour(\\d{1,2})"
-                  }
-                >
-                  <ByDateWithErrorCatcher />
-                </Route>
-
-                <Route path={"/:year(\\d{4})/:month(\\d{1,2})/:day(\\d{1,2})"}>
-                  <ByDateWithErrorCatcher />
-                </Route>
+                  path={"/:year/:month/:day"}
+                  element={ <ByDateWithErrorCatcher /> }
+                />
 
                 {/* Set default date to today */}
-                <Route exact path=":all(.*)">
-                  <RedirectToToday />
-                </Route>
-              </Switch>
+                <Route
+                  exact
+                  path=":all"
+                  element={ <RedirectToToday /> }
+                />
+              </Routes>
             </header>
           </>
         )}

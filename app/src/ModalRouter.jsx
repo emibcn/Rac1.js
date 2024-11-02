@@ -1,5 +1,5 @@
-import React from "react";
-import { Route, Switch, Redirect, useHistory } from "react-router-dom";
+import React, { useEffect } from "react";
+import { Route, Routes, Navigate, Outlet, useLocation, useNavigate } from "react-router-dom";
 
 import Modal from "react-modal";
 import { translate } from "react-translate";
@@ -15,18 +15,40 @@ if (process.env.NODE_ENV !== "test") {
 }
 
 const CloseModal = function () {
-  const history = useHistory();
+  const navigate = useNavigate();
+  const location = useLocation();
 
   React.useEffect(() => {
-    if (history.location.hash !== "") {
-      const timer = global.setTimeout(() => history.push("#"), 10);
+    if (location.hash !== "") {
+      const timer = global.setTimeout(() => navigate("#"), 10);
       return () => global.cancelTimeout(timer);
     }
     return null;
-  }, [history]);
+  }, [location, navigate]);
 
   return null;
 };
+
+const getPathState = function(hash, initialPath) {
+  const path = hash.replace(/[^#]*#(.*)$/, "$1");
+  return {
+    modalIsOpen: Boolean(path.length) && path !== "close",
+    path,
+    initialPath: initialPath ?? path,
+  };
+}
+
+export const HistoryListener = (props) => {
+  const location = useLocation();
+  const { setState, initialPath } = props;
+
+  useEffect(() => {
+    const state = getPathState(location.hash, initialPath);
+    setState(state);
+  }, [location, setState, initialPath]);
+                            
+  return <Outlet />         
+};                          
 
 class ModalRouterInner extends React.PureComponent {
   constructor(props) {
@@ -35,23 +57,9 @@ class ModalRouterInner extends React.PureComponent {
     // Set initial state
     this.history = props.history;
     this.state = {
-      ...this.getPathState(props.location),
+      ...getPathState(props.location.hash),
       autoForce: false,
       forced: props.force,
-    };
-  }
-
-  componentDidMount() {
-    // Register history change event listener
-    this.unlisten = this.history.listen(this.handleHistoryChange);
-  }
-
-  getPathState(location) {
-    const path = location.hash.replace(/[^#]*#(.*)$/, "$1");
-    return {
-      modalIsOpen: Boolean(path.length) && path !== "close",
-      path,
-      initialPath: this.state ? this.state.initialPath : path,
     };
   }
 
@@ -104,11 +112,6 @@ class ModalRouterInner extends React.PureComponent {
     }
   };
 
-  handleHistoryChange = (location, action) => {
-    const state = this.getPathState(location);
-    this.setState(state);
-  };
-
   render() {
     const { children, initializing, force, appElement, t } = this.props;
     const { autoForce, path, forced } = this.state;
@@ -119,13 +122,13 @@ class ModalRouterInner extends React.PureComponent {
 
     // Redirect to forced URL
     if (force !== false && force !== path) {
-      return <Redirect push to={{ hash: force }} />;
+      return <Navigate to={{ hash: force }} />;
     }
 
     // If previously have been forced when showing a modal,
     // force to go back there once the forced has been visited
     if (autoForce !== false && autoForce !== path && forced !== path) {
-      return <Redirect push to={{ hash: autoForce }} />;
+      return <Navigate to={{ hash: autoForce }} />;
     }
 
     return (
@@ -179,14 +182,18 @@ class ModalRouterInner extends React.PureComponent {
         >
           <FontAwesomeIcon icon={faClose} />
         </button>
-        <Switch location={{ pathname: path }}>
-          {children}
+
+        <HistoryListener
+          setState={this.setState}
+          initialPath={this?.state?.initialPath}
+        />
+
+        <Routes location={{ pathname: path }}>
+          {children ?? <Outlet />}
 
           {/* Close modal if nothing is shown */}
-          <Route>
-            <CloseModal />
-          </Route>
-        </Switch>
+          <Route element={<CloseModal />} />
+        </Routes>
       </Modal>
     );
   }
@@ -197,9 +204,12 @@ const ModalRouterHidrated = withLocationAndHistory(ModalRouterInner);
 const ModalRouter = function (props) {
   const { children, ...rest } = props;
   return (
-    <Route path=":path(.*)">
-      <ModalRouterHidrated {...{ children, ...rest }} />
-    </Route>
+    <Routes>
+      <Route
+        path=":path(.*)"
+        element={ <ModalRouterHidrated {...{ children, ...rest }} /> }
+      />
+    </Routes>
   );
 };
 

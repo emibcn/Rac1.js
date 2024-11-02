@@ -1,4 +1,5 @@
-import React, { Component } from "react";
+import React, { Component, useEffect } from "react";
+import { useLocation, useNavigationType } from "react-router-dom";
 
 import { translate } from "react-translate";
 import MediaQuery from "react-responsive";
@@ -15,6 +16,20 @@ import PodcastCover from "./Base/PodcastCover";
 // 1st date with HOUR podcasts
 const minDate = new Date(2015, 5, 1);
 
+export const HistoryListener = (props) => {
+  const location = useLocation();
+  const navType = useNavigationType();
+  const { callback } = props;
+
+  useEffect(() => {
+    if (navType === "POP") {
+      callback();
+    }
+  }, [location, navType, callback]);
+
+  return null;
+};
+
 class ByDate extends Component {
   getDateFromParams(props) {
     const date = props.match.params;
@@ -29,8 +44,6 @@ class ByDate extends Component {
 
   constructor(props) {
     super();
-
-    this.history = props.history;
 
     // Initial state
     this.state = {
@@ -98,9 +111,6 @@ class ByDate extends Component {
   };
 
   componentDidMount() {
-    // Register history change event listener
-    this.unlisten = this.history.listen(this.handleHistoryChange);
-
     // Initiate backend library
     this.backend = new Rac1({
       date: this.state.date,
@@ -111,9 +121,6 @@ class ByDate extends Component {
   }
 
   componentWillUnmount() {
-    // Unregister history change event listener
-    this.unlisten();
-
     // Abort backend fetches
     this.backend.abort();
 
@@ -166,6 +173,9 @@ class ByDate extends Component {
                   }),
             }}
           >
+            <HistoryListener
+              callback={ this.handleHistoryChange }
+            />
             <AudioWrapper
               autoPlay={autoplay}
               title={title}
@@ -211,14 +221,9 @@ class ByDate extends Component {
     );
   }
 
-  handleHistoryChange = (location, action) => {
+  handleHistoryChange = (location) => {
     const dateNew = this.getDateFromParams(this.props);
     const { date } = this.state;
-
-    // Do nothing when change is made by us
-    if (action !== "POP") {
-      return;
-    }
 
     /*
      * Determine action depending on what changed
@@ -253,11 +258,11 @@ class ByDate extends Component {
     }/${date.getDate()}/${date.getHours()}/${date.getMinutes()}`;
 
     // Only PUSH or REPLACE if something have to change
-    if (this.history.location.pathname !== newPath) {
+    if (this.props.location.pathname !== newPath) {
       if (!replace) {
-        this.history.push(newPath + this.history.location.hash);
+        this.props.navigate(newPath + this.props.location.hash);
       } else {
-        this.history.replace(newPath + this.history.location.hash);
+        this.props.navigate(newPath + this.props.location.hash, {replace: true});
       }
     }
   }
