@@ -11,7 +11,7 @@
     "@fortawesome/react-fontawesome": "^0.2.0",
     "abortcontroller-polyfill": "^1.7.5",
     "babel-polyfill": "^6.26.0",
-    "raw.macro": "^0.6.0",
+    "raw.macro": "^0.7.0",
     "rc-slider": "^10.6.2",
     "rc-switch": "^4.1.0",
     "react": "^17.0.2",
