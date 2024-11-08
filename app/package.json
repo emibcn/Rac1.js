@@ -12,7 +12,7 @@
     "abortcontroller-polyfill": "^1.7.5",
     "babel-polyfill": "^6.26.0",
     "raw.macro": "^0.6.0",
-    "rc-slider": "^10.6.2",
+    "rc-slider": "^11.1.7",
     "rc-switch": "^4.1.0",
     "react": "^17.0.2",
     "react-audio-player": "^0.17.0",
