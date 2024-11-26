@@ -7,7 +7,7 @@
     "@3m1/service-worker-updater": "^2.0.3",
     "@fortawesome/fontawesome-free": "^6.7.1",
     "@fortawesome/fontawesome-svg-core": "^6.7.1",
-    "@fortawesome/free-solid-svg-icons": "^6.6.0",
+    "@fortawesome/free-solid-svg-icons": "^6.7.1",
     "@fortawesome/react-fontawesome": "^0.2.2",
     "abortcontroller-polyfill": "^1.7.6",
     "babel-polyfill": "^6.26.0",
