@@ -11864,11 +11864,6 @@ workbox-cacheable-response@^7.3.0:
   dependencies:
     workbox-core "7.3.0"
 
-workbox-core@7.1.0:
-  version "7.1.0"
-  resolved "https://registry.yarnpkg.com/workbox-core/-/workbox-core-7.1.0.tgz#1867576f994f20d9991b71a7d0b2581af22db170"
-  integrity sha512-5KB4KOY8rtL31nEF7BfvU7FMzKT4B5TkbYa2tzkS+Peqj0gayMT9SytSFtNzlrvMaWgv6y/yvP9C0IbpFjV30Q==
-
 workbox-core@7.3.0, workbox-core@^7.0.0:
   version "7.3.0"
   resolved "https://registry.yarnpkg.com/workbox-core/-/workbox-core-7.3.0.tgz#f24fb92041a0b7482fe2dd856544aaa9fa105248"
@@ -11935,14 +11930,14 @@ workbox-precaching@^5.1.4:
   dependencies:
     workbox-core "^5.1.4"
 
-workbox-precaching@^7.1.0:
-  version "7.1.0"
-  resolved "https://registry.yarnpkg.com/workbox-precaching/-/workbox-precaching-7.1.0.tgz#71e27ec2e85661a41b48dec0c92dae707c429eaa"
-  integrity sha512-LyxzQts+UEpgtmfnolo0hHdNjoB7EoRWcF7EDslt+lQGd0lW4iTvvSe3v5JiIckQSB5KTW5xiCqjFviRKPj1zA==
+workbox-precaching@^7.3.0:
+  version "7.3.0"
+  resolved "https://registry.yarnpkg.com/workbox-precaching/-/workbox-precaching-7.3.0.tgz#a84663d69efdb334f25c04dba0a72ed3391c4da8"
+  integrity sha512-ckp/3t0msgXclVAYaNndAGeAoWQUv7Rwc4fdhWL69CCAb2UHo3Cef0KIUctqfQj1p8h6aGyz3w8Cy3Ihq9OmIw==
   dependencies:
-    workbox-core "7.1.0"
-    workbox-routing "7.1.0"
-    workbox-strategies "7.1.0"
+    workbox-core "7.3.0"
+    workbox-routing "7.3.0"
+    workbox-strategies "7.3.0"
 
 workbox-range-requests@^5.1.4:
   version "5.1.4"
@@ -11958,13 +11953,6 @@ workbox-range-requests@^7.3.0:
   dependencies:
     workbox-core "7.3.0"
 
-workbox-routing@7.1.0:
-  version "7.1.0"
-  resolved "https://registry.yarnpkg.com/workbox-routing/-/workbox-routing-7.1.0.tgz#c44bda350d1c5eb633ee97a660e64ce5473250c4"
-  integrity sha512-oOYk+kLriUY2QyHkIilxUlVcFqwduLJB7oRZIENbqPGeBP/3TWHYNNdmGNhz1dvKuw7aqvJ7CQxn27/jprlTdg==
-  dependencies:
-    workbox-core "7.1.0"
-
 workbox-routing@7.3.0, workbox-routing@^7.1.0:
   version "7.3.0"
   resolved "https://registry.yarnpkg.com/workbox-routing/-/workbox-routing-7.3.0.tgz#fc86296bc1155c112ee2c16b3180853586c30208"
@@ -11978,13 +11966,6 @@ workbox-routing@^5.1.4:
   integrity sha512-8ljknRfqE1vEQtnMtzfksL+UXO822jJlHTIR7+BtJuxQ17+WPZfsHqvk1ynR/v0EHik4x2+826Hkwpgh4GKDCw==
   dependencies:
     workbox-core "^5.1.4"
-
-workbox-strategies@7.1.0:
-  version "7.1.0"
-  resolved "https://registry.yarnpkg.com/workbox-strategies/-/workbox-strategies-7.1.0.tgz#a589f2adc0df8f33049c7f4d4cdf4c9556715918"
-  integrity sha512-/UracPiGhUNehGjRm/tLUQ+9PtWmCbRufWtV0tNrALuf+HZ4F7cmObSEK+E4/Bx1p8Syx2tM+pkIrvtyetdlew==
-  dependencies:
-    workbox-core "7.1.0"
 
 workbox-strategies@7.3.0, workbox-strategies@^7.3.0:
   version "7.3.0"
