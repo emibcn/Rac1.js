@@ -2320,10 +2320,10 @@ abab@^2.0.3, abab@^2.0.5:
   resolved "https://registry.yarnpkg.com/abab/-/abab-2.0.6.tgz#41b80f2c871d19686216b82309231cfd3cb3d291"
   integrity sha512-j2afSsaIENvHZN2B8GOpF566vZ5WVk5opAiMTvWgaQT8DkbOqsTfvNAvHoRGU2zzP8cPoqys+xHTRDWW8L+/BA==
 
-abortcontroller-polyfill@^1.7.6:
-  version "1.7.6"
-  resolved "https://registry.yarnpkg.com/abortcontroller-polyfill/-/abortcontroller-polyfill-1.7.6.tgz#7be8d35b5ed7dfa1a51b36f221720b23deb13f36"
-  integrity sha512-Zypm+LjYdWAzvuypZvDN0smUJrhOurcuBWhhMRBExqVLRvdjp3Z9mASxKyq19K+meZMshwjjy5S0lkm388zE4Q==
+abortcontroller-polyfill@^1.7.7:
+  version "1.7.7"
+  resolved "https://registry.yarnpkg.com/abortcontroller-polyfill/-/abortcontroller-polyfill-1.7.7.tgz#1b8cfc2c6c76469058f7cba8c1b33768d2926e99"
+  integrity sha512-FluzFsffAlibc0d5BzWUsxrBorLuRxmSqkn+CNNh5o++4LwVgj7e4DnYQY2S9nedYlGQ6CHGjWr5kUVY02nxpA==
 
 accepts@~1.3.4, accepts@~1.3.5, accepts@~1.3.8:
   version "1.3.8"
