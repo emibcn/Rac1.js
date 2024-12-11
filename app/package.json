@@ -9,7 +9,7 @@
     "@fortawesome/fontawesome-svg-core": "^6.7.1",
     "@fortawesome/free-solid-svg-icons": "^6.7.1",
     "@fortawesome/react-fontawesome": "^0.2.2",
-    "abortcontroller-polyfill": "^1.7.6",
+    "abortcontroller-polyfill": "^1.7.7",
     "babel-polyfill": "^6.26.0",
     "raw.macro": "^0.6.0",
     "rc-slider": "^11.1.7",
