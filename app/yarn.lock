@@ -9374,10 +9374,10 @@ raw.macro@^0.6.0:
   resolved "https://registry.yarnpkg.com/raw.macro/-/raw.macro-0.6.2.tgz#e3795383a34f3563e31c0d6e9d9d5e1c57e80c60"
   integrity sha512-YWhyR420Xug/s6/7k+H8WTA0r84WULMPn0/o8Y5u5905tGjkvB72Fd/TvRXJcOiv7cSARUGzy+wCZPX9pr9YQA==
 
-rc-slider@^11.1.7:
-  version "11.1.7"
-  resolved "https://registry.yarnpkg.com/rc-slider/-/rc-slider-11.1.7.tgz#3de333b1ec84d53a7bda2f816bb4779423628f09"
-  integrity sha512-ytYbZei81TX7otdC0QvoYD72XSlxvTihNth5OeZ6PMXyEDq/vHdWFulQmfDGyXK1NwKwSlKgpvINOa88uT5g2A==
+rc-slider@^11.1.8:
+  version "11.1.8"
+  resolved "https://registry.yarnpkg.com/rc-slider/-/rc-slider-11.1.8.tgz#cf3b30dacac8f98d44f7685f733f6f7da146fc06"
+  integrity sha512-2gg/72YFSpKP+Ja5AjC5DPL1YnV8DEITDQrcc1eASrUYjl0esptaBVJBh5nLTXCCp15eD8EuGjwezVGSHhs9tQ==
   dependencies:
     "@babel/runtime" "^7.10.1"
     classnames "^2.2.5"
