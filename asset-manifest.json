@@ -1,0 +1,27 @@
+{
+  "files": {
+    "main.css": "/Rac1.js/static/css/main.e869f666.chunk.css",
+    "main.js": "/Rac1.js/static/js/main.99c719b6.chunk.js",
+    "main.js.map": "/Rac1.js/static/js/main.99c719b6.chunk.js.map",
+    "runtime-main.js": "/Rac1.js/static/js/runtime-main.05b4fe9e.js",
+    "runtime-main.js.map": "/Rac1.js/static/js/runtime-main.05b4fe9e.js.map",
+    "static/css/2.358a1791.chunk.css": "/Rac1.js/static/css/2.358a1791.chunk.css",
+    "static/js/2.d3ba9a58.chunk.js": "/Rac1.js/static/js/2.d3ba9a58.chunk.js",
+    "static/js/2.d3ba9a58.chunk.js.map": "/Rac1.js/static/js/2.d3ba9a58.chunk.js.map",
+    "static/js/3.7b1ef119.chunk.js": "/Rac1.js/static/js/3.7b1ef119.chunk.js",
+    "static/js/3.7b1ef119.chunk.js.map": "/Rac1.js/static/js/3.7b1ef119.chunk.js.map",
+    "index.html": "/Rac1.js/index.html",
+    "service-worker.js": "/Rac1.js/service-worker.js",
+    "service-worker.js.map": "/Rac1.js/service-worker.js.map",
+    "static/css/2.358a1791.chunk.css.map": "/Rac1.js/static/css/2.358a1791.chunk.css.map",
+    "static/css/main.e869f666.chunk.css.map": "/Rac1.js/static/css/main.e869f666.chunk.css.map",
+    "static/js/2.d3ba9a58.chunk.js.LICENSE.txt": "/Rac1.js/static/js/2.d3ba9a58.chunk.js.LICENSE.txt"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.05b4fe9e.js",
+    "static/css/2.358a1791.chunk.css",
+    "static/js/2.d3ba9a58.chunk.js",
+    "static/css/main.e869f666.chunk.css",
+    "static/js/main.99c719b6.chunk.js"
+  ]
+}
