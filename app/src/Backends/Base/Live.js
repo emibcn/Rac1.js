@@ -1,36 +1,36 @@
-import Common from "./Common";
+import Common from './Common'
 
 class Live extends Common {
-  name = "Live";
-  updateTimeout = 5 * 60 * 1000; // Check update in 5 minutes
-  updateUrl = "";
-  updateOptions = {};
-  podcastData = {};
-  timer = false;
+  name = 'Live'
+  updateTimeout = 5 * 60 * 1000 // Check update in 5 minutes
+  updateUrl = ''
+  updateOptions = {}
+  podcastData = {}
+  timer = false
 
   // Stop the timer on abort
-  abort() {
+  abort () {
     if (this.timer !== false) {
-      clearTimeout(this.timer);
-      this.timer = false;
+      clearTimeout(this.timer)
+      this.timer = false
     }
-    super.abort();
+    super.abort()
   }
 
   // Launch a timer to check updates on live podcast info
-  launchTimer(timeout = 0) {
+  launchTimer (timeout = 0) {
     if (this.timer === false) {
       this.timer = setTimeout(() => {
-        this.timer = false;
-        this.checkUpdate();
-      }, timeout);
+        this.timer = false
+        this.checkUpdate()
+      }, timeout)
     }
   }
 
-  checkUpdate() {
+  checkUpdate () {
     return fetch(this.updateUrl, {
       signal: this.controller.signal,
-      ...this.updateOptions,
+      ...this.updateOptions
     })
       .then(this.handleFetchErrors)
 
@@ -40,30 +40,30 @@ class Live extends Common {
 
       .then((podcast) => {
         if (podcast.programUrl !== this.podcastData.programUrl) {
-          this.podcastData = podcast;
-          this.onUpdate(this.podcastData);
-          this.launchTimer(this.updateTimeout);
+          this.podcastData = podcast
+          this.onUpdate(this.podcastData)
+          this.launchTimer(this.updateTimeout)
         }
       })
 
-      .catch(this.catchFetchErrors);
+      .catch(this.catchFetchErrors)
   }
 
-  parseResponse = (response) => response.text();
+  parseResponse = (response) => response.text()
 
   // Virtual/Abstract function
   // Must override on subclass
-  parseData(dataRaw) {
+  parseData (dataRaw) {
     const [path, programUrl, title, author, schedule, image] = [
-      "",
-      "",
-      "",
-      "",
-      "",
-      "",
-    ];
+      '',
+      '',
+      '',
+      '',
+      '',
+      ''
+    ]
 
-    console.warn(`Need to subclass 'parseData' on ${this.name} backend class`);
+    console.warn(`Need to subclass 'parseData' on ${this.name} backend class`)
 
     return {
       path,
@@ -71,9 +71,9 @@ class Live extends Common {
       title,
       author,
       schedule,
-      image,
-    };
+      image
+    }
   }
 }
 
-export default Live;
+export default Live
