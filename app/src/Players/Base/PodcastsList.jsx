@@ -20,16 +20,18 @@ class PodcastsList extends React.PureComponent {
             padding: '1pt 0'
           }}
         >
-          {index === current ? (
-            <FontAwesomeIcon
-              icon={faPlay}
-              style={{
-                position: 'absolute',
-                left: '-2.75em',
-                padding: '1pt 0'
-              }}
-            />
-          ) : null}
+          {index === current
+            ? (
+              <FontAwesomeIcon
+                icon={faPlay}
+                style={{
+                  position: 'absolute',
+                  left: '-2.75em',
+                  padding: '1pt 0'
+                }}
+              />
+              )
+            : null}
           {child}
         </li>
       ))
@@ -44,24 +46,26 @@ class PodcastsList extends React.PureComponent {
       textAlign: 'left'
     }
 
-    return children.length === 0 ? null : (
-      <MediaQuery minWidth={1024}>
-        {(matches) => {
-          return (
-            <ul
-              style={{
-                ...styles,
-                columnCount: matches
-                  ? Math.floor(children.length / 10) || 1
-                  : 1
-              }}
-            >
-              {this.renderChildren()}
-            </ul>
-          )
-        }}
-      </MediaQuery>
-    )
+    return children.length === 0
+      ? null
+      : (
+        <MediaQuery minWidth={1024}>
+          {(matches) => {
+            return (
+              <ul
+                style={{
+                  ...styles,
+                  columnCount: matches
+                    ? Math.floor(children.length / 10) || 1
+                    : 1
+                }}
+              >
+                {this.renderChildren()}
+              </ul>
+            )
+          }}
+        </MediaQuery>
+        )
   }
 }
 

@@ -123,9 +123,8 @@ class Rac1 extends ByDate {
 
     Object.keys(podcast.audio.section.program.images).forEach(
       (kind) =>
-        (podcast.audio.section.program.images[
-          kind
-        ] = `${baseURL}/${podcast.audio.section.program.images[kind]}?v${podcast.audio.section.program.imageVersion}`)
+        (podcast.audio.section.program.images[kind] =
+          `${baseURL}/${podcast.audio.section.program.images[kind]}?v${podcast.audio.section.program.imageVersion}`)
     )
     podcast.image = podcast.audio.section.program.images.person
 
