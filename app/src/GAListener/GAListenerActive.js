@@ -1,92 +1,92 @@
-import React from "react";
-import { PropTypes } from "prop-types";
-import ReactGA from "react-ga";
-import withLocationAndHistory from "../withLocationAndHistory";
+import React from 'react'
+import { PropTypes } from 'prop-types'
+import ReactGA from 'react-ga'
+import withLocationAndHistory from '../withLocationAndHistory'
 
 class GAListenerActive extends React.Component {
-  componentDidMount() {
-    const { GACode } = this.props;
+  componentDidMount () {
+    const { GACode } = this.props
 
-    this.loadGoogleTag(GACode);
+    this.loadGoogleTag(GACode)
     ReactGA.initialize(GACode, {
-      titleCase: false,
-    });
+      titleCase: false
+    })
   }
 
   // Detect language change
-  componentDidUpdate(prevProps) {
+  componentDidUpdate (prevProps) {
     if (prevProps.language !== this.props.language) {
-      this.sendLanguage();
+      this.sendLanguage()
     }
   }
 
   manageHistory = () => {
-    const { history } = this.props;
-    this.sendPageView(history.location);
-    history.listen(this.sendPageView);
-  };
+    const { history } = this.props
+    this.sendPageView(history.location)
+    history.listen(this.sendPageView)
+  }
 
   // Fired on route change
   sendPageView = ({ pathname, hash }) => {
-    const page = `${pathname}${hash}`;
-    console.log(`event: Navigated to '${page}'`);
-    ReactGA.set({ page });
-    ReactGA.pageview(page);
-  };
+    const page = `${pathname}${hash}`
+    console.log(`event: Navigated to '${page}'`)
+    ReactGA.set({ page })
+    ReactGA.pageview(page)
+  }
 
   sendLanguage = () => {
-    const { language } = this.props;
-    console.log(`event: Change language to '${language}'`);
-    ReactGA.set({ PageLanguage: language });
-  };
+    const { language } = this.props
+    console.log(`event: Change language to '${language}'`)
+    ReactGA.set({ PageLanguage: language })
+  }
 
   loadGoogleTag = (GACode) => {
     // Global site tag (gtag.js) - Google Analytics
-    global.dataLayer = global.dataLayer || [];
+    global.dataLayer = global.dataLayer || []
     global.gtag = function () {
-      global.dataLayer.push(arguments);
-    };
+      global.dataLayer.push(arguments)
+    }
 
-    global.gtag("js", new Date());
-    global.gtag("config", GACode);
+    global.gtag('js', new Date())
+    global.gtag('config', GACode)
 
     // Load GTag script async
-    const scriptTag = document.createElement("script");
-    scriptTag.src = `https://www.googletagmanager.com/gtag/js?id=${GACode}`;
-    scriptTag.async = true;
-    scriptTag.onload = this.onScriptLoad;
-    document.body.appendChild(scriptTag);
-  };
+    const scriptTag = document.createElement('script')
+    scriptTag.src = `https://www.googletagmanager.com/gtag/js?id=${GACode}`
+    scriptTag.async = true
+    scriptTag.onload = this.onScriptLoad
+    document.body.appendChild(scriptTag)
+  }
 
   onScriptLoad = () => {
-    this.sendLanguage();
-    this.manageHistory();
-    this.props.onLoad();
-  };
+    this.sendLanguage()
+    this.manageHistory()
+    this.props.onLoad()
+  }
 
   removeGA = () => {
-    this._ga = ReactGA.ga;
-    ReactGA.ga = null;
-    global.gtag = [];
-    global.dataLayer = [];
-  };
+    this._ga = ReactGA.ga
+    ReactGA.ga = null
+    global.gtag = []
+    global.dataLayer = []
+  }
 
-  render() {
-    return this.props.children;
+  render () {
+    return this.props.children
   }
 }
 
 GAListenerActive.defaultProps = {
-  language: "en-en",
-  onLoad: () => {},
-};
+  language: 'en-en',
+  onLoad: () => {}
+}
 
 GAListenerActive.propTypes = {
   language: PropTypes.string.isRequired,
   match: PropTypes.object.isRequired,
   location: PropTypes.object.isRequired,
   history: PropTypes.object.isRequired,
-  onLoad: PropTypes.func.isRequired,
-};
+  onLoad: PropTypes.func.isRequired
+}
 
-export default withLocationAndHistory(GAListenerActive);
+export default withLocationAndHistory(GAListenerActive)
