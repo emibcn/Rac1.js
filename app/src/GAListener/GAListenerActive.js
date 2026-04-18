@@ -1,6 +1,6 @@
 import React from "react";
 import { PropTypes } from "prop-types";
-import ReactGA from "react-ga";
+import ReactGA4 from "react-ga4";
 import withLocationAndHistory from "../withLocationAndHistory";
 
 class GAListenerActive extends React.Component {
@@ -8,7 +8,7 @@ class GAListenerActive extends React.Component {
     const { GACode } = this.props;
 
     this.loadGoogleTag(GACode);
-    ReactGA.initialize(GACode, {
+    ReactGA4.initialize(GACode, {
       titleCase: false,
     });
   }
@@ -30,14 +30,14 @@ class GAListenerActive extends React.Component {
   sendPageView = ({ pathname, hash }) => {
     const page = `${pathname}${hash}`;
     console.log(`event: Navigated to '${page}'`);
-    ReactGA.set({ page });
-    ReactGA.pageview(page);
+    ReactGA4.set({ page });
+    ReactGA4.pageview(page);
   };
 
   sendLanguage = () => {
     const { language } = this.props;
     console.log(`event: Change language to '${language}'`);
-    ReactGA.set({ PageLanguage: language });
+    ReactGA4.set({ PageLanguage: language });
   };
 
   loadGoogleTag = (GACode) => {
@@ -65,8 +65,8 @@ class GAListenerActive extends React.Component {
   };
 
   removeGA = () => {
-    this._ga = ReactGA.ga;
-    ReactGA.ga = null;
+    this._ga = ReactGA4.ga;
+    ReactGA4.ga = null;
     global.gtag = [];
     global.dataLayer = [];
   };

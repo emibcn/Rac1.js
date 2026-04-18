@@ -1,6 +1,6 @@
 {
   "name": "rac1",
-  "version": "0.3.0",
+  "version": "0.5.0",
   "private": true,
   "homepage": "http://emibcn.github.io/Rac1.js/",
   "dependencies": {
@@ -9,17 +9,14 @@
     "@fortawesome/fontawesome-svg-core": "^6.7.2",
     "@fortawesome/free-solid-svg-icons": "^6.7.2",
     "@fortawesome/react-fontawesome": "^0.2.2",
-    "abortcontroller-polyfill": "^1.7.8",
-    "babel-polyfill": "^6.26.0",
-    "raw.macro": "^0.6.0",
     "rc-slider": "^11.1.8",
     "rc-switch": "^4.1.0",
-    "react": "^18.0.0",
+    "react": "^18.3.1",
     "react-audio-player": "^0.17.0",
     "react-burger-menu": "^3.1.0",
     "react-date-picker": "^12.0.2",
-    "react-dom": "^18.0.0",
-    "react-ga": "^3.3.1",
+    "react-dom": "^18.3.1",
+    "react-ga4": "^3.0.1",
     "react-helmet-async": "^3.0.0",
     "react-modal": "^3.16.3",
     "react-responsive": "^10.0.1",
@@ -27,27 +24,9 @@
     "react-scripts": "5.0.1",
     "react-simple-storage": "^1.4.2",
     "react-translate": "^7.0.1",
-    "web-vitals": "^4.2.4",
-    "workbox-background-sync": "^7.0.0",
-    "workbox-broadcast-update": "^7.3.0",
-    "workbox-cacheable-response": "^7.3.0",
-    "workbox-core": "^7.0.0",
-    "workbox-expiration": "^7.3.0",
-    "workbox-google-analytics": "^7.3.0",
-    "workbox-navigation-preload": "^7.3.0",
-    "workbox-precaching": "^7.3.0",
-    "workbox-range-requests": "^7.3.0",
-    "workbox-routing": "^7.1.0",
-    "workbox-strategies": "^7.3.0",
-    "workbox-streams": "^7.3.0"
+    "web-vitals": "^4.2.4"
   },
-  "resolutions": {
-    "caniuse-lite": "1.0.30001632",
-    "@babel/core": "7.22.0",
-    "@babel/parser": "7.22.0",
-    "get-user-locale": "^2.3.2",
-    "memoize": "^11.0.0"
-  },
+  "resolutions": {},
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build && yarn pubgh",
@@ -75,13 +54,12 @@
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^6.6.3",
-    "@testing-library/react": "^12.1.5",
+    "@testing-library/react": "^14.3.1",
     "@testing-library/user-event": "^14.6.1",
-    "jest-canvas-mock": "^2.5.2"
+    "jest-canvas-mock": "^2.5.2",
+    "raw.macro": "^0.6.0"
   },
   "jest": {
-    "transformIgnorePatterns": [
-      "/node_modules/(?!(react-date-picker|get-user-locale|memoize|rc-switch|rc-slider|make-event-props|react-calendar|@wojtekmaj/date-utils|react-fit|detect-element-overflow|react-helmet-async)/)"
-    ]
+    "transformIgnorePatterns": []
   }
 }

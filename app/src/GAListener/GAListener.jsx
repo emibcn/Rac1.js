@@ -1,6 +1,6 @@
 import React from "react";
 import { PropTypes } from "prop-types";
-import ReactGA from "react-ga";
+import ReactGA4 from "react-ga4";
 
 import GAEventContext from "./GAEventContext";
 import GAListenerActive from "./GAListenerActive";
@@ -31,7 +31,7 @@ class GAListener extends React.Component {
     return event;
   };
 
-  sendEvent = (...args) => ReactGA.event(this.createEvent(...args));
+  sendEvent = (...args) => ReactGA4.event(this.createEvent(...args));
 
   render() {
     const { children, trackOptIn, ...props } = this.props;
