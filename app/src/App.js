@@ -1,55 +1,55 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState } from 'react'
 import {
   HashRouter as Router,
   Route,
   Routes,
   Navigate,
-  useLocation,
-} from "react-router-dom";
+  useLocation
+} from 'react-router-dom'
 
-import Storage from "react-simple-storage";
-import { TranslatorProvider, useTranslate } from "react-translate";
-import { Helmet, HelmetProvider } from "react-helmet-async";
-import available from "./i18n/available";
+import Storage from 'react-simple-storage'
+import { TranslatorProvider, useTranslate } from 'react-translate'
+import { Helmet, HelmetProvider } from 'react-helmet-async'
+import available from './i18n/available'
 
-import AppMenu from "./AppMenu";
-import ModalRouter from "./ModalRouter";
-import GAListener, { ReportWebVitals } from "./GAListener";
-import ErrorCatcher from "./ErrorCatcher";
-import { Live, ByDate } from "./Players";
-import { Cookies, About, Help } from "./Modals";
-import botCheck from "./botCheck";
+import AppMenu from './AppMenu'
+import ModalRouter from './ModalRouter'
+import GAListener, { ReportWebVitals } from './GAListener'
+import ErrorCatcher from './ErrorCatcher'
+import { Live, ByDate } from './Players'
+import { Cookies, About, Help } from './Modals'
+import botCheck from './botCheck'
 
-import "./App.css";
+import './App.css'
 
 // GoogleAnalytics code taken from env
-const GACode = process.env.REACT_APP_GA_CODE;
+const GACode = process.env.REACT_APP_GA_CODE
 
 // Template function for catching errors from components
 const withErrorCatcher = (origin, Component) => (props) => (
   <ErrorCatcher {...{ origin, key: origin }}>
     <Component {...props} />
   </ErrorCatcher>
-);
+)
 
-const AboutWithErrorCatcher = withErrorCatcher("About", About);
-const HelpWithErrorCatcher = withErrorCatcher("Help", Help);
-const CookiesWithErrorCatcher = withErrorCatcher("Cookies", Cookies);
-const LiveWithErrorCatcher = withErrorCatcher("Live", Live);
-const ByDateWithErrorCatcher = withErrorCatcher("ByDate", ByDate);
+const AboutWithErrorCatcher = withErrorCatcher('About', About)
+const HelpWithErrorCatcher = withErrorCatcher('Help', Help)
+const CookiesWithErrorCatcher = withErrorCatcher('Cookies', Cookies)
+const LiveWithErrorCatcher = withErrorCatcher('Live', Live)
+const ByDateWithErrorCatcher = withErrorCatcher('ByDate', ByDate)
 
 // App Helmet: Controls HTML <head> elements with SideEffect
 // - Set a default title and title template, translated
 const AppHelmet = function (props) {
-  const t = useTranslate("App");
-  const title = t("Rac1 Radio Podcasts Player");
+  const t = useTranslate('App')
+  const title = t('Rac1 Radio Podcasts Player')
 
   return (
     <Helmet titleTemplate={`%s | ${title}`} defaultTitle={title}>
       <html lang={props.language} />
     </Helmet>
-  );
-};
+  )
+}
 
 // Concentrate all providers (4) used in the app into a single component
 const AppProviders = function (props) {
@@ -64,63 +64,70 @@ const AppProviders = function (props) {
             trackOptIn={props.trackOptIn}
           >
             <ReportWebVitals />
-            <div className="App" id="router-container">
+            <div className='App' id='router-container'>
               {props.children}
             </div>
           </GAListener>
         </Router>
       </HelmetProvider>
     </TranslatorProvider>
-  );
-};
+  )
+}
 
 const RedirectToToday = function () {
-  const location = useLocation();
-  const date = new Date();
+  const location = useLocation()
+  const date = new Date()
   const todayStr = `/${date.getFullYear()}/${
     1 + date.getMonth()
-  }/${date.getDate()}/0/0`;
+  }/${date.getDate()}/0/0`
 
   // Parse existing modal from double hash
-  const hashParts = location.hash.split('#');
-  const existingModal = hashParts[2] || '';
-  const newHash = existingModal ? `${todayStr}#${existingModal}` : `${todayStr}`;
+  const hashParts = location.hash.split('#')
+  const existingModal = hashParts[2] || ''
+  const newHash = existingModal
+    ? `${todayStr}#${existingModal}`
+    : `${todayStr}`
 
-  console.log("RedirectToToday:", { todayStr, hashParts, existingModal, newHash })
+  console.log('RedirectToToday:', {
+    todayStr,
+    hashParts,
+    existingModal,
+    newHash
+  })
 
-  return <Navigate to={newHash} replace />;
-};
+  return <Navigate to={newHash} replace />
+}
 
 class App extends React.Component {
-  constructor(props) {
-    super();
+  constructor (props) {
+    super()
 
     // Save App element to handle modal
-    this.appElement = React.createRef();
+    this.appElement = React.createRef()
 
     this.state = {
       initializing: true,
       trackingSeen: false,
-      trackOptIn: !props.dnt,
-    };
+      trackOptIn: !props.dnt
+    }
   }
 
   handleStopInitializing = () => {
-    this.setState({ initializing: false });
-  };
+    this.setState({ initializing: false })
+  }
 
   handleTrackingSeenChange = (trackingSeen) => {
-    this.setState({ trackingSeen });
-  };
+    this.setState({ trackingSeen })
+  }
 
   handleTrackOptInChange = (trackOptIn) => {
-    this.setState({ trackOptIn });
-  };
+    this.setState({ trackOptIn })
+  }
 
-  render() {
-    const { trackOptIn, trackingSeen, initializing } = this.state;
-    const { language, handleLanguageChange, isBot } = this.props;
-    const translations = available[language];
+  render () {
+    const { trackOptIn, trackingSeen, initializing } = this.state
+    const { language, handleLanguageChange, isBot } = this.props
+    const translations = available[language]
 
     return (
       <AppProviders
@@ -128,14 +135,14 @@ class App extends React.Component {
           translations,
           language,
           trackOptIn,
-          GACode,
+          GACode
         }}
       >
         {/* Persistent state saver into localStorage */}
         <Storage
           parent={this}
-          prefix="App"
-          blacklist={["initializing"]}
+          prefix='App'
+          blacklist={['initializing']}
           onParentStateHydrated={this.handleStopInitializing}
         />
 
@@ -151,20 +158,15 @@ class App extends React.Component {
             */}
             <ModalRouter
               force={
-                !trackingSeen && !initializing && !isBot ? "cookies" : false
+                !trackingSeen && !initializing && !isBot ? 'cookies' : false
               }
               appElement={this.appElement.current}
             >
+              <Route exact path='about' element={<AboutWithErrorCatcher />} />
+              <Route exact path='help' element={<HelpWithErrorCatcher />} />
               <Route
-                exact path="about"
-                element={ <AboutWithErrorCatcher /> }
-              />
-              <Route
-                exact path="help"
-                element={ <HelpWithErrorCatcher /> }
-              />
-              <Route
-                exact path="cookies"
+                exact
+                path='cookies'
                 element={
                   <CookiesWithErrorCatcher
                     {...{ trackOptIn, trackingSeen }}
@@ -176,7 +178,7 @@ class App extends React.Component {
             </ModalRouter>
 
             {/* Menu */}
-            <ErrorCatcher origin="AppMenu">
+            <ErrorCatcher origin='AppMenu'>
               <AppMenu
                 language={language}
                 onLanguageChange={handleLanguageChange}
@@ -186,58 +188,42 @@ class App extends React.Component {
 
             <AppHelmet language={language} />
 
-            <header ref={this.appElement} className="App-header" id="page-wrap">
+            <header ref={this.appElement} className='App-header' id='page-wrap'>
               {/* App Route */}
               <Routes>
-                <Route
-                  exact
-                  path="/live"
-                  element={ <LiveWithErrorCatcher /> }
-                />
+                <Route exact path='/live' element={<LiveWithErrorCatcher />} />
 
                 <Route
                   exact
-                  path="/(directe|directo)"
-                  element={ <Navigate replace to={{ pathname: "live" }} /> }
+                  path='/(directe|directo)'
+                  element={<Navigate replace to={{ pathname: 'live' }} />}
                 />
 
                 {/* Different ways of accessing the main component ByDate */}
                 <Route
-                  path={
-                    "/:year/:month/:day/:hour/:minute"
-                  }
-                  element={ <ByDateWithErrorCatcher /> }
+                  path='/:year/:month/:day/:hour/:minute'
+                  element={<ByDateWithErrorCatcher />}
                 />
 
                 <Route
-                  path={
-                    "/:year/:month/:day/:hour"
-                  }
-                  element={ <ByDateWithErrorCatcher /> }
+                  path='/:year/:month/:day/:hour'
+                  element={<ByDateWithErrorCatcher />}
                 />
 
                 <Route
-                  path={"/:year/:month/:day"}
-                  element={ <ByDateWithErrorCatcher /> }
+                  path='/:year/:month/:day'
+                  element={<ByDateWithErrorCatcher />}
                 />
 
                 {/* Set default date to today */}
-                <Route
-                  exact
-                  path=""
-                  element={ <RedirectToToday /> }
-                />
-                <Route
-                  exact
-                  path=":all"
-                  element={ <RedirectToToday /> }
-                />
+                <Route exact path='' element={<RedirectToToday />} />
+                <Route exact path=':all' element={<RedirectToToday />} />
               </Routes>
             </header>
           </>
         )}
       </AppProviders>
-    );
+    )
   }
 }
 
@@ -245,35 +231,35 @@ class App extends React.Component {
 // Deactivate tracking by default to users with DNT and to all bots
 const defaultLanguage = Object.prototype.hasOwnProperty.call(
   available,
-  global.navigator.language,
+  global.navigator.language
 )
   ? global.navigator.language
-  : "en-en";
+  : 'en-en'
 
 const AppWrapper = function () {
-  const isBot = useMemo(botCheck, [global.navigator.userAgent]);
+  const isBot = useMemo(botCheck, [global.navigator.userAgent])
   const dnt = useMemo(() => {
     const navDNT =
       global.navigator.doNotTrack ||
       window.doNotTrack ||
-      global.navigator.msDoNotTrack;
+      global.navigator.msDoNotTrack
     return (
-      process.env.NODE_ENV === "test" ||
-      navDNT === "1" ||
-      navDNT === "yes" ||
+      process.env.NODE_ENV === 'test' ||
+      navDNT === '1' ||
+      navDNT === 'yes' ||
       isBot
-    );
-  }, [isBot]);
-  const [language, setLanguage] = useState(defaultLanguage);
+    )
+  }, [isBot])
+  const [language, setLanguage] = useState(defaultLanguage)
 
   React.useEffect(() => {
     // Fix bad browser encoding HASH
-    const decoded = decodeURIComponent(global.location.hash);
-    if (decoded !== "" && decoded !== global.location.hash) {
-      const hash = decoded.replace(/[^#]*(#.*)$/, "$1");
-      global.location.replace(hash);
+    const decoded = decodeURIComponent(global.location.hash)
+    if (decoded !== '' && decoded !== global.location.hash) {
+      const hash = decoded.replace(/[^#]*(#.*)$/, '$1')
+      global.location.replace(hash)
     }
-  });
+  })
 
   return (
     <App
@@ -282,7 +268,7 @@ const AppWrapper = function () {
       language={language}
       handleLanguageChange={setLanguage}
     />
-  );
-};
+  )
+}
 
-export default AppWrapper;
+export default AppWrapper
