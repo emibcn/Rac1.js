@@ -11,7 +11,7 @@ import { faBalanceScale as faCookies } from "@fortawesome/free-solid-svg-icons";
 import { withGAEvent } from "../GAListener";
 
 // Import raw HTML
-import legal from "./legal.html" with { type: "text" };
+import legal from "./legal.html?raw" assert { type: "text" };
 
 class Cookies extends React.Component {
   componentDidMount() {

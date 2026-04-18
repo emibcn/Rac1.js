@@ -7,7 +7,7 @@ import {
   useLocation
 } from 'react-router-dom'
 
-import Storage from 'react-simple-storage'
+import StorageWrapper from 'react-simple-storage'
 import { TranslatorProvider, useTranslate } from 'react-translate'
 import { Helmet, HelmetProvider } from 'react-helmet-async'
 import available from './i18n/available'
@@ -22,8 +22,10 @@ import botCheck from './botCheck'
 
 import './App.css'
 
+const Storage = StorageWrapper.default;
+
 // GoogleAnalytics code taken from env
-const GACode = process.env.REACT_APP_GA_CODE
+const GACode = import.meta.env.VITE_GA_CODE
 
 // Template function for catching errors from components
 const withErrorCatcher = (origin, Component) => (props) => (
@@ -231,18 +233,18 @@ class App extends React.Component {
 // Deactivate tracking by default to users with DNT and to all bots
 const defaultLanguage = Object.prototype.hasOwnProperty.call(
   available,
-  global.navigator.language
+  navigator.language
 )
-  ? global.navigator.language
+  ? navigator.language
   : 'en-en'
 
 const AppWrapper = function () {
-  const isBot = useMemo(botCheck, [global.navigator.userAgent])
+  const isBot = useMemo(botCheck, [navigator.userAgent])
   const dnt = useMemo(() => {
     const navDNT =
-      global.navigator.doNotTrack ||
+      navigator.doNotTrack ||
       window.doNotTrack ||
-      global.navigator.msDoNotTrack
+      navigator.msDoNotTrack
     return (
       process.env.NODE_ENV === 'test' ||
       navDNT === '1' ||
@@ -254,10 +256,10 @@ const AppWrapper = function () {
 
   React.useEffect(() => {
     // Fix bad browser encoding HASH
-    const decoded = decodeURIComponent(global.location.hash)
-    if (decoded !== '' && decoded !== global.location.hash) {
+    const decoded = decodeURIComponent(location.hash)
+    if (decoded !== '' && decoded !== location.hash) {
       const hash = decoded.replace(/[^#]*(#.*)$/, '$1')
-      global.location.replace(hash)
+      location.replace(hash)
     }
   })
 

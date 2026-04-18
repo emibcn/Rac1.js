@@ -3,9 +3,11 @@ import PropTypes from 'prop-types'
 
 import { Helmet } from 'react-helmet-async'
 
-import ReactAudioPlayer from 'react-audio-player'
+import ReactAudioPlayerWrapper from 'react-audio-player'
 import Controls from './Controls'
 import MediaSession from './MediaSession'
+
+const ReactAudioPlayer = ReactAudioPlayerWrapper.default;
 
 class AudioWrapper extends PureComponent {
   _player = React.createRef()
