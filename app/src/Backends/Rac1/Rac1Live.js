@@ -1,13 +1,20 @@
 import { Live } from "../Base";
 
+const DEBUG = false;
+function debug() {
+  if (DEBUG === true) {
+    console.log(...arguments);
+  }
+}
+
 class Rac1Live extends Live {
   name = "Rac1 live";
-  updateUrl = "https://api.audioteca.rac1.cat/directe";
-  podcastUrl = "https://streaming.rac1.cat/;*.nsv";
+  updateUrl = "https://api.audioteca.rac1.cat/piece/live";
+  podcastUrl = "https://playerservices.streamtheworld.com/api/livestream-redirect/RAC_1.mp3";
 
   dataAttrsFind =
-    /\s(data-ajax-href=|class="(program-header-title-link|program-listed-author|story-image))/;
-  dataAttrsClean = /.*\s(src|alt|href|data-ajax-href)="([^"]*)".*/;
+    /\s(data-ajax-href=|<img loading="lazy"|class="(c-card--claim__(epigraph|title|subtitle)))/;
+  dataAttrsClean = /.*\s(src|href|data-ajax-href)="([^"]*)".*/g;
   dataTagContent = /<?[^<>]*>([^<]*)<\/[^>]*>/;
   dataTagContents =
     /\s*<?[^<>]*>(?:amb )?([^<]*?)<\/[^>]*>\s*<?[^<>]*>([^<]*?)<\/[^>]*>/g;
@@ -19,32 +26,42 @@ class Rac1Live extends Live {
       .split("\n")
 
       // Get only interesting lines
-      .filter((line) => this.dataAttrsFind.test(line));
+      .filter((line) => this.dataAttrsFind.test(line))
+
+      // Cleanup trailing whitespaces and tabs
+      .map((line) => line.trim());
+
+    debug("parseData: data", data);
 
     // Compute data
-    const programUrl = data
-      .find((line) => line.includes("program-header-title-link"))
-      .replace(this.dataAttrsClean, "$2")
-      .replace(/a-la-carta/, "programes");
-    const title = data
-      .filter((line) => !line.includes("program-next-link"))
-      .find((line) => line.includes("data-ajax-href"))
-      .replace(this.dataTagContent, "$1")
-      .trim(" \n\t\r");
-    const [author, schedule] = data
-      .find((line) => line.includes("program-listed-author"))
-      .replace(
-        this.dataTagContents,
-        (match, author, schedule) =>
-          `${author}\n${schedule.replace(
-            this.dataScheduleFixScheduleHour,
-            "$1h"
-          )}`
-      )
-      .split("\n");
     const image = data
-      .find((line) => line.includes("thumbnail"))
+      .find((line) => line.includes("<img loading=\"lazy\""))
       .replace(this.dataAttrsClean, "$2");
+
+    debug("parseData: image", image);
+
+    const programUrl = image
+      .replace(/.*\/([^/.]*)\.png.*/, "https://www.rac1.cat/a-la-carta/programes/$1");
+
+    debug("parseData: programUrl", programUrl);
+
+    const title = data
+      .find((line) => line.includes("__title"))
+      .replace(this.dataTagContent, "$1");
+
+    debug("parseData: title", title);
+
+    const author = data
+      .find((line) => line.includes("__subtitle"))
+      .replace(this.dataTagContent, "$1");
+
+    debug("parseData: author", author);
+
+    const schedule = data
+      .find((line) => line.includes("__epigraph"))
+      .replace(this.dataTagContent, "$1");
+
+    debug("parseData: schedule", schedule);
 
     return {
       // Constant ;)

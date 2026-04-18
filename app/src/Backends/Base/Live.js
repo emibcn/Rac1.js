@@ -17,7 +17,7 @@ class Live extends Common {
     super.abort();
   }
 
-  // Launch a timer to check updates on live podcast info
+  // Launch a timer to check for updates on live podcast info
   launchTimer(timeout = 0) {
     if (this.timer === false) {
       this.timer = setTimeout(() => {

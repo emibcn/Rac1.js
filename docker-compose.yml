@@ -20,7 +20,7 @@ services:
       - "127.0.0.1:3000:3000"
     stdin_open: true
     tty: true
-    command: "bash"
+    command: "yarn start"
 
   rac1-static:
     container_name: rac1-static
