@@ -1,206 +1,268 @@
-import React from "react";
-import { Route, Switch, Redirect, useHistory } from "react-router-dom";
+import React, { useState, useEffect, useCallback, useMemo } from 'react'
+import {
+  Route,
+  Routes,
+  Navigate,
+  useLocation,
+  useNavigate
+} from 'react-router-dom'
 
-import Modal from "react-modal";
-import { translate } from "react-translate";
+import Modal from 'react-modal'
+import { translate } from 'react-translate'
 
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTimesCircle as faClose } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faTimesCircle as faClose } from '@fortawesome/free-solid-svg-icons'
 
-import withLocationAndHistory from "./withLocationAndHistory";
-import "./ModalRouter.css";
+import withLocationAndHistory from './withLocationAndHistory'
+import './ModalRouter.css'
 
-if (process.env.NODE_ENV !== "test") {
-  Modal.setAppElement("#root");
+if (process.env.NODE_ENV !== 'test') {
+  Modal.setAppElement('#root')
 }
 
-const CloseModal = function () {
-  const history = useHistory();
+// Utility: Parse modal from hash
+const parseModalFromHash = (hash) => {
+  const modalPath = hash.split('#')[1] ?? ''
+  const isValidModal = Boolean(modalPath && modalPath !== 'close')
 
-  React.useEffect(() => {
-    if (history.location.hash !== "") {
-      const timer = global.setTimeout(() => history.push("#"), 10);
-      return () => global.cancelTimeout(timer);
+  return {
+    modalIsOpen: isValidModal,
+    modalPath: isValidModal ? modalPath : ''
+  }
+}
+
+const CloseModal = () => {
+  const navigate = useNavigate()
+  const location = useLocation()
+
+  useEffect(() => {
+    // Only close if there's actually a modal open
+    if (location.hash) {
+      console.log('Closing modal via CloseModal')
+      navigate('#', { replace: true })
     }
-    return null;
-  }, [history]);
+  }, [location.hash, navigate])
 
-  return null;
-};
+  return null
+}
 
-class ModalRouterInner extends React.PureComponent {
-  constructor(props) {
-    super();
-
-    // Set initial state
-    this.history = props.history;
-    this.state = {
-      ...this.getPathState(props.location),
-      autoForce: false,
-      forced: props.force,
-    };
-  }
-
-  componentDidMount() {
-    // Register history change event listener
-    this.unlisten = this.history.listen(this.handleHistoryChange);
-  }
-
-  getPathState(location) {
-    const path = location.hash.replace(/[^#]*#(.*)$/, "$1");
+// Main Modal Router Component
+const ModalRouterInner = ({
+  children,
+  initializing,
+  force,
+  appElement,
+  t,
+  navigate,
+  location
+}) => {
+  // Initialize state from current hash
+  const [modalState, setModalState] = useState(() => {
+    const { modalIsOpen, modalPath } = parseModalFromHash(location.hash || '')
+    console.log('ModalRouterInner: useState modalState', {
+      modalIsOpen,
+      modalPath
+    })
     return {
-      modalIsOpen: Boolean(path.length) && path !== "close",
-      path,
-      initialPath: this.state ? this.state.initialPath : path,
-    };
+      modalIsOpen,
+      modalPath,
+      autoForce: false,
+      forced: force,
+      pendingRestore: modalPath
+    }
+  })
+
+  console.log('ModalRouterInner: modalState', modalState)
+
+  // Memoize modal location to prevent unnecessary re-renders
+  const modalLocation = useMemo(
+    () => ({
+      pathname: `/${modalState.modalPath}`,
+      hash: '',
+      search: '',
+      state: null
+    }),
+    [modalState.modalPath]
+  )
+
+  // Handle force prop changes
+  useEffect(() => {
+    console.log('ModalRouterInner: Handle force prop changes')
+    if (force !== false && force !== modalState.forced) {
+      setModalState((prev) => ({ ...prev, forced: force }))
+    }
+  }, [force, modalState.forced])
+
+  // Handle hash changes from navigation
+  useEffect(() => {
+    console.log('ModalRouterInner: Handle hash changes from navigation')
+    const { modalIsOpen, modalPath } = parseModalFromHash(location.hash)
+    setModalState((prev) => ({
+      ...prev,
+      modalIsOpen,
+      modalPath,
+      // Clear autoForce when user manually changes modal
+      autoForce: prev.autoForce && modalPath ? prev.autoForce : false
+    }))
+  }, [location.hash])
+
+  // Handle auto-force logic (restore original modal after forced modal closes)
+  useEffect(() => {
+    console.log('ModalRouterInner: Handle auto-force logic')
+    // Clear autoForce after it's been applied
+    if (modalState.autoForce === modalState.modalPath) {
+      setModalState((prev) => ({
+        ...prev,
+        autoForce: false,
+        pendingRestore: null
+      }))
+    }
+
+    // Restore original modal after forced modal closes
+    const shouldRestore =
+      modalState.forced !== false && // We had a forced modal
+      modalState.forced !== modalState.modalPath && // It's now different
+      modalState.pendingRestore && // We have something to restore
+      modalState.autoForce !== modalState.pendingRestore && // Not already restoring
+      modalState.modalPath === '' // Modal just closed
+
+    if (shouldRestore) {
+      console.log(
+        'ModalRouterInner: Restoring original modal:',
+        modalState.pendingRestore
+      )
+      setModalState((prev) => ({
+        ...prev,
+        autoForce: prev.pendingRestore,
+        pendingRestore: null
+      }))
+    }
+  }, [
+    modalState.modalPath,
+    modalState.forced,
+    modalState.pendingRestore,
+    modalState.autoForce
+  ])
+
+  const openModal = useCallback(() => {
+    console.log('ModalRouterInner: openModal useCallback')
+    setModalState((prev) => ({ ...prev, modalIsOpen: true }))
+  }, [])
+
+  const closeModal = useCallback(() => {
+    if (modalState.modalPath !== '') {
+      console.log('Closing modal via button')
+      navigate('#', { replace: true })
+      setModalState((prev) => ({ ...prev, modalIsOpen: false, modalPath: '' }))
+    }
+  }, [modalState.modalPath, navigate])
+
+  // If wrapper app is initializing, do nothing or we'll mess up things
+  if (initializing) {
+    return null
   }
 
-  componentWillUnmount() {
-    // Unregister history change event listener
-    this.unlisten();
-    if (this.timer) {
-      global.clearTimeout(this.timer);
-    }
+  // Redirect to forced URL (e.g., show cookie modal)
+  if (force !== false && force !== modalState.modalPath) {
+    const newHash = `#${force}`
+    console.log('ModalRouterInner: Force redirect to:', newHash)
+    return <Navigate to={newHash} replace />
   }
 
-  // Force user to different URLs
-  componentDidUpdate(prevProps, prevState) {
-    // Remember old URL when forcing
-    if (
-      this.props.force !== false &&
-      this.props.force !== prevProps.force &&
-      this.state.forced !== this.props.force
-    ) {
-      this.setState({ forced: this.props.force });
-    }
-
-    // Clear autoForce after it has been forced
-    if (this.state.autoForce === this.state.path) {
-      this.setState({ autoForce: false });
-    }
-
-    // Force old modal after forcing another (do auto force)
-    if (
-      prevState.path === this.state.forced &&
-      prevState.path !== this.state.path &&
-      this.state.initialPath !== false &&
-      this.state.initialPath.length > 1 &&
-      this.state.autoForce !== this.state.initialPath
-    ) {
-      this.setState({ autoForce: this.state.initialPath });
-    }
+  // Auto-force redirect (restore original modal after closing the forced one)
+  if (
+    modalState.autoForce !== false &&
+    modalState.autoForce !== modalState.modalPath &&
+    modalState.forced !== modalState.modalPath
+  ) {
+    console.log(
+      'ModalRouterInner: AutoForce redirect to autoforce: modalState:',
+      modalState
+    )
+    const newHash = `#${modalState.autoForce}`
+    console.log('ModalRouterInner: AutoForce redirect to:', newHash)
+    return <Navigate to={newHash} replace />
   }
 
-  openModal = () => this.setState({ modalIsOpen: true });
-
-  closeModal = (propsClose = {}) => {
-    if (!("history" in propsClose) || propsClose.history.location.hash !== "") {
-      if (!this.timer) {
-        this.timer = global.setTimeout(() => {
-          this.history.push("#");
-          this.timer = undefined;
-        }, 10);
-      }
-    }
-  };
-
-  handleHistoryChange = (location, action) => {
-    const state = this.getPathState(location);
-    this.setState(state);
-  };
-
-  render() {
-    const { children, initializing, force, appElement, t } = this.props;
-    const { autoForce, path, forced } = this.state;
-
-    if (initializing) {
-      return null;
-    }
-
-    // Redirect to forced URL
-    if (force !== false && force !== path) {
-      return <Redirect push to={{ hash: force }} />;
-    }
-
-    // If previously have been forced when showing a modal,
-    // force to go back there once the forced has been visited
-    if (autoForce !== false && autoForce !== path && forced !== path) {
-      return <Redirect push to={{ hash: autoForce }} />;
-    }
-
-    return (
-      <Modal
-        appElement={appElement}
-        isOpen={this.state.modalIsOpen}
-        onAfterOpen={this.openModal}
-        onRequestClose={this.closeModal}
-        contentLabel={t("Dialog")}
-        closeTimeoutMS={200}
-        aria={{
-          labelledby: "modal_heading",
-          describedby: "modal_description",
-        }}
+  return (
+    <Modal
+      appElement={appElement}
+      isOpen={modalState.modalIsOpen}
+      onAfterOpen={openModal}
+      onRequestClose={closeModal}
+      contentLabel={t('Dialog')}
+      closeTimeoutMS={200}
+      aria={{
+        labelledby: 'modal_heading',
+        describedby: 'modal_description'
+      }}
+      style={{
+        overlay: {
+          zIndex: 2000,
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center'
+        },
+        content: {
+          top: 'auto',
+          left: 'auto',
+          right: 'auto',
+          bottom: 'auto',
+          borderRadius: '1em',
+          padding: '1em 2em 2em 2em',
+          margin: '0 -.25em 0 0',
+          maxHeight: '80vh',
+          minHeight: '50vh',
+          maxWidth: '70vw',
+          minWidth: '50vw',
+          textAlign: 'center'
+        }
+      }}
+    >
+      <button
         style={{
-          overlay: {
-            zIndex: 2000,
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-          },
-          content: {
-            top: "auto",
-            left: "auto",
-            right: "auto",
-            bottom: "auto",
-            borderRadius: "1em",
-            padding: "1em 2em 2em 2em",
-            margin: "0 -.25em 0 0",
-            maxHeight: "80vh",
-            minHeight: "50vh",
-            maxWidth: "70vw",
-            minWidth: "50vw",
-            textAlign: "center",
-          },
+          position: 'absolute',
+          right: '.5em',
+          background: 'transparent',
+          border: '0',
+          color: '#c33',
+          fontSize: '20px',
+          cursor: 'pointer'
         }}
+        title={t('Close modal')}
+        aria-label={t('Close modal')}
+        onClick={closeModal}
       >
-        <button
-          style={{
-            position: "absolute",
-            right: ".5em",
-            background: "transparent",
-            border: "0",
-            color: "#c33",
-            fontSize: "20px",
-            cursor: "pointer",
-          }}
-          title={t("Close modal")}
-          aria-label={t("Close modal")}
-          onClick={this.closeModal}
-        >
-          <FontAwesomeIcon icon={faClose} />
-        </button>
-        <Switch location={{ pathname: path }}>
-          {children}
+        <FontAwesomeIcon icon={faClose} />
+      </button>
 
-          {/* Close modal if nothing is shown */}
-          <Route>
-            <CloseModal />
-          </Route>
-        </Switch>
-      </Modal>
-    );
-  }
+      <Routes location={modalLocation}>
+        {children}
+
+        {/* Close modal if nothing matches */}
+        <Route path='*' element={<CloseModal />} />
+      </Routes>
+    </Modal>
+  )
 }
 
-const ModalRouterHidrated = withLocationAndHistory(ModalRouterInner);
+// Wrap with HOC
+const ModalRouterInnerHidrated = withLocationAndHistory(ModalRouterInner)
 
-const ModalRouter = function (props) {
-  const { children, ...rest } = props;
+// Main ModalRouter component
+const ModalRouter = function ({ children, ...rest }) {
+  const { hash } = useLocation()
+
+  console.log('ModalRouter:', { props: { children, ...rest }, hash })
+
   return (
-    <Route path=":path(.*)">
-      <ModalRouterHidrated {...{ children, ...rest }} />
-    </Route>
-  );
-};
+    <Routes>
+      <Route
+        path='*'
+        element={<ModalRouterInnerHidrated {...{ children, hash, ...rest }} />}
+      />
+    </Routes>
+  )
+}
 
-export default translate("ModalRouter")(ModalRouter);
+export default translate('ModalRouter')(ModalRouter)

@@ -1,12 +1,21 @@
-import React from "react";
-import { useLocation, useHistory, useParams } from "react-router-dom";
+import React from 'react'
+import { useLocation, useNavigate, useParams } from 'react-router-dom'
 
 const withLocationAndHistory = (Component) => (props) => {
-  const location = useLocation();
-  const history = useHistory();
-  const params = useParams();
+  const location = useLocation()
+  const navigate = useNavigate()
+  const params = useParams()
 
-  return <Component {...{ history, location, match: { params }, ...props }} />;
-};
+  return (
+    <Component
+      {...{
+        navigate,
+        location,
+        match: { params },
+        ...props
+      }}
+    />
+  )
+}
 
-export default withLocationAndHistory;
+export default withLocationAndHistory

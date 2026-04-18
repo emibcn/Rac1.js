@@ -1,15 +1,16 @@
-version: "3"
+name: "Rac1 podcast player"
 
 services:
 
   rac1:
     container_name: rac1
-    image: node:16
+    image: node:24
     user: "node"
     working_dir: /home/node/app
     environment:
       - NODE_ENV=development
       - REACT_APP_GA_CODE="UA-129704402-1"
+      - NODE_OPTIONS=--openssl-legacy-provider
     volumes:
       - ./app:/home/node/app
       - ./docs:/home/node/docs
@@ -19,7 +20,7 @@ services:
       - "127.0.0.1:3000:3000"
     stdin_open: true
     tty: true
-    command: "yarn start"
+    command: "bash"
 
   rac1-static:
     container_name: rac1-static

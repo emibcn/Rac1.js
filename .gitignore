@@ -2,7 +2,7 @@
 
 # Editors
 *~
-.*.swp
+.*.sw?
 
 # dependencies
 app/node_modules
