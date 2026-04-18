@@ -7,7 +7,7 @@ import ReactAudioPlayerWrapper from 'react-audio-player'
 import Controls from './Controls'
 import MediaSession from './MediaSession'
 
-const ReactAudioPlayer = ReactAudioPlayerWrapper.default;
+const ReactAudioPlayer = ReactAudioPlayerWrapper.default
 
 class AudioWrapper extends PureComponent {
   _player = React.createRef()

@@ -1,7 +1,7 @@
 // PWA registration for Vite with vite-plugin-pwa
 // This replaces the CRA serviceWorkerRegistration.js
 
-export function register(config) {
+export function register (config) {
   if (process.env.NODE_ENV === 'production' && 'serviceWorker' in navigator) {
     // Wait for the window to load before registering
     window.addEventListener('load', () => {
@@ -43,7 +43,7 @@ export function register(config) {
   }
 }
 
-export function unregister() {
+export function unregister () {
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.ready
       .then((registration) => {

@@ -22,7 +22,7 @@ import botCheck from './botCheck'
 
 import './App.css'
 
-const Storage = StorageWrapper.default;
+const Storage = StorageWrapper.default
 
 // GoogleAnalytics code taken from env
 const GACode = import.meta.env.VITE_GA_CODE
@@ -242,9 +242,7 @@ const AppWrapper = function () {
   const isBot = useMemo(botCheck, [navigator.userAgent])
   const dnt = useMemo(() => {
     const navDNT =
-      navigator.doNotTrack ||
-      window.doNotTrack ||
-      navigator.msDoNotTrack
+      navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack
     return (
       process.env.NODE_ENV === 'test' ||
       navDNT === '1' ||

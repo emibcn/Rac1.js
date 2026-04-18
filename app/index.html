@@ -44,7 +44,7 @@
         // Exclude preloading for bots
         if (
           /bot|google|baidu|bing|msn|duckduckbot|teoma|slurp|yandex/i.test(
-            navigator.userAgent
+            navigator.userAgent,
           )
         ) {
           return;
@@ -93,7 +93,7 @@
             self.date = new Date(
               self.dateParts[0],
               self.dateParts[1] - 1,
-              self.dateParts[2]
+              self.dateParts[2],
             );
             self.dateTo = new Date(self.date);
             self.dateTo.setDate(self.dateTo.getDate() + 1);

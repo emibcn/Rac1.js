@@ -48,7 +48,7 @@ class AppMenu extends React.Component {
       <div
         style={{
           padding: '3em 1em 1em',
-          background: "url(/logo-rac1.png)",
+          background: 'url(/logo-rac1.png)',
           backgroundSize: 50,
           backgroundRepeat: 'no-repeat',
           backgroundPosition: 'center .5em'

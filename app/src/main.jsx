@@ -6,7 +6,7 @@ import reportWebVitals from './reportWebVitals'
 import { onServiceWorkerUpdate } from '@3m1/service-worker-updater'
 import { register as registerSW } from './pwaRegistration'
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
+const root = ReactDOM.createRoot(document.getElementById('root'))
 root.render(
   <React.StrictMode>
     <App />
