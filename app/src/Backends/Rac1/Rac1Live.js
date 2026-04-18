@@ -1,9 +1,9 @@
-import { Live } from "../Base";
+import { Live } from '../Base'
 
-const DEBUG = false;
-function debug(...args) {
+const DEBUG = false
+function debug (...args) {
   if (DEBUG === true) {
-    console.log(...args);
+    console.log(...args)
   }
 }
 
