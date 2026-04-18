@@ -81,7 +81,7 @@
   },
   "jest": {
     "transformIgnorePatterns": [
-      "/node_modules/(?!(react-date-picker|get-user-locale|memoize|rc-switch|rc-slider|make-event-props|react-calendar|@wojtekmaj/date-utils|react-fit|detect-element-overflow)/)"
+      "/node_modules/(?!(react-date-picker|get-user-locale|memoize|rc-switch|rc-slider|make-event-props|react-calendar|@wojtekmaj/date-utils|react-fit|detect-element-overflow|react-helmet-async)/)"
     ]
   }
 }
