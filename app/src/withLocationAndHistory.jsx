@@ -6,7 +6,14 @@ const withLocationAndHistory = (Component) => (props) => {
   const navigate = useNavigate();
   const params = useParams();
 
-  return <Component {...{ navigate, location, match: { params }, ...props }} />;
+  return (
+    <Component {...{
+      navigate,
+      location,
+      match: { params },
+      ...props
+    }} />
+  )
 };
 
 export default withLocationAndHistory;

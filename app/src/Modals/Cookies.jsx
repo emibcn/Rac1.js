@@ -8,8 +8,9 @@ import "rc-switch/assets/index.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBalanceScale as faCookies } from "@fortawesome/free-solid-svg-icons";
 
-import { withGAEvent } from "./GAListener";
+import { withGAEvent } from "../GAListener";
 
+// Import raw HTML
 import raw from "raw.macro";
 const legal = raw("./legal.html");
 

@@ -17,9 +17,7 @@ import ModalRouter from "./ModalRouter";
 import GAListener, { ReportWebVitals } from "./GAListener";
 import ErrorCatcher from "./ErrorCatcher";
 import { Live, ByDate } from "./Players";
-import Cookies from "./Cookies";
-import About from "./About";
-import Help from "./Help";
+import { Cookies, About, Help } from "./Modals";
 import botCheck from "./botCheck";
 
 import "./App.css";
@@ -45,6 +43,7 @@ const ByDateWithErrorCatcher = withErrorCatcher("ByDate", ByDate);
 const AppHelmet = function (props) {
   const t = useTranslate("App");
   const title = t("Rac1 Radio Podcasts Player");
+
   return (
     <Helmet titleTemplate={`%s | ${title}`} defaultTitle={title}>
       <html lang={props.language} />
@@ -82,14 +81,14 @@ const RedirectToToday = function () {
     1 + date.getMonth()
   }/${date.getDate()}/0/0`;
 
-  return (
-    <Navigate
-      to={{
-        pathname: todayStr,
-        hash: location.hash.replace("#", ""),
-      }}
-    />
-  );
+  // Parse existing modal from double hash
+  const hashParts = location.hash.split('#');
+  const existingModal = hashParts[2] || '';
+  const newHash = existingModal ? `${todayStr}#${existingModal}` : `${todayStr}`;
+
+  console.log("RedirectToToday:", { todayStr, hashParts, existingModal, newHash })
+
+  return <Navigate to={newHash} replace />;
 };
 
 class App extends React.Component {
@@ -156,19 +155,24 @@ class App extends React.Component {
               }
               appElement={this.appElement.current}
             >
-              <Route exact path="about">
-                <AboutWithErrorCatcher />
-              </Route>
-              <Route exact path="help">
-                <HelpWithErrorCatcher />
-              </Route>
-              <Route exact path="cookies">
-                <CookiesWithErrorCatcher
-                  {...{ trackOptIn, trackingSeen }}
-                  onTrackingSeen={this.handleTrackingSeenChange}
-                  onTrackOptIn={this.handleTrackOptInChange}
-                />
-              </Route>
+              <Route
+                exact path="about"
+                element={ <AboutWithErrorCatcher /> }
+              />
+              <Route
+                exact path="help"
+                element={ <HelpWithErrorCatcher /> }
+              />
+              <Route
+                exact path="cookies"
+                element={
+                  <CookiesWithErrorCatcher
+                    {...{ trackOptIn, trackingSeen }}
+                    onTrackingSeen={this.handleTrackingSeenChange}
+                    onTrackOptIn={this.handleTrackOptInChange}
+                  />
+                }
+              />
             </ModalRouter>
 
             {/* Menu */}
@@ -220,6 +224,11 @@ class App extends React.Component {
                 {/* Set default date to today */}
                 <Route
                   exact
+                  path=""
+                  element={ <RedirectToToday /> }
+                />
+                <Route
+                  exact
                   path=":all"
                   element={ <RedirectToToday /> }
                 />
@@ -240,6 +249,7 @@ const defaultLanguage = Object.prototype.hasOwnProperty.call(
 )
   ? global.navigator.language
   : "en-en";
+
 const AppWrapper = function () {
   const isBot = useMemo(botCheck, [global.navigator.userAgent]);
   const dnt = useMemo(() => {

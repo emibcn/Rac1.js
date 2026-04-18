@@ -38,8 +38,13 @@ class AppMenu extends React.Component {
   }
 
   renderLinks() {
-    const { newServiceWorkerDetected, trackOptIn, children, t, params: {year, month, day, hour, minute } } = this.props;
     const { isLanguageOpen } = this.state;
+    const {
+      newServiceWorkerDetected,
+      trackOptIn,
+      children,
+      t
+    } = this.props;
 
     return (
       <div
@@ -52,11 +57,16 @@ class AppMenu extends React.Component {
         }}
       >
         <NavLink
-          className="bm-item"
+          className={({ isActive, isPending, isTransitioning }) =>
+              [
+                "bm-item",
+                isPending ? "pending" : "",
+                isActive ? "active" : "",
+                isTransitioning ? "transitioning" : "",
+              ].join(" ")
+            }
           onClick={this.handleClick}
-          isActive={(match, location) =>
-            location.pathname.match(/\/\d{4}(\/\d{1,2}){2,4}(#.*)?$/)
-          }
+          /* to="/:year/:month/:day/:hour/:minute" */
           to="/"
           title={t(
             "Play podcasts filtered by date and ordered chronologically"
@@ -66,39 +76,66 @@ class AppMenu extends React.Component {
           <span>{t("By date")}</span>
         </NavLink>
         <NavLink
-          className="bm-item"
+          className={({ isActive, isPending, isTransitioning }) =>
+              [
+                "bm-item",
+                isPending ? "pending" : "",
+                isActive ? "active" : "",
+                isTransitioning ? "transitioning" : "",
+              ].join(" ")
+            }
           onClick={this.handleClick}
-          to="/live" end
+          to="/live"
+          end
           title={t("Play live stream")}
         >
           <FontAwesomeIcon icon={faLive} style={{ marginRight: ".5em" }} />
           <span>{t("Live")}</span>
         </NavLink>
         <NavLink
-          className="bm-item"
+          className={({ isActive, isPending, isTransitioning }) =>
+              [
+                "bm-item",
+                isPending ? "pending" : "",
+                isActive ? "active" : "",
+                isTransitioning ? "transitioning" : "",
+              ].join(" ")
+            }
           onClick={this.handleClickModal}
-          to="#about" end
-          isActive={(match, location) => location.hash === "#about"}
+          to="#about"
+          end
           title={t("Information about this app and its author")}
         >
           <FontAwesomeIcon icon={faAbout} style={{ marginRight: ".5em" }} />
           <span>{t("About")}</span>
         </NavLink>
         <NavLink
-          className="bm-item"
+          className={({ isActive, isPending, isTransitioning }) =>
+              [
+                "bm-item",
+                isPending ? "pending" : "",
+                isActive ? "active" : "",
+                isTransitioning ? "transitioning" : "",
+              ].join(" ")
+            }
           onClick={this.handleClickModal}
           to="#help"
-          isActive={(match, location) => location.hash === "#help"}
           title={t("Help using this app")}
         >
           <FontAwesomeIcon icon={faHelp} style={{ marginRight: ".5em" }} />
           <span>{t("Help")}</span>
         </NavLink>
         <NavLink
-          className="bm-item"
+          className={({ isActive, isPending, isTransitioning }) =>
+              [
+                "bm-item",
+                isPending ? "pending" : "",
+                isActive ? "active" : "",
+                isTransitioning ? "transitioning" : "",
+              ].join(" ")
+            }
           onClick={this.handleClickModal}
           to="#cookies"
-          isActive={(match, location) => location.hash === "#cookies"}
           title={t("Allow tracking user interactions for usage analysis")}
         >
           <span
@@ -185,7 +222,9 @@ class AppMenu extends React.Component {
           const Menu = matches ? BigMenu : SmallMenu;
 
           return (
-            <div className={`menu-${matches ? "big" : "small"}${extraClass}`}>
+            <div
+              className={`menu-${matches ? "big" : "small"}${extraClass}`}
+            >
               <Menu
                 pageWrapId="page-wrap"
                 outerContainerId="router-container"
