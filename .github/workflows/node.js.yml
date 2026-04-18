@@ -80,6 +80,7 @@ jobs:
     - name: yarn install and build
       env:
         REACT_APP_GA_CODE: "UA-129704402-1"
+        NODE_OPTIONS: "--openssl-legacy-provider"
       working-directory: ./app
       run: |
         yarn install
@@ -130,6 +131,7 @@ jobs:
     - name: yarn install and test
       env:
         REACT_APP_GA_CODE: "UA-129704402-1"
+        NODE_OPTIONS: "--openssl-legacy-provider"
       working-directory: ./app
       run: |
         yarn install
