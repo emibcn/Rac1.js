@@ -9,7 +9,6 @@
     "@fortawesome/fontawesome-svg-core": "^6.7.2",
     "@fortawesome/free-solid-svg-icons": "^6.7.2",
     "@fortawesome/react-fontawesome": "^0.2.2",
-    "@babel/core": "^7.16.0",
     "abortcontroller-polyfill": "^1.7.8",
     "babel-polyfill": "^6.26.0",
     "raw.macro": "^0.6.0",
@@ -43,7 +42,9 @@
     "workbox-streams": "^7.3.0"
   },
   "resolutions": {
-    "caniuse-lite": "1.0.30001632"
+    "caniuse-lite": "1.0.30001632",
+    "@babel/core": "7.22.0",
+    "@babel/parser": "7.22.0"
   },
   "scripts": {
     "start": "react-scripts start",
