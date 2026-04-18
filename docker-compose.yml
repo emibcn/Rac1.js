@@ -10,7 +10,8 @@ services:
     environment:
       - NODE_ENV=development
       - REACT_APP_GA_CODE="UA-129704402-1"
-      - NODE_OPTIONS=--openssl-legacy-provider
+      - VITE_GA_CODE="UA-129704402-1"
+      - VITE_BASE_PATH=/Rac1.js/
     volumes:
       - ./app:/home/node/app
       - ./docs:/home/node/docs
@@ -18,6 +19,8 @@ services:
       - "3000"
     ports:
       - "127.0.0.1:3000:3000"
+      - "127.0.0.1:5173:5173"
+      - "127.0.0.1:4173:4173"
     stdin_open: true
     tty: true
     command: "yarn start"
