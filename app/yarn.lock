@@ -8013,10 +8013,10 @@ react-calendar@^6.0.0:
     get-user-locale "^3.0.0"
     warning "^4.0.0"
 
-react-date-picker@^12.0.2:
-  version "12.0.2"
-  resolved "https://registry.yarnpkg.com/react-date-picker/-/react-date-picker-12.0.2.tgz#186b9ee70919152e60623a7fb05461cbf8e18013"
-  integrity sha512-jh6dGY2I/NZ+bDx/5bcTY3kRBkWQijtGkhy0AN+5qbcU34avsJR319GWHkDIJfEdcSCofGdCNnRry/UsjBypZg==
+react-date-picker@^12.1.0:
+  version "12.1.0"
+  resolved "https://registry.yarnpkg.com/react-date-picker/-/react-date-picker-12.1.0.tgz#b1c564f657f625dc5e1176b5d0cb0d72aaf8bd09"
+  integrity sha512-ukbSL2FH9EJ4YdWegT0z6ptkvQqL65IaAdSO5YFEVN4zZDQ4bO8vlkZt9Q+hmKq64dkxznW6CJNskpD9W24Kbw==
   dependencies:
     "@wojtekmaj/date-utils" "^2.0.2"
     clsx "^2.0.0"
@@ -8024,7 +8024,7 @@ react-date-picker@^12.0.2:
     make-event-props "^2.0.0"
     react-calendar "^6.0.0"
     react-fit "^3.0.0"
-    update-input-width "^1.4.0"
+    update-input-width "^2.0.0"
 
 react-dev-utils@^12.0.1:
   version "12.0.1"
@@ -9620,10 +9620,10 @@ update-browserslist-db@^1.2.3:
     escalade "^3.2.0"
     picocolors "^1.1.1"
 
-update-input-width@^1.4.0:
-  version "1.4.2"
-  resolved "https://registry.yarnpkg.com/update-input-width/-/update-input-width-1.4.2.tgz#49d327a39395185b0fd440b9c3b1d6f81173655c"
-  integrity sha512-/p0XLhrQQQ4bMWD7bL9duYObwYCO1qGr8R19xcMmoMSmXuQ7/1//veUnCObQ7/iW6E2pGS6rFkS4TfH4ur7e/g==
+update-input-width@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/update-input-width/-/update-input-width-2.0.0.tgz#613554fd45ba0e16946cb788a8edb0a6194662a7"
+  integrity sha512-Ri49Yv+QEwaf/nZEKxuOeD+M65NE+WLau4rGyHTUBCNKNN+jtKT36vUpOugt0lIrEb8l9ZkEgY+Sg+I+zO/3PA==
 
 uri-js@^4.2.2:
   version "4.4.1"
